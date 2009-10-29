@@ -1877,7 +1877,9 @@ type
 const
   { from float.h }
   FLT_MAX =  3.402823466e+38; // max value
+  {$EXTERNALSYM FLT_MAX}
   FLT_MIN =  1.175494351e-38; // min positive value
+  {$EXTERNALSYM FLT_MIN}
 
   REAL_MAX           = FLT_MAX;
   {$EXTERNALSYM REAL_MAX}
@@ -2123,19 +2125,6 @@ type
 type
   PGPColor  = ^TGPColor;
   TGPColor   = 0..$FFFFFFFF;
-
-const
-  ALPHA_SHIFT = 24;
-  RED_SHIFT   = 16;
-  GREEN_SHIFT = 8;
-  BLUE_SHIFT  = 0;
-  ALPHA_MASK  = (TGPColor($ff) shl ALPHA_SHIFT);
-
-  // In-memory pixel data formats:
-  // bits 0-7 = format index
-  // bits 8-15 = pixel size (in bits)
-  // bits 16-23 = flags
-  // bits 24-31 = reserved
 
 type
   TGPPixelFormat = Integer;
