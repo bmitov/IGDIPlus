@@ -1978,8 +1978,6 @@ type
     Y : Single;
   end;
 
-  function MakePointF(X, Y: Single): TGPPointF; overload;
-
 //--------------------------------------------------------------------------
 // Represents a location in a 2D coordinate system (integer coordinates)
 //--------------------------------------------------------------------------
@@ -1991,7 +1989,11 @@ type
     Y : Integer;
   end;
 
+  function MakePointF( X, Y: Single ): TGPPointF; overload;
+  function MakePointF( APoint : TGPPoint ): TGPPointF; overload;
+  function MakePointF( APoint : TPoint ): TGPPointF; overload;
   function MakePoint(X, Y: Integer): TGPPoint; overload;
+  function MakePoint( APoint : TPoint ): TGPPoint; overload;
 
 //--------------------------------------------------------------------------
 // Represents a rectangle in a 2D coordinate system (floating-point coordinates)
@@ -2006,10 +2008,6 @@ type
     Height: Single;
   end;
   
-  function MakeRectF(x, y, width, height: Single): TGPRectF; overload;
-  function MakeRectF(location: TGPPointF; size: TGPSizeF): TGPRectF; overload;
-  function MakeRectF( const Rect: TRect ): TGPRectF; overload;
-
 type
   PGPRect = ^TGPRect;
   TGPRect = packed record
@@ -2018,6 +2016,11 @@ type
     Width : Integer;
     Height: Integer;
   end;
+
+  function MakeRectF(x, y, width, height: Single): TGPRectF; overload;
+  function MakeRectF(location: TGPPointF; size: TGPSizeF): TGPRectF; overload;
+  function MakeRectF( const Rect: TRect ): TGPRectF; overload;
+  function MakeRectF( const Rect: TGPRect ): TGPRectF; overload;
 
   function MakeRect(x, y, width, height: Integer): TGPRect; overload;
   function MakeRect(location: TGPPoint; size: TGPSize): TGPRect; overload;
@@ -5035,6 +5038,15 @@ type
 
     function AddPath(addingPath: IGPGraphicsPath; connect: Boolean) : TGPGraphicsPath;
 
+    function AddStringF(string_: WideString; font : IGPFont;
+      origin : TGPPointF; format : IGPStringFormat) : TGPGraphicsPath; overload;
+    function AddStringF(string_: WideString; font : IGPFont;
+      layoutRect: TGPRectF; format : IGPStringFormat) : TGPGraphicsPath; overload;
+    function AddString(string_: WideString; font : IGPFont;
+      origin : TGPPoint; format : IGPStringFormat) : TGPGraphicsPath; overload;
+    function AddString(string_: WideString; font : IGPFont;
+      layoutRect: TGPRect; format : IGPStringFormat) : TGPGraphicsPath; overload;
+      
     function AddStringF(string_: WideString; family : IGPFontFamily;
       style : Integer; emSize : Single; origin : TGPPointF; format : IGPStringFormat) : TGPGraphicsPath; overload;
     function AddStringF(string_: WideString; family : IGPFontFamily;
@@ -5172,6 +5184,15 @@ type
 
     function AddPath(addingPath: IGPGraphicsPath; connect: Boolean) : TGPGraphicsPath;
 
+    function AddStringF(string_: WideString; font : IGPFont;
+      origin : TGPPointF; format : IGPStringFormat) : TGPGraphicsPath; overload;
+    function AddStringF(string_: WideString; font : IGPFont;
+      layoutRect: TGPRectF; format : IGPStringFormat) : TGPGraphicsPath; overload;
+    function AddString(string_: WideString; font : IGPFont;
+      origin : TGPPoint; format : IGPStringFormat) : TGPGraphicsPath; overload;
+    function AddString(string_: WideString; font : IGPFont;
+      layoutRect: TGPRect; format : IGPStringFormat) : TGPGraphicsPath; overload;
+      
     function AddStringF(string_: WideString; family : IGPFontFamily;
       style : Integer; emSize : Single; origin : TGPPointF; format : IGPStringFormat) : TGPGraphicsPath; overload;
     function AddStringF(string_: WideString; family : IGPFontFamily;
@@ -5625,17 +5646,27 @@ type
     function FillRegion(brush: IGPBrush; region: IGPRegion) : TGPGraphics;
 
     // DrawString
-    function DrawString(string_: WideString; font: IGPFont;
+    function DrawStringF(string_: WideString; font: IGPFont;
       const layoutRect: TGPRectF; stringFormat: IGPStringFormat; brush: IGPBrush) : TGPGraphics; overload;
-    function DrawString(string_: WideString; font: IGPFont;
+    function DrawStringF(string_: WideString; font: IGPFont;
       const origin: TGPPointF; brush: IGPBrush) : TGPGraphics; overload;
-    function DrawString(string_: WideString; font: IGPFont;
+    function DrawStringF(string_: WideString; font: IGPFont;
       const origin: TGPPointF; stringFormat: IGPStringFormat; brush: IGPBrush) : TGPGraphics; overload;
+      
+    function DrawString(string_: WideString; font: IGPFont;
+      const layoutRect: TGPRect; stringFormat: IGPStringFormat; brush: IGPBrush) : TGPGraphics; overload;
+    function DrawString(string_: WideString; font: IGPFont;
+      const origin: TGPPoint; brush: IGPBrush) : TGPGraphics; overload;
+    function DrawString(string_: WideString; font: IGPFont;
+      const origin: TGPPoint; stringFormat: IGPStringFormat; brush: IGPBrush) : TGPGraphics; overload;
       
     // MeasureString
     function GetStringSizeF(string_: WideString; font: IGPFont;
-      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat;
-      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF;
+      stringFormat: IGPStringFormat = nil ) : TGPSizeF; overload;
+
+    function GetStringSizeF(string_: WideString; font: IGPFont;
+      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = nil;
+      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF; overload;
 
     function GetStringBoundingBoxF(string_: WideString; font: IGPFont;
       const layoutRect: TGPRectF; stringFormat: IGPStringFormat;
@@ -6059,13 +6090,20 @@ type
     function FillRegion(brush: IGPBrush; region: IGPRegion) : TGPGraphics;
 
     // DrawString
-    function DrawString(string_: WideString; font: IGPFont;
+    function DrawStringF(string_: WideString; font: IGPFont;
       const layoutRect: TGPRectF; stringFormat: IGPStringFormat; brush: IGPBrush) : TGPGraphics; overload;
-    function DrawString(string_: WideString; font: IGPFont;
+    function DrawStringF(string_: WideString; font: IGPFont;
       const origin: TGPPointF; brush: IGPBrush) : TGPGraphics; overload;
-    function DrawString(string_: WideString; font: IGPFont;
+    function DrawStringF(string_: WideString; font: IGPFont;
       const origin: TGPPointF; stringFormat: IGPStringFormat; brush: IGPBrush) : TGPGraphics; overload;
 
+    function DrawString(string_: WideString; font: IGPFont;
+      const layoutRect: TGPRect; stringFormat: IGPStringFormat; brush: IGPBrush) : TGPGraphics; overload;
+    function DrawString(string_: WideString; font: IGPFont;
+      const origin: TGPPoint; brush: IGPBrush) : TGPGraphics; overload;
+    function DrawString(string_: WideString; font: IGPFont;
+      const origin: TGPPoint; stringFormat: IGPStringFormat; brush: IGPBrush) : TGPGraphics; overload;
+      
 {
     function FillString(string_: WideString; font: IGPFont;
       const layoutRect: TGPRectF; stringFormat: IGPStringFormat; brush: IGPBrush) : TGPGraphics; overload;
@@ -6076,8 +6114,11 @@ type
 }
     // MeasureString
     function GetStringSizeF(string_: WideString; font: IGPFont;
-      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat;
-      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF;
+      stringFormat: IGPStringFormat = nil) : TGPSizeF; overload;
+
+    function GetStringSizeF(string_: WideString; font: IGPFont;
+      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = nil;
+      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF; overload;
 
     function GetStringBoundingBoxF(string_: WideString; font: IGPFont;
       const layoutRect: TGPRectF; stringFormat: IGPStringFormat;
@@ -11817,7 +11858,7 @@ var
   end;
 *)
 
-  function TGPGraphics.DrawString( string_: WideString; font: IGPFont;
+  function TGPGraphics.DrawStringF( string_: WideString; font: IGPFont;
      const layoutRect: TGPRectF; stringFormat: IGPStringFormat; brush: IGPBrush) : TGPGraphics;
   var
     nFont: GpFont;
@@ -11855,7 +11896,7 @@ var
     Result := Self;
   end;
 
-  function TGPGraphics.DrawString(string_: WideString; font: IGPFont;
+  function TGPGraphics.DrawStringF(string_: WideString; font: IGPFont;
            const origin: TGPPointF; brush: IGPBrush) : TGPGraphics;
   var
     rect: TGPRectF;
@@ -11890,7 +11931,7 @@ var
     Result := Self;
   end;
 
-  function TGPGraphics.DrawString(string_: WideString; font: IGPFont;
+  function TGPGraphics.DrawStringF(string_: WideString; font: IGPFont;
       const origin: TGPPointF; stringFormat: IGPStringFormat; brush: IGPBrush) : TGPGraphics;
   var
     rect: TGPRectF;
@@ -11970,11 +12011,43 @@ var
   end;
 
 
+function TGPGraphics.DrawString(string_: WideString; font: IGPFont;
+  const layoutRect: TGPRect; stringFormat: IGPStringFormat; brush: IGPBrush) : TGPGraphics;
+begin
+  DrawStringF( string_, font, MakeRectF( layoutRect ), stringFormat, brush );
+  Result := Self;
+end;
+
+function TGPGraphics.DrawString(string_: WideString; font: IGPFont;
+  const origin: TGPPoint; brush: IGPBrush) : TGPGraphics;
+begin
+  DrawStringF( string_, font, MakePointF( origin ), brush );
+  Result := Self;
+end;
+  
+function TGPGraphics.DrawString(string_: WideString; font: IGPFont;
+  const origin: TGPPoint; stringFormat: IGPStringFormat; brush: IGPBrush) : TGPGraphics;
+begin
+  DrawStringF( string_, font, MakePointF( origin ), stringFormat, brush );
+  Result := Self;
+end;
+
+function TGPGraphics.GetStringSizeF(string_: WideString; font: IGPFont;
+      stringFormat: IGPStringFormat = nil) : TGPSizeF;
+var
+  ARect : TGPRectF;
+
+begin
+  ARect := GetStringBoundingBoxF( string_, font, MakePointF( 0, 0 ), stringFormat );
+  Result.Width := ARect.Width; 
+  Result.Height := ARect.Height; 
+end;
+
 //  procedure TGPGraphics.MeasureString(string_: WideString; length: Integer; font: IGPFont;
 //       const layoutRectSize: TGPSizeF; stringFormat: TGPStringFormat; out size: TGPSizeF;
 //       codepointsFitted: PInteger = nil; linesFilled: PInteger = nil);
   function TGPGraphics.GetStringSizeF(string_: WideString; font: IGPFont;
-      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat;
+      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = nil;
       codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF;
   var
     layoutRect, boundingBox: TGPRectF;
@@ -14480,6 +14553,34 @@ var
     Result := Self;
   end;
 
+  function TGPGraphicsPath.AddStringF(string_: WideString; font : IGPFont;
+      origin : TGPPointF; format : IGPStringFormat) : TGPGraphicsPath;
+  begin
+    AddStringF( string_, font.Family, font.Style, font.Size, origin, format );  
+    Result := Self;
+  end;
+
+  function TGPGraphicsPath.AddStringF(string_: WideString; font : IGPFont;
+      layoutRect: TGPRectF; format : IGPStringFormat) : TGPGraphicsPath;
+  begin
+    AddStringF( string_, font.Family, font.Style, font.Size, layoutRect, format );
+    Result := Self;
+  end;
+
+  function TGPGraphicsPath.AddString(string_: WideString; font : IGPFont;
+      origin : TGPPoint; format : IGPStringFormat) : TGPGraphicsPath;
+  begin
+    AddString( string_, font.Family, font.Style, font.Size, origin, format );
+    Result := Self;
+  end;
+  
+  function TGPGraphicsPath.AddString(string_: WideString; font : IGPFont;
+      layoutRect: TGPRect; format : IGPStringFormat) : TGPGraphicsPath;
+  begin
+    AddString( string_, font.Family, font.Style, font.Size, layoutRect, format );
+    Result := Self;
+  end;
+
   function TGPGraphicsPath.AddStringF(
       string_: WideString;
       family : IGPFontFamily;
@@ -15499,10 +15600,28 @@ end;
     Result.Y := Y;
   end;
 
+  function MakePoint( APoint : TPoint ): TGPPoint;
+  begin
+    Result.X := APoint.X;
+    Result.Y := APoint.Y;
+  end;
+  
   function MakePointF(X, Y: Single): TGPPointF;
   begin
     Result.X := X;
     Result.Y := Y;
+  end;
+
+  function MakePointF( APoint : TGPPoint ): TGPPointF;
+  begin
+    Result.X := APoint.X;
+    Result.Y := APoint.Y;
+  end;
+
+  function MakePointF( APoint : TPoint ): TGPPointF;
+  begin
+    Result.X := APoint.X;
+    Result.Y := APoint.Y;
   end;
 
 //--------------------------------------------------------------------------
@@ -15565,12 +15684,20 @@ end;
 
   function MakeRectF( const Rect: TRect ): TGPRectF; overload;
   begin
-    Result.X := rect.Left;
+    Result.X := Rect.Left;
     Result.Y := Rect.Top;
     Result.Width := Rect.Right - Rect.Left - 1;
     Result.Height:= Rect.Bottom - Rect.Top - 1;
   end;
 
+  function MakeRectF( const Rect: TGPRect ): TGPRectF; overload;
+  begin
+    Result.X := Rect.X;
+    Result.Y := Rect.Y;
+    Result.Width := Rect.Width;
+    Result.Height:= Rect.Height;
+  end;
+  
 // -----------------------------------------------------------------------------
 // Rect class
 // -----------------------------------------------------------------------------

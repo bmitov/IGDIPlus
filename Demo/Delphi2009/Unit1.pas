@@ -54,12 +54,12 @@ begin
               ARect1, MakeSizeF( 20, 20 ) );
 
   // Draw a text with semitransparent shadow.
-  AGraphics.DrawString( 'Welcome to IGDI+',
+  AGraphics.DrawStringF( 'Welcome to IGDI+',
                         AFont,
                         MakePointF( 23, 23 ),
                         TGPSolidBrush.Create( MakeARGBColor( 50, aclBlack )) )
 
-           .DrawString( 'Welcome to IGDI+',
+           .DrawStringF( 'Welcome to IGDI+',
                         AFont,
                         ALeftTopCorner,
                         TGPLinearGradientBrush.Create( ARect, aclRed, aclBlue, LinearGradientModeForwardDiagonal ));
