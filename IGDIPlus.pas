@@ -5681,6 +5681,26 @@ type
     function GetStringBoundingBoxF(string_: WideString; font: IGPFont;
       const origin: TGPPointF ) : TGPRectF; overload;
 
+    function MeasureStringF(string_: WideString; font: IGPFont;
+      stringFormat: IGPStringFormat = nil ) : TGPSizeF; overload;
+
+    function MeasureStringF(string_: WideString; font: IGPFont;
+      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = nil;
+      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF; overload;
+
+    function MeasureStringF(string_: WideString; font: IGPFont;
+      const layoutRect: TGPRectF; stringFormat: IGPStringFormat;
+      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPRectF; overload;
+
+    function MeasureStringF(string_: WideString; font: IGPFont;
+      const origin: TGPPointF; stringFormat: IGPStringFormat ) : TGPRectF; overload;
+
+    function MeasureStringF(string_: WideString; font: IGPFont;
+      const layoutRect: TGPRectF ) : TGPRectF; overload;
+
+    function MeasureStringF(string_: WideString; font: IGPFont;
+      const origin: TGPPointF ) : TGPRectF; overload;
+      
     // MeasureCharacterRanges
     function MeasureCharacterRanges(string_: WideString; font: IGPFont;
       const layoutRect: TGPRectF; stringFormat: IGPStringFormat ) : TGPRegionArray;
@@ -6133,6 +6153,26 @@ type
     function GetStringBoundingBoxF(string_: WideString; font: IGPFont;
       const origin: TGPPointF ) : TGPRectF; overload;
 
+    function MeasureStringF(string_: WideString; font: IGPFont;
+      stringFormat: IGPStringFormat = nil ) : TGPSizeF; overload;
+
+    function MeasureStringF(string_: WideString; font: IGPFont;
+      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = nil;
+      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF; overload;
+
+    function MeasureStringF(string_: WideString; font: IGPFont;
+      const layoutRect: TGPRectF; stringFormat: IGPStringFormat;
+      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPRectF; overload;
+
+    function MeasureStringF(string_: WideString; font: IGPFont;
+      const origin: TGPPointF; stringFormat: IGPStringFormat ) : TGPRectF; overload;
+
+    function MeasureStringF(string_: WideString; font: IGPFont;
+      const layoutRect: TGPRectF ) : TGPRectF; overload;
+
+    function MeasureStringF(string_: WideString; font: IGPFont;
+      const origin: TGPPointF ) : TGPRectF; overload;
+      
     // MeasureCharacterRanges
     function MeasureCharacterRanges(string_: WideString; font: IGPFont;
       const layoutRect: TGPRectF; stringFormat: IGPStringFormat ) : TGPRegionArray;
@@ -12189,7 +12229,43 @@ end;
     ));
   end;
 
+  function TGPGraphics.MeasureStringF(string_: WideString; font: IGPFont;
+    stringFormat: IGPStringFormat = nil ) : TGPSizeF;
+  begin
+    Result := GetStringSizeF( string_, font, stringFormat );
+  end;
 
+  function TGPGraphics.MeasureStringF(string_: WideString; font: IGPFont;
+    const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = nil;
+    codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF;
+  begin
+    Result := GetStringSizeF( string_, font, layoutRectSize, stringFormat, codepointsFitted, linesFilled );
+  end;
+
+  function TGPGraphics.MeasureStringF(string_: WideString; font: IGPFont;
+    const layoutRect: TGPRectF; stringFormat: IGPStringFormat;
+    codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPRectF;
+  begin
+    Result := GetStringBoundingBoxF( string_, font, layoutRect, stringFormat, codepointsFitted, linesFilled );
+  end;
+
+  function TGPGraphics.MeasureStringF(string_: WideString; font: IGPFont;
+    const origin: TGPPointF; stringFormat: IGPStringFormat ) : TGPRectF;
+  begin
+    Result := GetStringBoundingBoxF( string_, font, origin, stringFormat );
+  end;
+
+  function TGPGraphics.MeasureStringF(string_: WideString; font: IGPFont;
+    const layoutRect: TGPRectF ) : TGPRectF;
+  begin
+    Result := GetStringBoundingBoxF( string_, font, layoutRect ); 
+  end;
+
+  function TGPGraphics.MeasureStringF(string_: WideString; font: IGPFont;
+    const origin: TGPPointF ) : TGPRectF;
+  begin
+    Result := GetStringBoundingBoxF( string_, font, origin );
+  end;
 
   function TGPGraphics.MeasureCharacterRanges(string_: WideString; font: IGPFont;
       const layoutRect: TGPRectF; stringFormat: IGPStringFormat ) : TGPRegionArray;
