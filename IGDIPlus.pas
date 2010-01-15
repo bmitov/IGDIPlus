@@ -1,6 +1,6 @@
 {******************************************************************************
 
-              Copyright (C) 2008-2009 by Boian Mitov
+              Copyright (C) 2008-2010 by Boian Mitov
               mitov@mitov.com
               www.mitov.com
               www.openwire.org
@@ -6513,6 +6513,8 @@ var
   GenericTypographicStringFormatBuffer: TGPStringFormat = nil;
   GenericDefaultStringFormatBuffer    : TGPStringFormat = nil;
   StartupInput: TGPGDIPlusStartupInput;
+  StartupOutput: TGPGdiplusStartupOutput;
+  gdiplusBGThreadToken : ULONG;
   gdiplusToken: ULONG;
   GInitialized : Boolean = False;
 
@@ -16338,7 +16340,7 @@ begin
       Result := GPColorNames[ I ].Name; 
       Exit;
       end;
-     
+
   Result := '$' + IntToHex( AValue, 8 );
 end;
 
@@ -16346,15 +16348,16 @@ procedure StartIGDIPlus();
 begin
   if( GInitialized ) then
     Exit;
-    
+
   GInitialized := True;
   // Initialize StartupInput structure
   StartupInput.DebugEventCallback := nil;
-  StartupInput.SuppressBackgroundThread := False;
+  StartupInput.SuppressBackgroundThread := True;
   StartupInput.SuppressExternalCodecs   := False;
   StartupInput.GdiplusVersion := 1;
   // Initialize GDI+
-  GdiplusStartup(gdiplusToken, @StartupInput, nil);
+  GdiplusStartup(gdiplusToken, @StartupInput, @StartupOutput);
+  StartupOutput.NotificationHook( gdiplusBGThreadToken ); 
 end;
 
 procedure StopIGDIPlus();
@@ -16379,6 +16382,7 @@ begin
     GenericDefaultStringFormatBuffer.Free();
 
   // Close GDI +
+  StartupOutput.NotificationUnhook( gdiplusBGThreadToken );
   GdiplusShutdown(gdiplusToken);
 end;
 
