@@ -37,6 +37,13 @@ unit IGDIPlus;
 {$DEFINE DELPHI5_DOWN}
 {$ENDIF}
 
+{$IFNDEF VER130}
+{$IFNDEF VER140}
+  {$WARN UNSAFE_TYPE OFF}
+  {$WARN UNSAFE_CODE OFF}
+  {$WARN UNSAFE_CAST OFF}
+{$ENDIF}
+{$ENDIF}
 
 interface
 uses
@@ -1984,14 +1991,10 @@ type
 
 type
   PGPPoint = ^TGPPoint;
-  TGPPoint = packed record
-    X : Integer;
-    Y : Integer;
-  end;
+  TGPPoint = TPoint;
 
   function MakePointF( X, Y: Single ): TGPPointF; overload;
   function MakePointF( APoint : TGPPoint ): TGPPointF; overload;
-  function MakePointF( APoint : TPoint ): TGPPointF; overload;
   function MakePoint(X, Y: Integer): TGPPoint; overload;
   function MakePoint( APoint : TPoint ): TGPPoint; overload;
 
@@ -4215,6 +4218,9 @@ type
     function Shear(shearX, shearY: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPMatrix;            // ok
     function Invert() : TGPMatrix;                                                                             // ok
 
+    function TransformPointF( var point : TGPPointF ) : TGPMatrix;
+    function TransformPoint( var point : TGPPoint ) : TGPMatrix;
+
     function TransformPointsF( var pts : array of TGPPointF ) : TGPMatrix;
     function TransformPoints( var pts : array of TGPPoint ) : TGPMatrix;
 
@@ -4262,6 +4268,9 @@ type
     function RotateAt(angle: Single; const center: TGPPointF; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPMatrix; // ok
     function Shear(shearX, shearY: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPMatrix;            // ok
     function Invert() : TGPMatrix;                                                                             // ok
+
+    function TransformPointF( var point : TGPPointF ) : TGPMatrix;
+    function TransformPoint( var point : TGPPoint ) : TGPMatrix;
 
     function TransformPointsF( var pts : array of TGPPointF ) : TGPMatrix;
     function TransformPoints( var pts : array of TGPPoint ) : TGPMatrix;
@@ -6919,6 +6928,26 @@ var
     Result := Self;
   end;
 
+  function TGPMatrix.TransformPointF( var point : TGPPointF ) : TGPMatrix;
+  var
+    pts : array [ 0..0 ] of TGPPointF;
+
+  begin
+    pts[ 0 ] := point;
+    Result := TransformPointsF( pts );
+    point := pts[ 0 ]; 
+  end;
+
+  function TGPMatrix.TransformPoint( var point : TGPPoint ) : TGPMatrix;
+  var
+    pts : array [ 0..0 ] of TGPPoint;
+
+  begin
+    pts[ 0 ] := point;
+    Result := TransformPoints( pts );
+    point := pts[ 0 ]; 
+  end;
+  
   // float version
   function TGPMatrix.TransformPointsF( var pts : array of TGPPointF ) : TGPMatrix;
   begin
@@ -15696,12 +15725,6 @@ end;
     Result.Y := APoint.Y;
   end;
 
-  function MakePointF( APoint : TPoint ): TGPPointF;
-  begin
-    Result.X := APoint.X;
-    Result.Y := APoint.Y;
-  end;
-
 //--------------------------------------------------------------------------
 // TGPSize Util
 //--------------------------------------------------------------------------
@@ -16395,3 +16418,5 @@ finalization
 
 {$ENDIF}
 end.
+
+
