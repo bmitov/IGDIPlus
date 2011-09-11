@@ -49,7 +49,7 @@ begin
               TGPPathGradientBrush.Create(
                   TGPGraphicsPath.Create().AddRoundRectangleF( ARect1, MakeSizeF( 20, 20 ) )
                    )
-                .SetInterpolationColorsArrays( [ aclGreen, aclCyan, aclYellow ], [ 0, 0.3, 1 ] )
+                .SetInterpolationColorArrays( [ aclGreen, aclCyan, aclYellow ], [ 0, 0.3, 1 ] )
                 .SetCenterPointF( MakePointF( 250, 50 ))
                 .SetFocusScales( 0.87, 0.2 ),
               ARect1, MakeSizeF( 20, 20 ) );

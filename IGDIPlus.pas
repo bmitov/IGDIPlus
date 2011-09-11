@@ -14224,7 +14224,6 @@ var
 begin
   FNativeFont := nil;
   family := TGPFontFamily.Create(familyName, fontCollection);
-//    nativeFamily := family.GetNativeFamily();
   nativeFamily := family.GetNativeFamily();
 
   if ( GdipCreateFont(nativeFamily,
