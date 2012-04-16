@@ -1,6 +1,6 @@
 {******************************************************************************
 
-              Copyright (C) 2008-2011 by Boian Mitov
+              Copyright (C) 2008-2012 by Boian Mitov
               mitov@mitov.com
               www.mitov.com
               www.igdiplus.org
@@ -29,7 +29,9 @@
 
 ******************************************************************************}
 
+{$IFNDEF EMBED_IGDI_PLUS}
 unit IGDIPlus;
+{$ENDIF}
 
 {$ALIGN ON}
 {$MINENUMSIZE 4}
@@ -64,8 +66,10 @@ uses
   ActiveX;
 
 type
+{$IFNDEF VER230} // Delphi 16.0
   INT16   = type Smallint;
   UINT16  = type Word;
+{$ENDIF}
   PUINT16 = ^UINT16;
 //  UINT32  = type Cardinal;
   TGPSingleArray = array of Single;
@@ -2075,8 +2079,8 @@ type
   // Notification functions which the user must call appropriately if
   // "SuppressBackgroundThread" (below) is set.
 
-  TGPNotificationHookProc = function(out token: ULONG) : TGPStatus; stdcall;
-  TGPNotificationUnhookProc = procedure(token: ULONG); stdcall;
+  TGPNotificationHookProc = function(out token: Pointer) : TGPStatus; stdcall;
+  TGPNotificationUnhookProc = procedure(token: Pointer); stdcall;
 
   // Input structure for GdiplusStartup
 
@@ -2407,6 +2411,10 @@ type
   function MakeColor( AColor : TColor ) : TGPColor; overload;
   function MakeColor(r, g, b: Byte) : TGPColor; overload;
   function MakeColor(a, r, g, b: Byte) : TGPColor; overload;
+  function GPMakeColor( AAlpha : Byte; AColor : TColor ) : TGPColor; overload;
+  function GPMakeColor( AColor : TColor ) : TGPColor; overload;
+  function GPMakeColor(r, g, b: Byte) : TGPColor; overload;
+  function GPMakeColor(a, r, g, b: Byte) : TGPColor; overload;
   function GetAlpha(color: TGPColor) : BYTE;
   function GetRed(color: TGPColor) : BYTE;
   function GetGreen(color: TGPColor) : BYTE;
@@ -2417,6 +2425,7 @@ type
   function StringToRGBAColor( AValue : String ) : TGPColor;
   function RGBAColorToString( AValue : TGPColor ) : String;
   procedure GetStandardRGBAColorNames( ANames : TStrings );
+  function  GPGetColor( AColor : TGPColor ) : TColor;
 
 
 (**************************************************************************\
@@ -2729,7 +2738,7 @@ type
     Stride      : Integer;
     PixelFormat : TGPPixelFormat;
     Scan0       : Pointer;
-    Reserved    : UINT;
+    Reserved    : Pointer;
   end;
   
   PGPBitmapData = ^TGPBitmapData;
@@ -6605,8 +6614,8 @@ var
   GenericDefaultStringFormatBuffer    : TGPStringFormat = nil;
   StartupInput: TGPGDIPlusStartupInput;
   StartupOutput: TGPGdiplusStartupOutput;
-  gdiplusBGThreadToken : ULONG;
-  gdiplusToken: ULONG;
+  gdiplusBGThreadToken : Pointer;
+  gdiplusToken: Pointer;
   GInitialized : Boolean = False;
 
 
@@ -16318,11 +16327,6 @@ begin
 Result := (pixfmt and PixelFormatCanonical) <> 0;
 end;
 
-function MakeColor( AColor : TColor ) : TGPColor; overload;
-begin
-  Result := MakeColor( 255, AColor );
-end;
-
 {$IFDEF VER230} // Delphi 16.0
 function ColorToRGB(Color: TColor): Longint;
 begin
@@ -16332,23 +16336,57 @@ begin
 end;
 {$ENDIF} // Delphi 16.0
 
+function MakeARGBColor( AAlpha : Byte; AColor : TGPColor ) : TGPColor; overload;
+begin
+  Result := ( AColor and not AlphaMask ) or (DWORD(AAlpha) shl AlphaShift);
+end;
+
+function MakeColor( AColor : TColor ) : TGPColor; overload;
+begin
+  Result := MakeColor( 255, AColor );
+end;
+
 function MakeColor( AAlpha : Byte; AColor : TColor ) : TGPColor; overload;
 begin
   AColor := ColorToRGB( AColor );
   Result := MakeColor( AAlpha, GetRValue( AColor ), GetGValue( AColor ), GetBValue( AColor ));
 end;
 
-function MakeARGBColor( AAlpha : Byte; AColor : TGPColor ) : TGPColor; overload;
+function GPGetColor( AColor : TGPColor ) : TColor;
 begin
-  Result := ( AColor and not AlphaMask ) or (DWORD(AAlpha) shl AlphaShift);
+  Result := RGB( GetRed( AColor ), GetGreen( AColor ), GetBlue( AColor ));
 end;
 
 function MakeColor(r, g, b: Byte) : TGPColor; overload;
 begin
-  Result := IGDIPlus.MakeColor(255, r, g, b);
+  Result := GPMakeColor(255, r, g, b);
 end;
 
 function MakeColor(a, r, g, b: Byte) : TGPColor; overload;
+begin
+  Result := ((DWORD(b) shl  BlueShift) or
+             (DWORD(g) shl GreenShift) or
+             (DWORD(r) shl   RedShift) or
+             (DWORD(a) shl AlphaShift));
+end;
+
+function GPMakeColor( AColor : TColor ) : TGPColor; overload;
+begin
+  Result := GPMakeColor( 255, AColor );
+end;
+
+function GPMakeColor( AAlpha : Byte; AColor : TColor ) : TGPColor; overload;
+begin
+  AColor := ColorToRGB( AColor );
+  Result := MakeColor( AAlpha, GetRValue( AColor ), GetGValue( AColor ), GetBValue( AColor ));
+end;
+
+function GPMakeColor(r, g, b: Byte) : TGPColor; overload;
+begin
+  Result := GPMakeColor(255, r, g, b);
+end;
+
+function GPMakeColor(a, r, g, b: Byte) : TGPColor; overload;
 begin
   Result := ((DWORD(b) shl  BlueShift) or
              (DWORD(g) shl GreenShift) or
@@ -16378,7 +16416,7 @@ end;
 
 function ColorRefToARGB(rgb: COLORREF) : TGPColor;
 begin
-  Result := IGDIPlus.MakeColor(255, GetRValue(rgb), GetGValue(rgb), GetBValue(rgb));
+  Result := GPMakeColor(255, GetRValue(rgb), GetGValue(rgb), GetBValue(rgb));
 end;
 
 function ARGBToColorRef(Color: TGPColor) : COLORREF;
@@ -16388,7 +16426,7 @@ end;
 
 function RGBToBGR(color: TGPColor) : TGPColor;
 begin
-  Result := IGDIPlus.MakeColor( GetAlpha( color ), GetRValue(color), GetGValue(color), GetBValue(color) );
+  Result := GPMakeColor( GetAlpha( color ), GetRValue(color), GetGValue(color), GetBValue(color) );
 end;
 
 function MakeBlend( APosition : Single; AValue : Single ) : TGPBlend;
@@ -16792,8 +16830,10 @@ begin
   StartupInput.SuppressExternalCodecs   := False;
   StartupInput.GdiplusVersion := 1;
   // Initialize GDI+
-  GdiplusStartup(gdiplusToken, @StartupInput, @StartupOutput);
-  StartupOutput.NotificationHook( gdiplusBGThreadToken ); 
+  GdiplusStartup( gdiplusToken, @StartupInput, @StartupOutput);
+  if( Assigned( StartupOutput.NotificationHook )) then
+    StartupOutput.NotificationHook( gdiplusBGThreadToken );
+
 end;
 
 procedure StopIGDIPlus();
@@ -16818,7 +16858,9 @@ begin
     GenericDefaultStringFormatBuffer.Free();
 
   // Close GDI +
-  StartupOutput.NotificationUnhook( gdiplusBGThreadToken );
+  if( Assigned( StartupOutput.NotificationUnhook )) then
+    StartupOutput.NotificationUnhook( gdiplusBGThreadToken );
+
   GdiplusShutdown(gdiplusToken);
 end;
 

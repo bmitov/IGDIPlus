@@ -23,7 +23,7 @@ type
   // input  - may not be NULL
   // output - may be NULL only if input->SuppressBackgroundThread is FALSE.
 
- function GdiplusStartup(out token: ULONG; input: PGPGdiplusStartupInput;
+ function GdiplusStartup( out token: Pointer; input: PGPGdiplusStartupInput;
    output: PGPGdiplusStartupOutput): TGPStatus; stdcall; external WINGDIPDLL;
   // GDI+ termination. Must be called before GDI+ is unloaded.
   // Must not be called from DllMain - can cause deadlock.
@@ -31,7 +31,7 @@ type
   // GDI+ API's may not be called after GdiplusShutdown. Pay careful attention
   // to GDI+ object destructors.
 
-  procedure GdiplusShutdown(token: ULONG); stdcall; external WINGDIPDLL;
+  procedure GdiplusShutdown(token: Pointer); stdcall; external WINGDIPDLL;
   //----------------------------------------------------------------------------
   // Memory Allocation APIs
   //----------------------------------------------------------------------------
