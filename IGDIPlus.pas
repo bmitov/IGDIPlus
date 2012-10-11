@@ -48,15 +48,23 @@ unit IGDIPlus;
 {$ENDIF}
 {$ENDIF}
 
+{$IFDEF VER230} // Delphi 16.0
+{$DEFINE DELPHI16_UP}
+{$ENDIF}
+
+{$IFDEF VER240} // Delphi 17.0
+{$DEFINE DELPHI16_UP}
+{$ENDIF}
+
 interface
 uses
   Windows,
-{$IFDEF VER230} // Delphi 16.0
+{$IFDEF DELPHI16_UP} // Delphi 16.0
   System.UITypes,
 {$ENDIF}
   Classes,
 {$IFNDEF PURE_FMX}
-{$IFDEF VER230} // Delphi 16.0
+{$IFDEF DELPHI16_UP} // Delphi 16.0
   VCL.Graphics,
 {$ELSE} // Delphi 16.0
   Graphics,
@@ -66,7 +74,7 @@ uses
   ActiveX;
 
 type
-{$IFNDEF VER230} // Delphi 16.0
+{$IFNDEF DELPHI16_UP} // Delphi 16.0
   INT16   = type Smallint;
   UINT16  = type Word;
 {$ENDIF}
@@ -2147,7 +2155,7 @@ type
 \**************************************************************************)
 
 type
-{$IFDEF VER230} // Delphi 16.0
+{$IFDEF DELPHI16_UP}
   PGPColor  = PAlphaColor;
   TGPColor = TAlphaColor;
 {$ELSE}
@@ -2732,7 +2740,7 @@ type
 //---------------------------------------------------------------------------
 
 type
-  TGPBitmapData = packed record
+  TGPBitmapDataRecord = packed record
     Width       : UINT;
     Height      : UINT;
     Stride      : Integer;
@@ -2740,8 +2748,6 @@ type
     Scan0       : Pointer;
     Reserved    : Pointer;
   end;
-  
-  PGPBitmapData = ^TGPBitmapData;
 
 //---------------------------------------------------------------------------
 // Image flags
@@ -3398,23 +3404,6 @@ type
     
   end;
   
-  TGPPathData = packed class( TGPBase, IGPPathData )
-  protected
-    FCount  : Integer;
-    FPoints : PGPPointF;
-    FTypes  : PBYTE;
-
-  public
-    function GetCount()  : Integer;
-    function GetPoints( Index : Integer ) : TGPPointF;
-    function GetTypes( Index : Integer )  : TGPPathPointType;
-    
-  public
-    constructor Create();
-    destructor  Destroy(); override;
-    
-  end;
-
   IGPMetafileHeader = interface
     ['{3F6AC13B-46CD-4CA6-B5DE-ACD761649161}']
     
@@ -3453,61 +3442,6 @@ type
     property DpiX         : Single  read GetDpiX;
     property DpiY         : Single  read GetDpiY;
     property Bounds       : TGPRect read GetBounds;
-
-  end;
-  
-  TGPMetafileHeader = packed class( TGPBase, IGPMetafileHeader )
-  protected
-    FType         : TGPMetafileType;
-    FSize         : UINT;           // Size of the metafile (in bytes)
-    FVersion      : UINT;           // EMF+, EMF, or WMF version
-    FEmfPlusFlags : UINT;
-    FDpiX         : Single;
-    FDpiY         : Single;
-    FX            : Integer;        // Bounds in device units
-    FY            : Integer;
-    FWidth        : Integer;
-    FHeight       : Integer;
-    FHeader       : record
-    case Integer of
-      0: (FWmfHeader: TMETAHEADER);
-      1: (FEmfHeader: TGPENHMETAHEADER3);
-    end;
-
-    FEmfPlusHeaderSize : Integer; // size of the EMF+ header in file
-    FLogicalDpiX       : Integer; // Logical Dpi of reference Hdc
-    FLogicalDpiY       : Integer; // usually valid only for EMF+
-    
-  public
-    function GetType() : TGPMetafileType;
-    function GetMetafileSize() : UINT;
-    // If IsEmfPlus, this is the EMF+ version; else it is the WMF or EMF ver
-    function GetVersion() : UINT;
-     // Get the EMF+ flags associated with the metafile
-    function GetEmfPlusFlags() : UINT;
-    function GetDpiX() : Single;
-    function GetDpiY() : Single;
-    function GetBounds() : TGPRect;
-    // Is it any type of WMF (standard or Placeable Metafile)?
-    function IsWmf() : Boolean;
-    // Is this an Placeable Metafile?
-    function IsWmfPlaceable() : Boolean;
-    // Is this an EMF (not an EMF+)?
-    function IsEmf() : Boolean;
-    // Is this an EMF or EMF+ file?
-    function IsEmfOrEmfPlus() : Boolean;
-    // Is this an EMF+ file?
-    function IsEmfPlus() : Boolean;
-    // Is this an EMF+ dual (has dual, down-level records) file?
-    function IsEmfPlusDual() : Boolean;
-    // Is this an EMF+ only (no dual records) file?
-    function IsEmfPlusOnly() : Boolean;
-    // If it's an EMF+ file, was it recorded against a display Hdc?
-    function IsDisplay() : Boolean;
-    // Get the WMF header of the metafile (if it is a WMF)
-    function GetWmfHeader() : PMetaHeader;
-    // Get the EMF header of the metafile (if it is an EMF)
-    function GetEmfHeader() : PENHMETAHEADER3;
 
   end;
 
@@ -3559,14 +3493,14 @@ type
     function GetHRGN(g: IGPGraphics) : HRGN;
     function IsEmpty(g: IGPGraphics) : Boolean;
     function IsInfinite(g: IGPGraphics) : Boolean ;
-    function IsVisible(x, y: Integer; g: IGPGraphics = nil) : Boolean; overload;
-    function IsVisible(const point: TGPPoint; g: IGPGraphics = nil) : Boolean; overload;
-    function IsVisibleF(x, y: Single; g: IGPGraphics = nil) : Boolean; overload;
-    function IsVisibleF(const point: TGPPointF; g: IGPGraphics = nil) : Boolean; overload;
+    function IsVisible(x, y: Integer; g: IGPGraphics = NIL) : Boolean; overload;
+    function IsVisible(const point: TGPPoint; g: IGPGraphics = NIL) : Boolean; overload;
+    function IsVisibleF(x, y: Single; g: IGPGraphics = NIL) : Boolean; overload;
+    function IsVisibleF(const point: TGPPointF; g: IGPGraphics = NIL) : Boolean; overload;
     function IsVisible(x, y, width, height: Integer; g: IGPGraphics) : Boolean; overload;
-    function IsVisible(const rect: TGPRect; g: IGPGraphics = nil) : Boolean; overload;
-    function IsVisibleF(x, y, width, height: Single; g: IGPGraphics = nil) : Boolean; overload;
-    function IsVisibleF(const rect: TGPRectF; g: IGPGraphics = nil) : Boolean; overload;
+    function IsVisible(const rect: TGPRect; g: IGPGraphics = NIL) : Boolean; overload;
+    function IsVisibleF(x, y, width, height: Single; g: IGPGraphics = NIL) : Boolean; overload;
+    function IsVisibleF(const rect: TGPRectF; g: IGPGraphics = NIL) : Boolean; overload;
     function Equals(region: IGPRegion; g: IGPGraphics) : Boolean;
     function GetRegionScansCount(matrix: IGPMatrix) : Cardinal;
     function GetRegionScansF( matrix: IGPMatrix ) : TGPRectFArray;
@@ -3633,14 +3567,14 @@ type
     function GetHRGN(g: IGPGraphics) : HRGN;
     function IsEmpty(g: IGPGraphics) : Boolean;
     function IsInfinite(g: IGPGraphics) : Boolean ;
-    function IsVisible(x, y: Integer; g: IGPGraphics = nil) : Boolean; overload;
-    function IsVisible(const point: TGPPoint; g: IGPGraphics = nil) : Boolean; overload;
-    function IsVisibleF(x, y: Single; g: IGPGraphics = nil) : Boolean; overload;
-    function IsVisibleF(const point: TGPPointF; g: IGPGraphics = nil) : Boolean; overload;
+    function IsVisible(x, y: Integer; g: IGPGraphics = NIL) : Boolean; overload;
+    function IsVisible(const point: TGPPoint; g: IGPGraphics = NIL) : Boolean; overload;
+    function IsVisibleF(x, y: Single; g: IGPGraphics = NIL) : Boolean; overload;
+    function IsVisibleF(const point: TGPPointF; g: IGPGraphics = NIL) : Boolean; overload;
     function IsVisible(x, y, width, height: Integer; g: IGPGraphics) : Boolean; overload;
-    function IsVisible(const rect: TGPRect; g: IGPGraphics = nil) : Boolean; overload;
-    function IsVisibleF(x, y, width, height: Single; g: IGPGraphics = nil) : Boolean; overload;
-    function IsVisibleF(const rect: TGPRectF; g: IGPGraphics = nil) : Boolean; overload;
+    function IsVisible(const rect: TGPRect; g: IGPGraphics = NIL) : Boolean; overload;
+    function IsVisibleF(x, y, width, height: Single; g: IGPGraphics = NIL) : Boolean; overload;
+    function IsVisibleF(const rect: TGPRectF; g: IGPGraphics = NIL) : Boolean; overload;
     function EqualsRegion(region: IGPRegion; g: IGPGraphics) : Boolean;
     function GetRegionScansCount(matrix: IGPMatrix) : Cardinal;
     function GetRegionScansF( matrix: IGPMatrix ) : TGPRectFArray;
@@ -3679,7 +3613,7 @@ type
     
   public
     constructor Create(); overload;
-    constructor Create(name: WideString; fontCollection: IGPFontCollection = nil); overload;
+    constructor Create(name: WideString; fontCollection: IGPFontCollection = NIL); overload;
     destructor  Destroy(); override;
     
   public
@@ -3799,7 +3733,7 @@ type
       unit_: TGPUnit = UnitPoint); overload;
     constructor Create(familyName: WideString; emSize: Single;
       style: TFontStyles = []; unit_: TGPUnit = UnitPoint;
-      fontCollection: IGPFontCollection = nil); overload;
+      fontCollection: IGPFontCollection = NIL); overload;
     destructor  Destroy(); override;
     
   public
@@ -3825,9 +3759,9 @@ type
     function GetNativeImage() : GpImage;
     function Clone() : TGPImage;
     function Save(filename: WideString; const clsidEncoder: TGUID;
-      encoderParams: PGPEncoderParameters = nil) : TGPImage; overload;
+      encoderParams: PGPEncoderParameters = NIL) : TGPImage; overload;
     function Save(stream: IStream; const clsidEncoder: TGUID;
-      encoderParams: PGPEncoderParameters  = nil) : TGPImage; overload;
+      encoderParams: PGPEncoderParameters  = NIL) : TGPImage; overload;
     function SaveAdd(encoderParams: PGPEncoderParameters) : TGPImage; overload;
     function SaveAdd(newImage: IGPImage; encoderParams: PGPEncoderParameters) : TGPImage; overload;
     function GetType() : TGPImageType;
@@ -3845,7 +3779,7 @@ type
     function GetPalette(palette: PGPColorPalette; size: Integer) : TGPImage;
     function SetPalette(palette: PGPColorPalette) : TGPImage;
     function GetThumbnailImage(thumbWidth, thumbHeight: Cardinal;
-      callback: TGPGetThumbnailImageAbortProc = nil) : TGPImage;
+      callback: TGPGetThumbnailImageAbortProc = NIL) : TGPImage;
     function GetFrameDimensionsCount() : Cardinal;
     function GetFrameDimensionsList() : TGUIDArray;
     function GetFrameCount(const dimensionID: TGUID) : Cardinal;
@@ -3880,7 +3814,7 @@ type
 
   end;
 
-  TGPImage = class(TGPBase, IGPImage)
+  TGPImage = class( TGPBase, IGPImage )
   protected
     FNativeImage: GpImage;
     
@@ -3888,22 +3822,22 @@ type
     procedure SetNativeImage(nativeImage: GpImage);
     function GetNativeImage() : GpImage; 
     constructor CreateGdiPlus(nativeImage: GpImage; Dummy : Boolean);
-    
+
   public
     constructor Create(filename: WideString; useEmbeddedColorManagement: Boolean = False); overload;
     constructor Create(stream: IStream; useEmbeddedColorManagement: Boolean  = False); overload;
     destructor  Destroy(); override;
-    
+
   public
     class function FromFile(filename: WideString; useEmbeddedColorManagement: Boolean = False) : TGPImage;
     class function FromStream(stream: IStream; useEmbeddedColorManagement: Boolean = False) : TGPImage;
-    
+
   public
     function Clone() : TGPImage;
     function Save(filename: WideString; const clsidEncoder: TGUID;
-      encoderParams: PGPEncoderParameters = nil) : TGPImage; overload;
+      encoderParams: PGPEncoderParameters = NIL) : TGPImage; overload;
     function Save(stream: IStream; const clsidEncoder: TGUID;
-      encoderParams: PGPEncoderParameters  = nil) : TGPImage; overload;
+      encoderParams: PGPEncoderParameters  = NIL) : TGPImage; overload;
     function SaveAdd(encoderParams: PGPEncoderParameters) : TGPImage; overload;
     function SaveAdd(newImage: IGPImage; encoderParams: PGPEncoderParameters) : TGPImage; overload;
     function GetType() : TGPImageType;
@@ -3921,7 +3855,7 @@ type
     function GetPalette(palette: PGPColorPalette; size: Integer) : TGPImage;
     function SetPalette(palette: PGPColorPalette) : TGPImage;
     function GetThumbnailImage(thumbWidth, thumbHeight: Cardinal;
-      callback: TGPGetThumbnailImageAbortProc = nil) : TGPImage;
+      callback: TGPGetThumbnailImageAbortProc = NIL) : TGPImage;
     function GetFrameDimensionsCount() : Cardinal;
     function GetFrameDimensionsList() : TGUIDArray;
     function GetFrameCount(const dimensionID: TGUID) : Cardinal;
@@ -3939,7 +3873,24 @@ type
     function GetEncoderParameterListSize(const clsidEncoder: TGUID) : Cardinal;
     function GetEncoderParameterList(const clsidEncoder: TGUID; size: Cardinal;
       buffer: PGPEncoderParameters) : TGPImage;
-      
+
+  end;
+
+  IGPBitmapData = interface
+    ['{5036255F-F234-477D-8493-582198BF2CBB}']
+
+    function GetWidth() : UINT;
+    function GetHeight() : UINT;
+    function GetStride() : Integer;
+    function GetPixelFormat() : TGPPixelFormat;
+    function GetScan0() : Pointer;
+
+    property Width        : UINT            read GetWidth;
+    property Height       : UINT            read GetHeight;
+    property Stride       : Integer         read GetStride;
+    property PixelFormat  : TGPPixelFormat  read GetPixelFormat;
+    property Scan0        : Pointer         read GetScan0;
+
   end;
 
   IGPBitmap = interface( IGPImage )
@@ -3948,8 +3899,7 @@ type
     function  Clone(x, y, width, height: Integer; format: TGPPixelFormat) : TGPBitmap; overload;
     function  CloneF(rect: TGPRectF; format: TGPPixelFormat) : TGPBitmap; overload;
     function  CloneF(x, y, width, height: Single; format: TGPPixelFormat) : TGPBitmap; overload;
-    function  LockBits(rect: TGPRect; flags: Cardinal; format: TGPPixelFormat ) : TGPBitmapData;
-    function  UnlockBits(var lockedBitmapData: TGPBitmapData) : TGPBitmap;
+    function  LockBits(rect: TGPRect; flags: Cardinal; format: TGPPixelFormat ) : IGPBitmapData;
     function  GetPixel(x, y: Integer) : TGPColor;
     function  SetPixel(x, y: Integer; color: TGPColor) : TGPBitmap;
     procedure SetPixelProp(x, y: Integer; color: TGPColor);
@@ -3964,32 +3914,36 @@ type
   TGPBitmap = class( TGPImage, IGPBitmap )
   protected
     constructor CreateGdiPlus(nativeBitmap: GpBitmap; Dummy : Boolean );
+
+  protected
+    procedure LockBitsInternal(rect: TGPRect; flags: Cardinal; format: TGPPixelFormat; var AData : TGPBitmapDataRecord );
+    function  UnlockBits(var lockedBitmapData: TGPBitmapDataRecord) : TGPBitmap;
+
   public
-    constructor Create( filename: WideString; useEmbeddedColorManagement: Boolean = False ); overload;
-    constructor Create( stream: IStream; useEmbeddedColorManagement: Boolean = False ); overload;
+    constructor Create( filename : WideString; useEmbeddedColorManagement : Boolean = False ); overload;
+    constructor Create( stream : IStream; useEmbeddedColorManagement : Boolean = False ); overload;
 {$IFNDEF PURE_FMX}
     constructor Create( ABitmap : TBitmap ); overload;
     constructor Create( AIcon : TIcon ); overload;
 {$ENDIF}
   public
-    constructor Create(width, height, stride: Integer; format: TGPPixelFormat; scan0: PBYTE);  overload;
-    constructor Create(width, height: Integer; format: TGPPixelFormat = PixelFormat32bppARGB);  overload;
-    constructor Create(width, height: Integer; target: TGPGraphics); overload;
+    constructor Create( width, height, stride : Integer; format : TGPPixelFormat; scan0 : PBYTE);  overload;
+    constructor Create( width, height : Integer; format : TGPPixelFormat = PixelFormat32bppARGB);  overload;
+    constructor Create( width, height : Integer; target : TGPGraphics); overload;
 
   public
 //    constructor Create(surface: IDirectDrawSurface7); overload;
-    constructor CreateData(var gdiBitmapInfo: TBITMAPINFO; gdiBitmapData: Pointer);
-    constructor CreateHBITMAP(hbm: HBITMAP; hpal: HPALETTE);
-    constructor CreateHICON(hicon: HICON);
-    constructor CreateRes(hInstance: HMODULE; bitmapName: WideString);
+    constructor CreateData( var gdiBitmapInfo : TBITMAPINFO; gdiBitmapData : Pointer );
+    constructor CreateHBITMAP( hbm : HBITMAP; hpal : HPALETTE );
+    constructor CreateHICON( hicon : HICON );
+    constructor CreateRes( hInstance : HMODULE; bitmapName : WideString );
     
   public
     function  Clone(rect: TGPRect; format: TGPPixelFormat) : TGPBitmap; overload;
     function  Clone(x, y, width, height: Integer; format: TGPPixelFormat) : TGPBitmap; overload;
     function  CloneF(rect: TGPRectF; format: TGPPixelFormat) : TGPBitmap; overload;
     function  CloneF(x, y, width, height: Single; format: TGPPixelFormat) : TGPBitmap; overload;
-    function  LockBits(rect: TGPRect; flags: Cardinal; format: TGPPixelFormat ) : TGPBitmapData;
-    function  UnlockBits(var lockedBitmapData: TGPBitmapData) : TGPBitmap;
+    function  LockBits( rect: TGPRect; flags: Cardinal; format: TGPPixelFormat ) : IGPBitmapData;
     function  GetPixel(x, y: Integer) : TGPColor;
     function  SetPixel(x, y: Integer; color: TGPColor) : TGPBitmap;
     procedure SetPixelProp(x, y: Integer; color: TGPColor);
@@ -4481,8 +4435,8 @@ type
   public
     constructor Create(image: IGPImage; wrapMode: TGPWrapMode = WrapModeTile); overload;
     constructor Create(image: IGPImage; wrapMode: TGPWrapMode; dstRect: TGPRectF); overload;
-    constructor Create(image: IGPImage; dstRect: TGPRectF; imageAttributes: IGPImageAttributes = nil); overload;
-    constructor Create(image: IGPImage; dstRect: TGPRect; imageAttributes: IGPImageAttributes = nil); overload;
+    constructor Create(image: IGPImage; dstRect: TGPRectF; imageAttributes: IGPImageAttributes = NIL); overload;
+    constructor Create(image: IGPImage; dstRect: TGPRect; imageAttributes: IGPImageAttributes = NIL); overload;
     constructor Create(image: IGPImage; wrapMode: TGPWrapMode; dstRect: TGPRect); overload;
     constructor Create(image: IGPImage; wrapMode: TGPWrapMode; dstX, dstY, dstWidth,
       dstHeight: Single); overload;
@@ -5118,35 +5072,35 @@ type
     function  Transform(matrix: IGPMatrix) : TGPGraphicsPath;
 
     // This is not always the tightest bounds.
-    function  GetBoundsF( matrix: IGPMatrix = nil; pen: IGPPen = nil) : TGPRectF;
-    function  GetBounds( matrix: IGPMatrix = nil; pen: IGPPen = nil) : TGPRect;
+    function  GetBoundsF( matrix: IGPMatrix = NIL; pen: IGPPen = NIL) : TGPRectF;
+    function  GetBounds( matrix: IGPMatrix = NIL; pen: IGPPen = NIL) : TGPRect;
     
     // Once flattened, the resultant path is made of line segments and
     // the original path information is lost.  When matrix is NULL the
     // identity matrix is assumed.
-    function  Flatten(matrix: IGPMatrix = nil; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
-    function  Widen( pen: IGPPen; matrix: IGPMatrix = nil; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
-    function  Outline(matrix: IGPMatrix = nil; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
+    function  Flatten(matrix: IGPMatrix = NIL; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
+    function  Widen( pen: IGPPen; matrix: IGPMatrix = NIL; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
+    function  Outline(matrix: IGPMatrix = NIL; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
     // Once this is called, the resultant path is made of line segments and
     // the original path information is lost.  When matrix is NULL, the
     // identity matrix is assumed.
-    function  Warp(destPoints: PGPPointF; count: Integer; srcRect: TGPRectF;
-      matrix: IGPMatrix = nil; warpMode: TGPWarpMode = WarpModePerspective;
+    function  Warp( destPoints : array of TGPPointF; srcRect: TGPRectF;
+      matrix: IGPMatrix = NIL; warpMode: TGPWarpMode = WarpModePerspective;
       flatness: Single = FlatnessDefault) : TGPGraphicsPath;
     function  GetPointCount() : Integer;
     function  GetPathTypes(types: PBYTE; count: Integer) : TGPGraphicsPath;
     function  GetPathPointsF() : TGPPointFArray;
     function  GetPathPoints() : TGPPointArray;
 
-    function  IsVisibleF(point: TGPPointF; g: IGPGraphics = nil) : Boolean; overload;
-    function  IsVisibleF(x, y: Single; g: IGPGraphics = nil) : Boolean; overload;
-    function  IsVisible(point: TGPPoint; g : IGPGraphics = nil) : Boolean; overload;
-    function  IsVisible(x, y: Integer; g: IGPGraphics = nil) : Boolean; overload;
+    function  IsVisibleF(point: TGPPointF; g: IGPGraphics = NIL) : Boolean; overload;
+    function  IsVisibleF(x, y: Single; g: IGPGraphics = NIL) : Boolean; overload;
+    function  IsVisible(point: TGPPoint; g : IGPGraphics = NIL) : Boolean; overload;
+    function  IsVisible(x, y: Integer; g: IGPGraphics = NIL) : Boolean; overload;
 
-    function  IsOutlineVisibleF(point: TGPPointF; pen: IGPPen; g: IGPGraphics = nil) : Boolean; overload;
-    function  IsOutlineVisibleF(x, y: Single; pen: IGPPen; g: IGPGraphics = nil) : Boolean; overload;
-    function  IsOutlineVisible(point: TGPPoint; pen: IGPPen; g: IGPGraphics = nil) : Boolean; overload;
-    function  IsOutlineVisible(x, y: Integer; pen: IGPPen; g: IGPGraphics = nil) : Boolean; overload;
+    function  IsOutlineVisibleF(point: TGPPointF; pen: IGPPen; g: IGPGraphics = NIL) : Boolean; overload;
+    function  IsOutlineVisibleF(x, y: Single; pen: IGPPen; g: IGPGraphics = NIL) : Boolean; overload;
+    function  IsOutlineVisible(point: TGPPoint; pen: IGPPen; g: IGPGraphics = NIL) : Boolean; overload;
+    function  IsOutlineVisible(x, y: Integer; pen: IGPPen; g: IGPGraphics = NIL) : Boolean; overload;
     
     property LastPoint : TGPPointF    read GetLastPoint;
     property FillMode  : TGPFillMode  read GetFillMode  write SetFillModeProp;
@@ -5264,35 +5218,35 @@ type
     function  Transform(matrix: IGPMatrix) : TGPGraphicsPath;
 
     // This is not always the tightest bounds.
-    function  GetBoundsF( matrix: IGPMatrix = nil; pen: IGPPen = nil) : TGPRectF;
-    function  GetBounds( matrix: IGPMatrix = nil; pen: IGPPen = nil) : TGPRect;
+    function  GetBoundsF( matrix: IGPMatrix = NIL; pen: IGPPen = NIL) : TGPRectF;
+    function  GetBounds( matrix: IGPMatrix = NIL; pen: IGPPen = NIL) : TGPRect;
     
     // Once flattened, the resultant path is made of line segments and
     // the original path information is lost.  When matrix is NULL the
     // identity matrix is assumed.
-    function  Flatten(matrix: IGPMatrix = nil; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
-    function  Widen( pen: IGPPen; matrix: IGPMatrix = nil; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
-    function  Outline(matrix: IGPMatrix = nil; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
+    function  Flatten(matrix: IGPMatrix = NIL; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
+    function  Widen( pen: IGPPen; matrix: IGPMatrix = NIL; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
+    function  Outline(matrix: IGPMatrix = NIL; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
     // Once this is called, the resultant path is made of line segments and
     // the original path information is lost.  When matrix is NULL, the
     // identity matrix is assumed.
-    function  Warp(destPoints: PGPPointF; count: Integer; srcRect: TGPRectF;
-      matrix: IGPMatrix = nil; warpMode: TGPWarpMode = WarpModePerspective;
+    function  Warp( destPoints : array of TGPPointF; srcRect: TGPRectF;
+      matrix: IGPMatrix = NIL; warpMode: TGPWarpMode = WarpModePerspective;
       flatness: Single = FlatnessDefault) : TGPGraphicsPath;
     function  GetPointCount() : Integer;
     function  GetPathTypes(types: PBYTE; count: Integer) : TGPGraphicsPath;
     function  GetPathPointsF() : TGPPointFArray;
     function  GetPathPoints() : TGPPointArray;
 
-    function  IsVisibleF(point: TGPPointF; g: IGPGraphics = nil) : Boolean; overload;
-    function  IsVisibleF(x, y: Single; g: IGPGraphics = nil) : Boolean; overload;
-    function  IsVisible(point: TGPPoint; g : IGPGraphics = nil) : Boolean; overload;
-    function  IsVisible(x, y: Integer; g: IGPGraphics = nil) : Boolean; overload;
+    function  IsVisibleF(point: TGPPointF; g: IGPGraphics = NIL) : Boolean; overload;
+    function  IsVisibleF(x, y: Single; g: IGPGraphics = NIL) : Boolean; overload;
+    function  IsVisible(point: TGPPoint; g : IGPGraphics = NIL) : Boolean; overload;
+    function  IsVisible(x, y: Integer; g: IGPGraphics = NIL) : Boolean; overload;
 
-    function  IsOutlineVisibleF(point: TGPPointF; pen: IGPPen; g: IGPGraphics = nil) : Boolean; overload;
-    function  IsOutlineVisibleF(x, y: Single; pen: IGPPen; g: IGPGraphics = nil) : Boolean; overload;
-    function  IsOutlineVisible(point: TGPPoint; pen: IGPPen; g: IGPGraphics = nil) : Boolean; overload;
-    function  IsOutlineVisible(x, y: Integer; pen: IGPPen; g: IGPGraphics = nil) : Boolean; overload;
+    function  IsOutlineVisibleF(point: TGPPointF; pen: IGPPen; g: IGPGraphics = NIL) : Boolean; overload;
+    function  IsOutlineVisibleF(x, y: Single; pen: IGPPen; g: IGPGraphics = NIL) : Boolean; overload;
+    function  IsOutlineVisible(point: TGPPoint; pen: IGPPen; g: IGPGraphics = NIL) : Boolean; overload;
+    function  IsOutlineVisible(x, y: Integer; pen: IGPPen; g: IGPGraphics = NIL) : Boolean; overload;
     
   end;
 
@@ -5338,6 +5292,7 @@ type
     function  Rewind() : TGPGraphicsPathIterator;
     function  Enumerate( out points: TGPPointFArray; out types: TGPByteArray ) : Integer;
     function  CopyData(points: PGPPointF; types: PBYTE; startIndex, endIndex: Integer) : Integer;
+
   end;
 
 //--------------------------------------------------------------------------
@@ -5725,15 +5680,15 @@ type
       
     // MeasureString
     function  GetStringSizeF(string_: WideString; font: IGPFont;
-      stringFormat: IGPStringFormat = nil ) : TGPSizeF; overload;
+      stringFormat: IGPStringFormat = NIL ) : TGPSizeF; overload;
 
     function  GetStringSizeF(string_: WideString; font: IGPFont;
-      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = nil;
-      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF; overload;
+      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = NIL;
+      codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL) : TGPSizeF; overload;
 
     function  GetStringBoundingBoxF(string_: WideString; font: IGPFont;
       const layoutRect: TGPRectF; stringFormat: IGPStringFormat;
-      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPRectF; overload;
+      codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL) : TGPRectF; overload;
 
     function  GetStringBoundingBoxF(string_: WideString; font: IGPFont;
       const origin: TGPPointF; stringFormat: IGPStringFormat ) : TGPRectF; overload;
@@ -5745,15 +5700,15 @@ type
       const origin: TGPPointF ) : TGPRectF; overload;
 
     function  MeasureStringF(string_: WideString; font: IGPFont;
-      stringFormat: IGPStringFormat = nil ) : TGPSizeF; overload;
+      stringFormat: IGPStringFormat = NIL ) : TGPSizeF; overload;
 
     function  MeasureStringF(string_: WideString; font: IGPFont;
-      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = nil;
-      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF; overload;
+      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = NIL;
+      codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL) : TGPSizeF; overload;
 
     function  MeasureStringF(string_: WideString; font: IGPFont;
       const layoutRect: TGPRectF; stringFormat: IGPStringFormat;
-      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPRectF; overload;
+      codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL) : TGPRectF; overload;
 
     function  MeasureStringF(string_: WideString; font: IGPFont;
       const origin: TGPPointF; stringFormat: IGPStringFormat ) : TGPRectF; overload;
@@ -5764,9 +5719,24 @@ type
     function  MeasureStringF(string_: WideString; font: IGPFont;
       const origin: TGPPointF ) : TGPRectF; overload;
       
-    // MeasureCharacterRanges
-    function  MeasureCharacterRanges(string_: WideString; font: IGPFont;
-      const layoutRect: TGPRectF; stringFormat: IGPStringFormat ) : TGPRegionArray;
+    // MeasureCharacterRangesF
+    function  MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      const layoutRect: TGPRectF; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray; overload;
+
+    function  MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      const origin: TGPPointF; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray; overload;
+
+    function  MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      stringFormat: IGPStringFormat = NIL ) : TGPRegionArray; overload;
+
+    function  MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      const layoutRect: TGPRectF; ranges : array of TGPCharacterRange; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray; overload;
+
+    function  MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      const origin: TGPPointF; ranges : array of TGPCharacterRange; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray; overload;
+
+    function  MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      ranges : array of TGPCharacterRange; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray; overload;
 
     // DrawDriverString
     function  DrawDriverString(text: PUINT16; length: Integer; font: IGPFont;
@@ -5811,18 +5781,18 @@ type
     function  DrawImageF(image: IGPImage; x, y, srcx, srcy, srcwidth, srcheight: Single; srcUnit: TGPUnit) : TGPGraphics; overload;
     function  DrawImageF(image: IGPImage; const destRect: TGPRectF; srcx, srcy,
       srcwidth, srcheight: Single; srcUnit: TGPUnit;
-      imageAttributes: IGPImageAttributes = nil; callback: TGPDrawImageAbortProc = nil) : TGPGraphics; overload;
+      imageAttributes: IGPImageAttributes = NIL; callback: TGPDrawImageAbortProc = NIL) : TGPGraphics; overload;
     function  DrawImageF(image: IGPImage; destPoints: array of TGPPointF;
       srcx, srcy, srcwidth, srcheight: Single; srcUnit: TGPUnit;
-      imageAttributes: IGPImageAttributes = nil; callback: TGPDrawImageAbortProc = nil) : TGPGraphics; overload;
+      imageAttributes: IGPImageAttributes = NIL; callback: TGPDrawImageAbortProc = NIL) : TGPGraphics; overload;
     function  DrawImage(image: IGPImage; x, y, srcx, srcy, srcwidth,
       srcheight: Integer; srcUnit: TGPUnit) : TGPGraphics; overload;
     function  DrawImage(image: IGPImage; const destRect: TGPRect; srcx, srcy,
       srcwidth, srcheight: Integer; srcUnit: TGPUnit;
-      imageAttributes: IGPImageAttributes = nil; callback: TGPDrawImageAbortProc = nil) : TGPGraphics; overload;
+      imageAttributes: IGPImageAttributes = NIL; callback: TGPDrawImageAbortProc = NIL) : TGPGraphics; overload;
     function  DrawImage(image: IGPImage; destPoints: array of TGPPoint;
       srcx, srcy, srcwidth, srcheight: Integer; srcUnit: TGPUnit;
-      imageAttributes: IGPImageAttributes = nil; callback: TGPDrawImageAbortProc = nil) : TGPGraphics; overload;
+      imageAttributes: IGPImageAttributes = NIL; callback: TGPDrawImageAbortProc = NIL) : TGPGraphics; overload;
 
     // The following methods are for playing an EMF+ to a graphics
     // via the enumeration interface.  Each record of the EMF+ is
@@ -5830,36 +5800,36 @@ type
     // the callback can invoke the Metafile::PlayRecord method
     // to play the particular record.
     function  EnumerateMetafileF(metafile: IGPMetafile; const destPoint: TGPPointF;
-      callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+      callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafile(metafile: IGPMetafile; const destPoint: TGPPoint;
-       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafileF(metafile: IGPMetafile; const destRect: TGPRectF;
-       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafile(metafile: IGPMetafile; const destRect: TGPRect;
-       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafileF(metafile: IGPMetafile; destPoints: array of TGPPointF;
-       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafile(metafile: IGPMetafile; destPoints: array of TGPPoint;
-       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafileF(metafile: IGPMetafile; const destPoint: TGPPointF;
        const srcRect: TGPRectF; srcUnit: TGPUnit; callback: TGPEnumerateMetafileProc;
-       imageAttributes: IGPImageAttributes = nil
+       imageAttributes: IGPImageAttributes = NIL
        ) : TGPGraphics; overload;
     function  EnumerateMetafile(metafile : IGPMetafile; const destPoint : TGPPoint;
        const srcRect : TGPRect; srcUnit : TGPUnit; callback : TGPEnumerateMetafileProc;
-       imageAttributes : IGPImageAttributes = nil
+       imageAttributes : IGPImageAttributes = NIL
        ) : TGPGraphics; overload;
     function  EnumerateMetafileF(metafile: IGPMetafile; const destRect: TGPRectF;
        const srcRect: TGPRectF; srcUnit: TGPUnit; callback: TGPEnumerateMetafileProc;
-       imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+       imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafile(metafile : IGPMetafile; const destRect, srcRect: TGPRect;
-       srcUnit : TGPUnit; callback : TGPEnumerateMetafileProc; imageAttributes : IGPImageAttributes = nil) : TGPGraphics; overload;
+       srcUnit : TGPUnit; callback : TGPEnumerateMetafileProc; imageAttributes : IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafileF( metafile: IGPMetafile; destPoints: array of TGPPointF;
         const srcRect: TGPRectF; srcUnit: TGPUnit; callback: TGPEnumerateMetafileProc;
-        imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+        imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafile(metafile: IGPMetafile; destPoints: array of TGPPoint;
         const srcRect: TGPRect; srcUnit: TGPUnit; callback: TGPEnumerateMetafileProc;
-        imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+        imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
 
     // SetClip
     function  SetClip(g: IGPGraphics; combineMode: TGPCombineMode = CombineModeReplace) : TGPGraphics; overload;
@@ -6215,15 +6185,15 @@ type
 }
     // MeasureString
     function  GetStringSizeF(string_: WideString; font: IGPFont;
-      stringFormat: IGPStringFormat = nil) : TGPSizeF; overload;
+      stringFormat: IGPStringFormat = NIL) : TGPSizeF; overload;
 
     function  GetStringSizeF(string_: WideString; font: IGPFont;
-      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = nil;
-      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF; overload;
+      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = NIL;
+      codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL) : TGPSizeF; overload;
 
     function  GetStringBoundingBoxF(string_: WideString; font: IGPFont;
       const layoutRect: TGPRectF; stringFormat: IGPStringFormat;
-      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPRectF; overload;
+      codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL) : TGPRectF; overload;
 
     function  GetStringBoundingBoxF(string_: WideString; font: IGPFont;
       const origin: TGPPointF; stringFormat: IGPStringFormat ) : TGPRectF; overload;
@@ -6235,15 +6205,15 @@ type
       const origin: TGPPointF ) : TGPRectF; overload;
 
     function  MeasureStringF(string_: WideString; font: IGPFont;
-      stringFormat: IGPStringFormat = nil ) : TGPSizeF; overload;
+      stringFormat: IGPStringFormat = NIL ) : TGPSizeF; overload;
 
     function  MeasureStringF(string_: WideString; font: IGPFont;
-      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = nil;
-      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF; overload;
+      const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = NIL;
+      codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL) : TGPSizeF; overload;
 
     function  MeasureStringF(string_: WideString; font: IGPFont;
       const layoutRect: TGPRectF; stringFormat: IGPStringFormat;
-      codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPRectF; overload;
+      codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL) : TGPRectF; overload;
 
     function  MeasureStringF(string_: WideString; font: IGPFont;
       const origin: TGPPointF; stringFormat: IGPStringFormat ) : TGPRectF; overload;
@@ -6254,9 +6224,24 @@ type
     function  MeasureStringF(string_: WideString; font: IGPFont;
       const origin: TGPPointF ) : TGPRectF; overload;
       
-    // MeasureCharacterRanges
-    function  MeasureCharacterRanges(string_: WideString; font: IGPFont;
-      const layoutRect: TGPRectF; stringFormat: IGPStringFormat ) : TGPRegionArray;
+    // MeasureCharacterRangesF
+    function  MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      const layoutRect: TGPRectF; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray; overload;
+
+    function  MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      const origin: TGPPointF; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray; overload;
+
+    function  MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      stringFormat: IGPStringFormat = NIL ) : TGPRegionArray; overload;
+
+    function  MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      const layoutRect: TGPRectF; ranges : array of TGPCharacterRange; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray; overload;
+
+    function  MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      const origin: TGPPointF; ranges : array of TGPCharacterRange; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray; overload;
+
+    function  MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      ranges : array of TGPCharacterRange; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray; overload;
 
     // DrawDriverString
     function  DrawDriverString(text: PUINT16; length: Integer; font: IGPFont;
@@ -6301,18 +6286,18 @@ type
     function  DrawImageF(image: IGPImage; x, y, srcx, srcy, srcwidth, srcheight: Single; srcUnit: TGPUnit) : TGPGraphics; overload;
     function  DrawImageF(image: IGPImage; const destRect: TGPRectF; srcx, srcy,
       srcwidth, srcheight: Single; srcUnit: TGPUnit;
-      imageAttributes: IGPImageAttributes = nil; callback: TGPDrawImageAbortProc = nil) : TGPGraphics; overload;
+      imageAttributes: IGPImageAttributes = NIL; callback: TGPDrawImageAbortProc = NIL) : TGPGraphics; overload;
     function  DrawImageF(image: IGPImage; destPoints: array of TGPPointF;
       srcx, srcy, srcwidth, srcheight: Single; srcUnit: TGPUnit;
-      imageAttributes: IGPImageAttributes = nil; callback: TGPDrawImageAbortProc = nil) : TGPGraphics; overload;
+      imageAttributes: IGPImageAttributes = NIL; callback: TGPDrawImageAbortProc = NIL) : TGPGraphics; overload;
     function  DrawImage(image: IGPImage; x, y, srcx, srcy, srcwidth,
       srcheight: Integer; srcUnit: TGPUnit) : TGPGraphics; overload;
     function  DrawImage(image: IGPImage; const destRect: TGPRect; srcx, srcy,
       srcwidth, srcheight: Integer; srcUnit: TGPUnit;
-      imageAttributes: IGPImageAttributes = nil; callback: TGPDrawImageAbortProc = nil) : TGPGraphics; overload;
+      imageAttributes: IGPImageAttributes = NIL; callback: TGPDrawImageAbortProc = NIL) : TGPGraphics; overload;
     function  DrawImage(image: IGPImage; destPoints: array of TGPPoint;
       srcx, srcy, srcwidth, srcheight: Integer; srcUnit: TGPUnit;
-      imageAttributes: IGPImageAttributes = nil; callback: TGPDrawImageAbortProc = nil) : TGPGraphics; overload;
+      imageAttributes: IGPImageAttributes = NIL; callback: TGPDrawImageAbortProc = NIL) : TGPGraphics; overload;
 
     // The following methods are for playing an EMF+ to a graphics
     // via the enumeration interface.  Each record of the EMF+ is
@@ -6320,36 +6305,36 @@ type
     // the callback can invoke the Metafile::PlayRecord method
     // to play the particular record.
     function  EnumerateMetafileF(metafile: IGPMetafile; const destPoint: TGPPointF;
-      callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+      callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafile(metafile: IGPMetafile; const destPoint: TGPPoint;
-       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafileF(metafile: IGPMetafile; const destRect: TGPRectF;
-       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafile(metafile: IGPMetafile; const destRect: TGPRect;
-       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafileF(metafile: IGPMetafile; destPoints: array of TGPPointF;
-       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafile(metafile: IGPMetafile; destPoints: array of TGPPoint;
-       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+       callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafileF(metafile: IGPMetafile; const destPoint: TGPPointF;
        const srcRect: TGPRectF; srcUnit: TGPUnit; callback: TGPEnumerateMetafileProc;
-       imageAttributes: IGPImageAttributes = nil
+       imageAttributes: IGPImageAttributes = NIL
        ) : TGPGraphics; overload;
     function  EnumerateMetafile(metafile : IGPMetafile; const destPoint : TGPPoint;
        const srcRect : TGPRect; srcUnit : TGPUnit; callback : TGPEnumerateMetafileProc;
-       imageAttributes : IGPImageAttributes = nil
+       imageAttributes : IGPImageAttributes = NIL
        ) : TGPGraphics; overload;
     function  EnumerateMetafileF(metafile: IGPMetafile; const destRect: TGPRectF;
        const srcRect: TGPRectF; srcUnit: TGPUnit; callback: TGPEnumerateMetafileProc;
-       imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+       imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafile(metafile : IGPMetafile; const destRect, srcRect: TGPRect;
-       srcUnit : TGPUnit; callback : TGPEnumerateMetafileProc; imageAttributes : IGPImageAttributes = nil) : TGPGraphics; overload;
+       srcUnit : TGPUnit; callback : TGPEnumerateMetafileProc; imageAttributes : IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafileF( metafile: IGPMetafile; destPoints: array of TGPPointF;
         const srcRect: TGPRectF; srcUnit: TGPUnit; callback: TGPEnumerateMetafileProc;
-        imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+        imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
     function  EnumerateMetafile(metafile: IGPMetafile; destPoints: array of TGPPoint;
         const srcRect: TGPRect; srcUnit: TGPUnit; callback: TGPEnumerateMetafileProc;
-        imageAttributes: IGPImageAttributes = nil) : TGPGraphics; overload;
+        imageAttributes: IGPImageAttributes = NIL) : TGPGraphics; overload;
 
     // SetClip
     function  SetClip(g: IGPGraphics; combineMode: TGPCombineMode = CombineModeReplace) : TGPGraphics; overload;
@@ -6521,31 +6506,31 @@ type
     constructor Create(stream: IStream); overload;
     // Record a metafile to memory.
     constructor Create(referenceHdc: HDC; type_: TGPEmfType = EmfTypeEmfPlusDual;
-      description: PWCHAR = nil); overload;
+      description: PWCHAR = NIL); overload;
     // Record a metafile to memory.
     constructor Create(referenceHdc: HDC; frameRect: TGPRectF;
       frameUnit: TGPMetafileFrameUnit = MetafileFrameUnitGdi;
-      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = nil); overload;
+      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = NIL); overload;
     // Record a metafile to memory.
     constructor Create(referenceHdc: HDC; frameRect: TGPRect;
       frameUnit: TGPMetafileFrameUnit = MetafileFrameUnitGdi;
-      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = nil); overload;
+      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = NIL); overload;
     constructor Create(fileName: WideString;referenceHdc: HDC;
-      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = nil); overload;
+      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = NIL); overload;
     constructor Create(fileName: WideString; referenceHdc: HDC; frameRect: TGPRectF;
       frameUnit: TGPMetafileFrameUnit = MetafileFrameUnitGdi;
-      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = nil); overload;
+      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = NIL); overload;
     constructor Create( fileName: WideString; referenceHdc: HDC; frameRect: TGPRect;
       frameUnit: TGPMetafileFrameUnit = MetafileFrameUnitGdi;
-      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = nil); overload;
+      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = NIL); overload;
     constructor Create(stream: IStream; referenceHdc: HDC;
-      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = nil); overload;
+      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = NIL); overload;
     constructor Create(stream: IStream; referenceHdc: HDC; frameRect: TGPRectF;
       frameUnit: TGPMetafileFrameUnit = MetafileFrameUnitGdi;
-      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = nil); overload;
+      type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = NIL); overload;
     constructor Create(stream : IStream; referenceHdc : HDC; frameRect : TGPRect;
      frameUnit : TGPMetafileFrameUnit = MetafileFrameUnitGdi;
-     type_ : TGPEmfType = EmfTypeEmfPlusDual; description : PWCHAR = nil); overload;
+     type_ : TGPEmfType = EmfTypeEmfPlusDual; description : PWCHAR = NIL); overload;
     constructor Create(); overload;
   public
     class function GetMetafileHeader(hWmf: HMETAFILE; var wmfPlaceableFileHeader: TGPWmfPlaceableFileHeader) : IGPMetafileHeader; overload;
@@ -6583,6 +6568,97 @@ implementation
 uses
   Math;
 
+type
+  TGPBitmapData = class( TGPBase, IGPBitmapData )
+  protected
+    FData   : TGPBitmapDataRecord;
+    FBitmap : TGPBitmap;
+
+  public
+    function GetWidth() : UINT;
+    function GetHeight() : UINT;
+    function GetStride() : Integer;
+    function GetPixelFormat() : TGPPixelFormat;
+    function GetScan0() : Pointer;
+
+  protected
+    constructor Create( ABitmap : TGPBitmap );
+    destructor  Destroy(); override;
+
+  end;
+
+  TGPPathData = packed class( TGPBase, IGPPathData )
+  protected
+    FCount  : Integer;
+    FPoints : PGPPointF;
+    FTypes  : PBYTE;
+
+  public
+    function GetCount()  : Integer;
+    function GetPoints( Index : Integer ) : TGPPointF;
+    function GetTypes( Index : Integer )  : TGPPathPointType;
+
+  public
+    constructor Create();
+    destructor  Destroy(); override;
+
+  end;
+
+  TGPMetafileHeader = packed class( TGPBase, IGPMetafileHeader )
+  protected
+    FType         : TGPMetafileType;
+    FSize         : UINT;           // Size of the metafile (in bytes)
+    FVersion      : UINT;           // EMF+, EMF, or WMF version
+    FEmfPlusFlags : UINT;
+    FDpiX         : Single;
+    FDpiY         : Single;
+    FX            : Integer;        // Bounds in device units
+    FY            : Integer;
+    FWidth        : Integer;
+    FHeight       : Integer;
+    FHeader       : record
+    case Integer of
+      0: (FWmfHeader: TMETAHEADER);
+      1: (FEmfHeader: TGPENHMETAHEADER3);
+    end;
+
+    FEmfPlusHeaderSize : Integer; // size of the EMF+ header in file
+    FLogicalDpiX       : Integer; // Logical Dpi of reference Hdc
+    FLogicalDpiY       : Integer; // usually valid only for EMF+
+
+  public
+    function GetType() : TGPMetafileType;
+    function GetMetafileSize() : UINT;
+    // If IsEmfPlus, this is the EMF+ version; else it is the WMF or EMF ver
+    function GetVersion() : UINT;
+     // Get the EMF+ flags associated with the metafile
+    function GetEmfPlusFlags() : UINT;
+    function GetDpiX() : Single;
+    function GetDpiY() : Single;
+    function GetBounds() : TGPRect;
+    // Is it any type of WMF (standard or Placeable Metafile)?
+    function IsWmf() : Boolean;
+    // Is this an Placeable Metafile?
+    function IsWmfPlaceable() : Boolean;
+    // Is this an EMF (not an EMF+)?
+    function IsEmf() : Boolean;
+    // Is this an EMF or EMF+ file?
+    function IsEmfOrEmfPlus() : Boolean;
+    // Is this an EMF+ file?
+    function IsEmfPlus() : Boolean;
+    // Is this an EMF+ dual (has dual, down-level records) file?
+    function IsEmfPlusDual() : Boolean;
+    // Is this an EMF+ only (no dual records) file?
+    function IsEmfPlusOnly() : Boolean;
+    // If it's an EMF+ file, was it recorded against a display Hdc?
+    function IsDisplay() : Boolean;
+    // Get the WMF header of the metafile (if it is a WMF)
+    function GetWmfHeader() : PMetaHeader;
+    // Get the EMF header of the metafile (if it is an EMF)
+    function GetEmfHeader() : PENHMETAHEADER3;
+
+  end;
+
 {$I IGDIPlusAPI.inc}
 
 const
@@ -6606,12 +6682,12 @@ const StandardAlphaMatrix : TGPColorMatrix =
   );
 
 var
-  GenericSansSerifFontFamily : TGPFontFamily = nil;
-  GenericSerifFontFamily     : TGPFontFamily = nil;
-  GenericMonospaceFontFamily : TGPFontFamily = nil;
+  GenericSansSerifFontFamily : TGPFontFamily = NIL;
+  GenericSerifFontFamily     : TGPFontFamily = NIL;
+  GenericMonospaceFontFamily : TGPFontFamily = NIL;
 
-  GenericTypographicStringFormatBuffer: TGPStringFormat = nil;
-  GenericDefaultStringFormatBuffer    : TGPStringFormat = nil;
+  GenericTypographicStringFormatBuffer: TGPStringFormat = NIL;
+  GenericDefaultStringFormatBuffer    : TGPStringFormat = NIL;
   StartupInput: TGPGDIPlusStartupInput;
   StartupOutput: TGPGdiplusStartupOutput;
   gdiplusBGThreadToken : Pointer;
@@ -6649,7 +6725,7 @@ var
 
 constructor TGPImageAttributes.Create();
 begin
-  FNativeImageAttr := nil;
+  FNativeImageAttr := NIL;
   ErrorCheck( GdipCreateImageAttributes(FNativeImageAttr));
 end;
 
@@ -6683,7 +6759,7 @@ function TGPImageAttributes.SetColorMatrix(const colorMatrix: TGPColorMatrix;
     type_: TGPColorAdjustType = ColorAdjustTypeDefault) : TGPImageAttributes;
 begin
   ErrorCheck( GdipSetImageAttributesColorMatrix(FNativeImageAttr,
-    type_, True, @colorMatrix, nil, mode));
+    type_, True, @colorMatrix, NIL, mode));
       
   Result := Self;
 end;
@@ -6691,7 +6767,7 @@ end;
 function TGPImageAttributes.ClearColorMatrix(type_: TGPColorAdjustType = ColorAdjustTypeDefault) : TGPImageAttributes;
 begin
   ErrorCheck( GdipSetImageAttributesColorMatrix(FNativeImageAttr, type_,
-    False, nil, nil, ColorMatrixFlagsDefault));
+    False, NIL, NIL, ColorMatrixFlagsDefault));
 
   Result := Self;
 end;
@@ -6710,7 +6786,7 @@ end;
 function TGPImageAttributes.ClearColorMatrices(Type_: TGPColorAdjustType = ColorAdjustTypeDefault) : TGPImageAttributes;
 begin
   ErrorCheck( GdipSetImageAttributesColorMatrix( FNativeImageAttr,
-    type_, False, nil, nil, ColorMatrixFlagsDefault));
+    type_, False, NIL, NIL, ColorMatrixFlagsDefault));
 
   Result := Self;
 end;
@@ -6799,7 +6875,7 @@ end;
 function TGPImageAttributes.ClearOutputChannelColorProfile(type_: TGPColorAdjustType = ColorAdjustTypeDefault) : TGPImageAttributes;
 begin
   ErrorCheck( GdipSetImageAttributesOutputChannelColorProfile(FNativeImageAttr,
-    type_, False, nil));
+    type_, False, NIL));
 
   Result := Self;
 end;
@@ -6815,7 +6891,7 @@ end;
 function TGPImageAttributes.ClearRemapTable(type_: TGPColorAdjustType = ColorAdjustTypeDefault) : TGPImageAttributes;
 begin
   ErrorCheck( GdipSetImageAttributesRemapTable(FNativeImageAttr, type_,
-    False, 0, nil));
+    False, 0, NIL));
 
   Result := Self;
 end;
@@ -6871,7 +6947,7 @@ end;
 constructor TGPMatrix.Create();
 var matrix: GpMatrix;
 begin
-  matrix := nil;
+  matrix := NIL;
   ErrorCheck( GdipCreateMatrix(matrix));
   SetNativeMatrix(matrix);
 end;
@@ -6879,7 +6955,7 @@ end;
 constructor TGPMatrix.Create(m11, m12, m21, m22, dx, dy: Single);
 var matrix: GpMatrix;
 begin
-  matrix := nil;
+  matrix := NIL;
   ErrorCheck( GdipCreateMatrix2(m11, m12, m21, m22, dx, dy, matrix));
   SetNativeMatrix(matrix);
 end;
@@ -6887,7 +6963,7 @@ end;
 constructor TGPMatrix.Create(const rect: TGPRectF; const dstplg: TGPPointF);
 var matrix: GpMatrix;
 begin
-  matrix := nil;
+  matrix := NIL;
   ErrorCheck( GdipCreateMatrix3(@rect, @dstplg, matrix));
   SetNativeMatrix(matrix);
 end;
@@ -6895,7 +6971,7 @@ end;
 constructor TGPMatrix.Create(const rect: TGPRect; const dstplg: TGPPoint);
 var matrix: GpMatrix;
 begin
-  matrix := nil;
+  matrix := NIL;
   ErrorCheck( GdipCreateMatrix3I(@rect, @dstplg, matrix));
   SetNativeMatrix(matrix);
 end;
@@ -6908,7 +6984,7 @@ end;
 function TGPMatrix.Clone() : TGPMatrix;
 var cloneMatrix: GpMatrix;
 begin
-  cloneMatrix := nil;
+  cloneMatrix := NIL;
   ErrorCheck( GdipCloneMatrix(FNativeMatrix, cloneMatrix));
   Result := TGPMatrix.CreateGdiPlus(cloneMatrix, False);
 end;
@@ -7128,7 +7204,7 @@ end;
 
 constructor TGPStringFormat.Create(formatFlags: Integer = 0; language: LANGID = LANG_NEUTRAL);
 begin
-  FNativeFormat := nil;
+  FNativeFormat := NIL;
   ErrorCheck( GdipCreateStringFormat(formatFlags, language, FNativeFormat));
 end;
 
@@ -7155,12 +7231,12 @@ end;
 constructor TGPStringFormat.Create(format: TGPStringFormat);
 var gpstf: GPSTRINGFORMAT;
 begin
-  FNativeFormat := nil;
+  FNativeFormat := NIL;
   if( Assigned(format)) then
     gpstf := format.FNativeFormat
 
   else
-    gpstf := nil;
+    gpstf := NIL;
       
   ErrorCheck( GdipCloneStringFormat(gpstf, FNativeFormat));
 end;
@@ -7169,7 +7245,7 @@ function TGPStringFormat.Clone() : TGPStringFormat;
 var
   clonedStringFormat: GpStringFormat;
 begin
-  clonedStringFormat := nil;
+  clonedStringFormat := NIL;
   ErrorCheck( GdipCloneStringFormat(FNativeFormat, clonedStringFormat));
   Result := TGPStringFormat.CreateGdiPlus(clonedStringFormat, False);
 end;
@@ -7295,12 +7371,12 @@ end;
 
 function TGPStringFormat.GetDigitSubstitutionLanguage() : LANGID;
 begin
-  ErrorCheck( GdipGetStringFormatDigitSubstitution(FNativeFormat, @Result, nil));
+  ErrorCheck( GdipGetStringFormatDigitSubstitution(FNativeFormat, @Result, NIL));
 end;
 
 function TGPStringFormat.GetDigitSubstitutionMethod() : TGPStringDigitSubstitute;
 begin
-  ErrorCheck( GdipGetStringFormatDigitSubstitution(FNativeFormat, nil, @Result));
+  ErrorCheck( GdipGetStringFormatDigitSubstitution(FNativeFormat, NIL, @Result));
 end;
 
 function TGPStringFormat.SetTrimming(trimming: TGPStringTrimming) : TGPStringFormat;
@@ -7355,7 +7431,7 @@ end;
 constructor TGPAdjustableArrowCap.Create(height, width: Single; isFilled: Boolean = True);
 var cap: GpAdjustableArrowCap;
 begin
-  cap := nil;
+  cap := NIL;
   ErrorCheck( GdipCreateAdjustableArrowCap(height, width, isFilled, cap));
   SetNativeCap(cap);
 end;
@@ -7443,7 +7519,7 @@ constructor TGPMetafile.Create(hWmf: HMETAFILE;
 var
   metafile: GpMetafile;
 begin
-  metafile := nil;
+  metafile := NIL;
   ErrorCheck( GdipCreateMetafileFromWmf(hWmf, deleteWmf, @wmfPlaceableFileHeader, metafile));
   SetNativeImage(metafile);
 end;
@@ -7456,7 +7532,7 @@ constructor TGPMetafile.Create(hEmf: HENHMETAFILE; deleteEmf: Boolean = False);
 var
   metafile: GpMetafile;
 begin
-  metafile := nil;
+  metafile := NIL;
   ErrorCheck( GdipCreateMetafileFromEmf(hEmf, deleteEmf, metafile));
   SetNativeImage(metafile);
 end;
@@ -7465,7 +7541,7 @@ constructor TGPMetafile.Create(filename: WideString);
 var
   metafile: GpMetafile;
 begin
-  metafile := nil;
+  metafile := NIL;
   ErrorCheck( GdipCreateMetafileFromFile(PWideChar(filename), metafile));
   SetNativeImage(metafile);
 end;
@@ -7476,7 +7552,7 @@ constructor TGPMetafile.Create(filename: Widestring; var wmfPlaceableFileHeader:
 var
   metafile: GpMetafile;
 begin
-  metafile := nil;
+  metafile := NIL;
   ErrorCheck( GdipCreateMetafileFromWmfFile(PWideChar(filename), @wmfPlaceableFileHeader, metafile));
   SetNativeImage(metafile);
 end;
@@ -7485,7 +7561,7 @@ constructor TGPMetafile.Create(stream: IStream);
 var
   metafile: GpMetafile;
 begin
-  metafile := nil;
+  metafile := NIL;
   ErrorCheck( GdipCreateMetafileFromStream(stream, metafile));
   SetNativeImage(metafile);
 end;
@@ -7493,12 +7569,12 @@ end;
   // Record a metafile to memory.
 
 constructor TGPMetafile.Create(referenceHdc: HDC; type_: TGPEmfType = EmfTypeEmfPlusDual;
-  description: PWCHAR = nil);
+  description: PWCHAR = NIL);
 var
   metafile: GpMetafile;
 begin
-  metafile := nil;
-  ErrorCheck( GdipRecordMetafile(referenceHdc, type_, nil, MetafileFrameUnitGdi,
+  metafile := NIL;
+  ErrorCheck( GdipRecordMetafile(referenceHdc, type_, NIL, MetafileFrameUnitGdi,
      description, metafile));
   SetNativeImage(metafile);
 end;
@@ -7507,10 +7583,10 @@ end;
 
 constructor TGPMetafile.Create(referenceHdc: HDC; frameRect: TGPRectF;
    frameUnit: TGPMetafileFrameUnit = MetafileFrameUnitGdi;
-   type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = nil);
+   type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = NIL);
 var metafile: GpMetafile;
 begin
-  metafile := nil;
+  metafile := NIL;
   ErrorCheck( GdipRecordMetafile(referenceHdc, type_, @frameRect, frameUnit,
     description, metafile));
   SetNativeImage(metafile);
@@ -7520,34 +7596,34 @@ end;
 
 constructor TGPMetafile.Create(referenceHdc: HDC; frameRect: TGPRect;
   frameUnit: TGPMetafileFrameUnit = MetafileFrameUnitGdi;
-  type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = nil);
+  type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = NIL);
 var
   metafile: GpMetafile;
 begin
-  metafile := nil;
+  metafile := NIL;
   ErrorCheck( GdipRecordMetafileI(referenceHdc, type_, @frameRect, frameUnit,
     description, metafile));
   SetNativeImage(metafile);
 end;
 
 constructor TGPMetafile.Create(fileName: WideString; referenceHdc: HDC;
-  type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = nil);
+  type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = NIL);
 var
   metafile: GpMetafile;
 begin
-  metafile := nil;
+  metafile := NIL;
   ErrorCheck( GdipRecordMetafileFileName(PWideChar(fileName),
-    referenceHdc, type_, nil, MetafileFrameUnitGdi, description, metafile));
+    referenceHdc, type_, NIL, MetafileFrameUnitGdi, description, metafile));
   SetNativeImage(metafile);
 end;
 
 constructor TGPMetafile.Create(fileName: WideString; referenceHdc: HDC; frameRect: TGPRectF;
   frameUnit: TGPMetafileFrameUnit = MetafileFrameUnitGdi; type_: TGPEmfType = EmfTypeEmfPlusDual;
-  description: PWCHAR = nil);
+  description: PWCHAR = NIL);
 var
   metafile: GpMetafile;
 begin
-  metafile := nil;
+  metafile := NIL;
   ErrorCheck( GdipRecordMetafileFileName(PWideChar(fileName), referenceHdc,
     type_, @frameRect, frameUnit, description, metafile));
   SetNativeImage(metafile);
@@ -7555,34 +7631,34 @@ end;
 
 constructor TGPMetafile.Create(fileName: WideString; referenceHdc: HDC; frameRect: TGPRect;
   frameUnit: TGPMetafileFrameUnit = MetafileFrameUnitGdi; type_: TGPEmfType = EmfTypeEmfPlusDual;
-  description: PWCHAR = nil);
+  description: PWCHAR = NIL);
 var
   metafile: GpMetafile;
 begin
-  metafile := nil;
+  metafile := NIL;
   ErrorCheck( GdipRecordMetafileFileNameI(PWideChar(fileName),
     referenceHdc, type_, @frameRect, frameUnit, description, metafile));
   SetNativeImage(metafile);
 end;
 
 constructor TGPMetafile.Create(stream: IStream; referenceHdc: HDC;
-  type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = nil);
+  type_: TGPEmfType = EmfTypeEmfPlusDual; description: PWCHAR = NIL);
 var
   metafile: GpMetafile;
 begin
-  metafile := nil;
-  ErrorCheck( GdipRecordMetafileStream(stream, referenceHdc, type_, nil,
+  metafile := NIL;
+  ErrorCheck( GdipRecordMetafileStream(stream, referenceHdc, type_, NIL,
     MetafileFrameUnitGdi, description, metafile));
   SetNativeImage(metafile);
 end;
 
 constructor TGPMetafile.Create(stream: IStream; referenceHdc: HDC; frameRect: TGPRectF;
   frameUnit: TGPMetafileFrameUnit = MetafileFrameUnitGdi; type_: TGPEmfType = EmfTypeEmfPlusDual;
-  description: PWCHAR = nil);
+  description: PWCHAR = NIL);
 var
   metafile: GpMetafile;
 begin
-  metafile := nil;
+  metafile := NIL;
   ErrorCheck( GdipRecordMetafileStream(stream, referenceHdc, type_,
     @frameRect, frameUnit, description, metafile));
   SetNativeImage(metafile);
@@ -7590,11 +7666,11 @@ end;
 
 constructor TGPMetafile.Create(stream : IStream; referenceHdc : HDC; frameRect : TGPRect;
   frameUnit : TGPMetafileFrameUnit = MetafileFrameUnitGdi; type_ : TGPEmfType = EmfTypeEmfPlusDual;
-  description : PWCHAR = nil);
+  description : PWCHAR = NIL);
 var
   metafile: GpMetafile;
 begin
-  metafile := nil;
+  metafile := NIL;
   ErrorCheck( GdipRecordMetafileStreamI(stream, referenceHdc, type_,
     @frameRect, frameUnit, description, metafile));
   SetNativeImage(metafile);
@@ -7714,7 +7790,7 @@ end;
 
 constructor TGPMetafile.Create();
 begin
-  SetNativeImage(nil);
+  SetNativeImage(NIL);
 end;
 
 (**************************************************************************\
@@ -7823,7 +7899,7 @@ constructor TGPRegion.Create();
 var
   region: GpRegion;
 begin
-  region := nil;
+  region := NIL;
   ErrorCheck( GdipCreateRegion(region) );
   SetNativeRegion(region);
 end;
@@ -7832,7 +7908,7 @@ constructor TGPRegion.Create(rect: TGPRectF);
 var
   region: GpRegion;
 begin
-  region := nil;
+  region := NIL;
   ErrorCheck( GdipCreateRegionRect(@rect, region));
   SetNativeRegion(region);
 end;
@@ -7841,7 +7917,7 @@ constructor TGPRegion.Create(rect: TGPRect);
 var
   region: GpRegion;
 begin
-  region := nil;
+  region := NIL;
   ErrorCheck( GdipCreateRegionRectI(@rect, region));
   SetNativeRegion(region);
 end;
@@ -7850,7 +7926,7 @@ constructor TGPRegion.Create(path: IGPGraphicsPath);
 var
   region: GpRegion;
 begin
-  region := nil;
+  region := NIL;
   ErrorCheck( GdipCreateRegionPath(path.GetNativePath(), region));
   SetNativeRegion(region);
 end;
@@ -7859,7 +7935,7 @@ constructor TGPRegion.Create( regionData: array of BYTE );
 var
   region: GpRegion;
 begin
-  region := nil;
+  region := NIL;
   ErrorCheck( GdipCreateRegionRgnData( @regionData[ 0 ], Length( regionData ), region));
   SetNativeRegion(region);
 end;
@@ -7868,7 +7944,7 @@ constructor TGPRegion.Create(hRgn: HRGN);
 var
   region: GpRegion;
 begin
-  region := nil;
+  region := NIL;
   ErrorCheck( GdipCreateRegionHrgn(hRgn, region));
   SetNativeRegion(region);
 end;
@@ -7877,18 +7953,18 @@ class function TGPRegion.FromHRGN(hRgn: HRGN) : TGPRegion;
 var
   region: GpRegion;
 begin
-  region := nil;
+  region := NIL;
   if (GdipCreateRegionHrgn(hRgn, region) = Ok) then
     begin
     Result := TGPRegion.CreateGdiPlus(region, False);
-    if (Result = nil) then
+    if (Result = NIL) then
       GdipDeleteRegion(region);
 
     exit;
     end
       
   else
-    Result := nil;
+    Result := NIL;
       
 end;
 
@@ -7900,7 +7976,7 @@ end;
 function TGPRegion.Clone: TGPRegion;
 var region: GpRegion;
 begin
-  region := nil;
+  region := NIL;
   ErrorCheck( GdipCloneRegion(FNativeRegion, region));
   Result := TGPRegion.CreateGdiPlus(region, False);
 end;
@@ -7926,7 +8002,7 @@ end;
 
   // buffer     - where to put the data
   // bufferSize - how big the buffer is (should be at least as big as GetDataSize())
-  // sizeFilled - if not nil, this is an OUT param that says how many bytes
+  // sizeFilled - if not NIL, this is an OUT param that says how many bytes
   //              of data were written to the buffer.
 
 function TGPRegion.GetData() : TGPByteArray;
@@ -8133,7 +8209,7 @@ begin
   Result := booln;
 end;
 
-function TGPRegion.IsVisible(x, y: Integer; g: IGPGraphics = nil) : Boolean;
+function TGPRegion.IsVisible(x, y: Integer; g: IGPGraphics = NIL) : Boolean;
 var
   booln: BOOL;
   GPX: GpGraphics;
@@ -8143,13 +8219,13 @@ begin
     gpx := g.GetNativeGraphics()
 
   else
-    gpx := nil;
+    gpx := NIL;
       
   ErrorCheck( GdipIsVisibleRegionPointI(FNativeRegion, X, Y, gpx, booln));
   Result := booln;
 end;
 
-function TGPRegion.IsVisible(const point: TGPPoint; g: IGPGraphics = nil) : Boolean;
+function TGPRegion.IsVisible(const point: TGPPoint; g: IGPGraphics = NIL) : Boolean;
 var
   booln: BOOL;
   GPX: GpGraphics;
@@ -8159,13 +8235,13 @@ begin
     gpx := g.GetNativeGraphics()
 
   else
-    gpx := nil;
+    gpx := NIL;
       
   ErrorCheck( GdipIsVisibleRegionPointI(FNativeRegion, point.X, point.Y, gpx, booln));
   Result := booln;
 end;
 
-function TGPRegion.IsVisibleF(x, y: Single; g: IGPGraphics = nil) : Boolean;
+function TGPRegion.IsVisibleF(x, y: Single; g: IGPGraphics = NIL) : Boolean;
 var
   booln: BOOL;
   GPX: GpGraphics;
@@ -8175,13 +8251,13 @@ begin
     gpx := g.GetNativeGraphics()
 
   else
-    gpx := nil;
+    gpx := NIL;
       
   ErrorCheck( GdipIsVisibleRegionPoint(FNativeRegion, X, Y, gpx, booln));
   Result := booln;
 end;
 
-function TGPRegion.IsVisibleF(const point: TGPPointF; g: IGPGraphics = nil) : Boolean;
+function TGPRegion.IsVisibleF(const point: TGPPointF; g: IGPGraphics = NIL) : Boolean;
 var
   booln: BOOL;
   GPX: GpGraphics;
@@ -8191,7 +8267,7 @@ begin
     gpx := g.GetNativeGraphics()
 
   else
-    gpx := nil;
+    gpx := NIL;
       
   ErrorCheck( GdipIsVisibleRegionPoint(FNativeRegion, point.X, point.Y, gpx, booln));
   Result := booln;
@@ -8207,7 +8283,7 @@ begin
     gpx := g.GetNativeGraphics()
 
   else
-    gpx := nil;
+    gpx := NIL;
       
   ErrorCheck( GdipIsVisibleRegionRectI(FNativeRegion,
                                                 X,
@@ -8219,7 +8295,7 @@ begin
   Result := booln;
 end;
 
-function TGPRegion.IsVisible(const rect: TGPRect; g: IGPGraphics = nil) : Boolean;
+function TGPRegion.IsVisible(const rect: TGPRect; g: IGPGraphics = NIL) : Boolean;
 var
   booln: BOOL;
   GPX: GpGraphics;
@@ -8229,7 +8305,7 @@ begin
     gpx := g.GetNativeGraphics()
 
   else
-    gpx := nil;
+    gpx := NIL;
       
   ErrorCheck( GdipIsVisibleRegionRectI(FNativeRegion,
                                                 rect.X,
@@ -8241,7 +8317,7 @@ begin
   Result := booln;
 end;
 
-function TGPRegion.IsVisibleF(x, y, width, height: Single; g: IGPGraphics = nil) : Boolean;
+function TGPRegion.IsVisibleF(x, y, width, height: Single; g: IGPGraphics = NIL) : Boolean;
 var
   booln: BOOL;
   GPX: GpGraphics;
@@ -8251,7 +8327,7 @@ begin
     gpx := g.GetNativeGraphics()
 
   else
-    gpx := nil;
+    gpx := NIL;
       
   ErrorCheck( GdipIsVisibleRegionRect(FNativeRegion, X,
                                                   Y, Width,
@@ -8261,7 +8337,7 @@ begin
   Result := booln;
 end;
 
-function TGPRegion.IsVisibleF(const rect: TGPRectF; g: IGPGraphics = nil) : Boolean;
+function TGPRegion.IsVisibleF(const rect: TGPRectF; g: IGPGraphics = NIL) : Boolean;
 var
   booln: BOOL;
   GPX: GpGraphics;
@@ -8271,7 +8347,7 @@ begin
     gpx := g.GetNativeGraphics()
 
   else
-    gpx := nil;
+    gpx := NIL;
       
   ErrorCheck( GdipIsVisibleRegionRect(FNativeRegion, rect.X,
                                                   rect.Y, rect.Width,
@@ -8301,7 +8377,7 @@ begin
   Result := count;
 end;
 
-// If rects is nil, Result := the count of rects in the region.
+// If rects is NIL, Result := the count of rects in the region.
 // Otherwise, assume rects is big enough to hold all the region rects
 // and fill them in and Result := the number of rects filled in.
 // The rects are Result :=ed in the units specified by the matrix
@@ -8362,9 +8438,9 @@ var
   nativeFillPath, nativeStrokePath: GpPath;
     
 begin
-  FNativeCap := nil;
-  nativeFillPath := nil;
-  nativeStrokePath := nil;
+  FNativeCap := NIL;
+  nativeFillPath := NIL;
+  nativeStrokePath := NIL;
 
   if( Assigned(fillPath)) then
     nativeFillPath := fillPath.GetNativePath();
@@ -8384,11 +8460,11 @@ end;
 function TGPCustomLineCap.Clone: TGPCustomLineCap;
 var newNativeLineCap: GpCustomLineCap;
 begin
-  newNativeLineCap := nil;
+  newNativeLineCap := NIL;
   ErrorCheck( GdipCloneCustomLineCap(FNativeCap, newNativeLineCap));
 
   Result := TGPCustomLineCap.CreateGdiPlus(newNativeLineCap, False);
-  if (Result = nil) then
+  if (Result = NIL) then
     ErrorCheck( GdipDeleteCustomLineCap(newNativeLineCap));
        
 end;
@@ -8477,7 +8553,7 @@ end;
 
 constructor TGPCustomLineCap.Create();
 begin
-  FNativeCap := nil;
+  FNativeCap := NIL;
 end;
 
 constructor TGPCustomLineCap.CreateGdiPlus(nativeCap: GpCustomLineCap; Dummy : Boolean);
@@ -8507,7 +8583,7 @@ end;
 
 constructor TGPCachedBitmap.Create(bitmap: IGPBitmap; graphics: IGPGraphics);
 begin
-  FNativeCachedBitmap := nil;
+  FNativeCachedBitmap := NIL;
   ErrorCheck( GdipCreateCachedBitmap(
       GpBitmap(bitmap.GetNativeImage()),
       graphics.GetNativeGraphics(),
@@ -8540,7 +8616,7 @@ var
 
 begin
   unit_ := UnitWorld;
-  FNativePen := nil;
+  FNativePen := NIL;
   ErrorCheck( GdipCreatePen1(color, width, unit_, FNativePen) );
 end;
 
@@ -8550,7 +8626,7 @@ var
 
 begin
   unit_ := UnitWorld;
-  FNativePen := nil;
+  FNativePen := NIL;
   if( brush = NIL ) then
     ErrorCheck( InvalidParameter );
 
@@ -8565,7 +8641,7 @@ end;
 function TGPPen.Clone() : TGPPen;
 var clonePen: GpPen;
 begin
-  clonePen := nil;
+  clonePen := NIL;
   ErrorCheck( GdipClonePen(FNativePen, clonePen));
   Result := TGPPen.CreateGdiPlus(clonePen, False);
 end;
@@ -8667,7 +8743,7 @@ end;
 function TGPPen.SetCustomStartCap(customCap: IGPCustomLineCap) : TGPPen;
 var nativeCap: GpCustomLineCap;
 begin
-  nativeCap := nil;
+  nativeCap := NIL;
   if( Assigned(customCap)) then
     nativeCap := customCap.GetNativeCap();
       
@@ -8695,7 +8771,7 @@ var
   nativeCap: GpCustomLineCap;
     
 begin
-  nativeCap := nil;
+  nativeCap := NIL;
   if( Assigned(customCap)) then
     nativeCap := customCap.GetNativeCap();
       
@@ -8877,7 +8953,7 @@ var
 
 begin
   type_ := GetPenType();
-  brush := nil;
+  brush := NIL;
 
   case type_ of
      PenTypeSolidColor     : brush := TGPSolidBrush.Create();
@@ -8887,7 +8963,7 @@ begin
      PenTypeLinearGradient : brush := TGPLinearGradientBrush.Create();
    end;
 
-   if( brush <> nil ) then
+   if( brush <> NIL ) then
      begin
      ErrorCheck( GdipGetPenBrushFill( FNativePen, nativeBrush ));
      brush.SetNativeBrush(nativeBrush);
@@ -9031,10 +9107,10 @@ var
   brush: GpBrush;
   newBrush: TGPBrush;
 begin
-  brush := nil;
+  brush := NIL;
   ErrorCheck( GdipCloneBrush(FNativeBrush, brush));
   newBrush := TGPBrush.Create(brush);
-  if (newBrush = nil) then
+  if (newBrush = NIL) then
     GdipDeleteBrush(brush);
   Result := newBrush;
 end;
@@ -9075,7 +9151,7 @@ constructor TGPSolidBrush.Create(color: TGPColor);
 var
   brush: GpSolidFill;
 begin
-  brush := nil;
+  brush := NIL;
   ErrorCheck( GdipCreateSolidFill(color, brush));
   SetNativeBrush(brush);
 end;
@@ -9108,7 +9184,7 @@ end;
 constructor TGPTextureBrush.Create(image: IGPImage; wrapMode: TGPWrapMode = WrapModeTile);
 var texture: GpTexture;
 begin
-  //texture := nil;
+  //texture := NIL;
   ErrorCheck( GdipCreateTexture(image.GetNativeImage(), wrapMode, texture));
   SetNativeBrush(texture);
 end;
@@ -9122,38 +9198,38 @@ end;
 constructor TGPTextureBrush.Create(image: IGPImage; wrapMode: TGPWrapMode; dstRect: TGPRectF);
 var texture: GpTexture;
 begin
-  texture := nil;
+  texture := NIL;
   ErrorCheck( GdipCreateTexture2(image.GetNativeImage(), wrapMode, dstRect.X,
                   dstRect.Y, dstRect.Width, dstRect.Height, texture));
   SetNativeBrush(texture);
 end;
 
-constructor TGPTextureBrush.Create(image: IGPImage; dstRect: TGPRectF; imageAttributes: IGPImageAttributes = nil);
+constructor TGPTextureBrush.Create(image: IGPImage; dstRect: TGPRectF; imageAttributes: IGPImageAttributes = NIL);
 var texture: GpTexture;
     ImgAtt: GpImageAttributes;
 begin
-  texture := nil;
+  texture := NIL;
   if( Assigned(imageAttributes)) then
     ImgAtt := imageAttributes.GetNativeImageAttr()
 
   else
-    ImgAtt := nil;
+    ImgAtt := NIL;
 
   ErrorCheck( GdipCreateTextureIA(image.GetNativeImage(), ImgAtt, dstRect.X,
                   dstRect.Y, dstRect.Width, dstRect.Height, texture));
   SetNativeBrush(texture);
 end;
 
-constructor TGPTextureBrush.Create(image: IGPImage; dstRect: TGPRect; imageAttributes: IGPImageAttributes = nil);
+constructor TGPTextureBrush.Create(image: IGPImage; dstRect: TGPRect; imageAttributes: IGPImageAttributes = NIL);
 var texture: GpTexture;
     ImgAtt: GpImageAttributes;
 begin
-  texture := nil;
+  texture := NIL;
   if( Assigned(imageAttributes)) then
     ImgAtt := imageAttributes.GetNativeImageAttr()
 
   else
-    ImgAtt := nil;
+    ImgAtt := NIL;
       
   ErrorCheck( GdipCreateTextureIAI(image.GetNativeImage(), ImgAtt, dstRect.X,
                   dstRect.Y, dstRect.Width, dstRect.Height, texture));
@@ -9163,7 +9239,7 @@ end;
 constructor TGPTextureBrush.Create(image: IGPImage; wrapMode: TGPWrapMode; dstRect: TGPRect);
 var texture: GpTexture;
 begin
-  texture := nil;
+  texture := NIL;
   ErrorCheck( GdipCreateTexture2I(image.GetNativeImage(), wrapMode, dstRect.X,
                   dstRect.Y, dstRect.Width, dstRect.Height, texture));
   SetNativeBrush(texture);
@@ -9172,7 +9248,7 @@ end;
 constructor TGPTextureBrush.Create(image: IGPImage; wrapMode: TGPWrapMode; dstX, dstY, dstWidth, dstHeight: Single);
 var texture: GpTexture;
 begin
-  texture := nil;
+  texture := NIL;
   ErrorCheck( GdipCreateTexture2(image.GetNativeImage(), wrapMode, dstX, dstY,
                   dstWidth, dstHeight, texture));
   SetNativeBrush(texture);
@@ -9181,7 +9257,7 @@ end;
 constructor TGPTextureBrush.Create(image: IGPImage; wrapMode: TGPWrapMode; dstX, dstY, dstWidth, dstHeight: Integer);
 var texture: GpTexture;
 begin
-  texture := nil;
+  texture := NIL;
   ErrorCheck( GdipCreateTexture2I(image.GetNativeImage(), wrapMode, dstX, dstY,
                   dstWidth, dstHeight, texture));
   SetNativeBrush(texture);
@@ -9312,7 +9388,7 @@ var image: GpImage;
 begin
   ErrorCheck( GdipGetTextureImage(GpTexture(FNativeBrush), image));
   Result := TGPImage.CreateGdiPlus(image, False);
-  if (Result = nil) then
+  if (Result = NIL) then
     GdipDisposeImage(image);
 end;
 
@@ -9345,7 +9421,7 @@ end;
 constructor TGPLinearGradientBrush.Create( point1, point2: TGPPointF; color1, color2: TGPColor);
 var brush: GpLineGradient;
 begin
-  brush := nil;
+  brush := NIL;
   if(( point1.X = point2.X ) and ( point1.Y = point2.Y )) then
     point2.X := point1.X + 1;
 
@@ -9356,7 +9432,7 @@ end;
 constructor TGPLinearGradientBrush.Create( point1, point2: TGPPoint; color1, color2: TGPColor);
 var brush: GpLineGradient;
 begin
-  brush := nil;
+  brush := NIL;
   if(( point1.X = point2.X ) and ( point1.Y = point2.Y )) then
     point2.X := point1.X + 1;
 
@@ -9368,7 +9444,7 @@ end;
 constructor TGPLinearGradientBrush.Create(rect: TGPRectF; color1, color2: TGPColor; mode: TGPLinearGradientMode);
 var brush: GpLineGradient;
 begin
-  brush := nil;
+  brush := NIL;
   if(( rect.Width = 0 ) and ( rect.Height = 0 )) then
     rect.Width := 1;
 
@@ -9380,7 +9456,7 @@ end;
 constructor TGPLinearGradientBrush.Create(rect: TGPRect; color1, color2: TGPColor; mode: TGPLinearGradientMode);
 var brush: GpLineGradient;
 begin
-  brush := nil;
+  brush := NIL;
   ErrorCheck( GdipCreateLineBrushFromRectI(@rect, color1,
                   color2, mode, WrapModeTile, brush));
   SetNativeBrush(brush);
@@ -9389,7 +9465,7 @@ end;
 constructor TGPLinearGradientBrush.Create(rect: TGPRectF; color1, color2: TGPColor; angle: Single; isAngleScalable: Boolean = False);
 var brush: GpLineGradient;
 begin
-  brush := nil;
+  brush := NIL;
   ErrorCheck( GdipCreateLineBrushFromRectWithAngle(@rect, color1,
                   color2, angle, isAngleScalable, WrapModeTile, brush));
   SetNativeBrush(brush);
@@ -9398,7 +9474,7 @@ end;
 constructor TGPLinearGradientBrush.Create(rect: TGPRect; color1, color2: TGPColor; angle: Single; isAngleScalable: Boolean = False);
 var brush: GpLineGradient;
 begin
-  brush := nil;
+  brush := NIL;
   ErrorCheck( GdipCreateLineBrushFromRectWithAngleI(@rect, color1,
                   color2, angle, isAngleScalable, WrapModeTile, brush));
   SetNativeBrush(brush);
@@ -9743,7 +9819,7 @@ constructor TGPHatchBrush.Create();
 var
   brush: GpHatch;
 begin
-  brush := nil;
+  brush := NIL;
   ErrorCheck( GdipCreateHatchBrush(Integer(HatchStyleCross), aclWhite, aclBlack, brush));
   SetNativeBrush(brush);
 end;
@@ -9752,7 +9828,7 @@ constructor TGPHatchBrush.Create(hatchStyle: TGPHatchStyle; foreColor: TGPColor;
 var
   brush: GpHatch;
 begin
-  brush := nil;
+  brush := NIL;
   ErrorCheck( GdipCreateHatchBrush(Integer(hatchStyle), foreColor, backColor, brush));
   SetNativeBrush(brush);
 end;
@@ -9761,7 +9837,7 @@ procedure TGPHatchBrush.SetHatchStyleProp( style : TGPHatchStyle );
 var
   brush: GpHatch;
 begin
-  brush := nil;
+  brush := NIL;
   ErrorCheck( GdipCreateHatchBrush( Integer( style ), GetForegroundColor(), GetBackgroundColor(), brush));
   SetNativeBrush(brush);
 end;
@@ -9781,7 +9857,7 @@ procedure TGPHatchBrush.SetForegroundColorProp( color : TGPColor );
 var
   brush: GpHatch;
 begin
-  brush := nil;
+  brush := NIL;
   ErrorCheck( GdipCreateHatchBrush( Integer( GetHatchStyle() ), color, GetBackgroundColor(), brush));
   SetNativeBrush(brush);
 end;
@@ -9801,7 +9877,7 @@ procedure TGPHatchBrush.SetBackgroundColorProp( color : TGPColor );
 var
   brush: GpHatch;
 begin
-  brush := nil;
+  brush := NIL;
   ErrorCheck( GdipCreateHatchBrush( Integer( GetHatchStyle() ), GetForegroundColor(), color, brush));
   SetNativeBrush(brush);
 end;
@@ -9820,7 +9896,7 @@ end;
 constructor TGPImage.Create(filename: WideString;
                 useEmbeddedColorManagement: Boolean = False);
 begin
-  FNativeImage := nil;
+  FNativeImage := NIL;
   if(useEmbeddedColorManagement) then
   begin
       ErrorCheck( GdipLoadImageFromFileICM(
@@ -9840,7 +9916,7 @@ end;
 constructor TGPImage.Create(stream: IStream;
                 useEmbeddedColorManagement: Boolean  = False);
 begin
-  FNativeImage := nil;
+  FNativeImage := NIL;
   if(useEmbeddedColorManagement) then
     ErrorCheck( GdipLoadImageFromStreamICM(stream, FNativeImage))
       
@@ -9875,13 +9951,13 @@ end;
 function TGPImage.Clone: TGPImage;
 var cloneimage: GpImage;
 begin
-  cloneimage := nil;
+  cloneimage := NIL;
   ErrorCheck( GdipCloneImage(FNativeImage, cloneimage));
   Result := TGPImage.CreateGdiPlus(cloneimage, False);
 end;
 
 function TGPImage.Save(filename: WideString; const clsidEncoder: TGUID;
-             encoderParams: PGPEncoderParameters = nil) : TGPImage;
+             encoderParams: PGPEncoderParameters = NIL) : TGPImage;
 begin
   ErrorCheck( GdipSaveImageToFile(FNativeImage,
                                                    PWideChar(filename),
@@ -9892,7 +9968,7 @@ begin
 end;
 
 function TGPImage.Save(stream: IStream; const clsidEncoder: TGUID;
-             encoderParams: PGPEncoderParameters  = nil) : TGPImage;
+             encoderParams: PGPEncoderParameters  = NIL) : TGPImage;
 begin
   ErrorCheck( GdipSaveImageToStream(FNativeImage,
                                                      stream,
@@ -9913,7 +9989,7 @@ end;
 function TGPImage.SaveAdd(newImage: IGPImage;
              encoderParams: PGPEncoderParameters) : TGPImage;
 begin
-  if (newImage = nil) then
+  if (newImage = NIL) then
     ErrorCheck( InvalidParameter);
 
   ErrorCheck( GdipSaveAddImage(FNativeImage,
@@ -10075,7 +10151,7 @@ begin
 end;
   
 function TGPImage.GetThumbnailImage(thumbWidth, thumbHeight: Cardinal;
-              callback: TGPGetThumbnailImageAbortProc = nil) : TGPImage;
+              callback: TGPGetThumbnailImageAbortProc = NIL) : TGPImage;
 var
   thumbimage: GpImage;
   newImage: TGPImage;
@@ -10083,7 +10159,7 @@ var
   ADispatcherIntf : IGPIntAbortDispatcher;
     
 begin
-  thumbimage := nil;
+  thumbimage := NIL;
   ADispatcher := TGPIntAbortDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
   ErrorCheck( GdipGetImageThumbnail(FNativeImage,
@@ -10092,7 +10168,7 @@ begin
                                               GLGPAbortCallback, ADispatcher ));
 
   newImage := TGPImage.CreateGdiPlus(thumbimage, False);
-  if (newImage = nil) then
+  if (newImage = NIL) then
       GdipDisposeImage(thumbimage);
 
   Result := newImage;
@@ -10236,12 +10312,51 @@ begin
   Result := FNativeImage;
 end;
 
+  // TGPBitmapData
+
+constructor TGPBitmapData.Create( ABitmap : TGPBitmap );
+begin
+  inherited Create();
+  FBitmap := ABitmap;
+end;
+
+destructor TGPBitmapData.Destroy();
+begin
+  FBitmap.UnlockBits( FData );
+  inherited;
+end;
+
+function TGPBitmapData.GetWidth() : UINT;
+begin
+  Result := FData.Width;
+end;
+
+function TGPBitmapData.GetHeight() : UINT;
+begin
+  Result := FData.Height;
+end;
+
+function TGPBitmapData.GetStride() : Integer;
+begin
+  Result := FData.Stride;
+end;
+
+function TGPBitmapData.GetPixelFormat() : TGPPixelFormat;
+begin
+  Result := FData.PixelFormat;
+end;
+
+function TGPBitmapData.GetScan0() : Pointer;
+begin
+  Result := FData.Scan0;
+end;
+
 // TGPBitmap
 
 constructor TGPBitmap.Create(filename: WideString; useEmbeddedColorManagement: Boolean = False);
 var bitmap: GpBitmap;
 begin
-  bitmap := nil;
+  bitmap := NIL;
   if(useEmbeddedColorManagement) then
     ErrorCheck( GdipCreateBitmapFromFileICM(PWideChar(filename), bitmap))
 
@@ -10254,7 +10369,7 @@ end;
 constructor TGPBitmap.Create(stream: IStream; useEmbeddedColorManagement: Boolean = False);
 var bitmap: GpBitmap;
 begin
-  bitmap := nil;
+  bitmap := NIL;
   if(useEmbeddedColorManagement) then
     ErrorCheck( GdipCreateBitmapFromStreamICM(stream, bitmap))
       
@@ -10295,7 +10410,7 @@ end;
 constructor TGPBitmap.Create(width, height, stride: Integer; format: TGPPixelFormat; scan0: PBYTE);
 var bitmap: GpBitmap;
 begin
-  bitmap := nil;
+  bitmap := NIL;
   ErrorCheck( GdipCreateBitmapFromScan0(width,
                                                      height,
                                                      stride,
@@ -10309,12 +10424,12 @@ end;
 constructor TGPBitmap.Create(width, height: Integer; format: TGPPixelFormat = PixelFormat32bppARGB);
 var bitmap: GpBitmap;
 begin
-  bitmap := nil;
+  bitmap := NIL;
   ErrorCheck( GdipCreateBitmapFromScan0(width,
                                                      height,
                                                      0,
                                                      format,
-                                                     nil,
+                                                     NIL,
                                                      bitmap));
 
   SetNativeImage(bitmap);
@@ -10323,7 +10438,7 @@ end;
 constructor TGPBitmap.Create(width, height: Integer; target: TGPGraphics);
 var bitmap: GpBitmap;
 begin
-  bitmap := nil;
+  bitmap := NIL;
   ErrorCheck( GdipCreateBitmapFromGraphics(width,
                                                         height,
                                                         target.FNativeGraphics,
@@ -10342,7 +10457,7 @@ var
   bitmap: TGPBitmap;
   gpdstBitmap: GpBitmap;
 begin
-  gpdstBitmap := nil;
+  gpdstBitmap := NIL;
   ErrorCheck( GdipCloneBitmapAreaI(
                              x,
                              y,
@@ -10353,7 +10468,7 @@ begin
                              gpdstBitmap));
 
  bitmap := TGPBitmap.CreateGdiPlus(gpdstBitmap, False);
- if (bitmap = nil) then
+ if (bitmap = NIL) then
    GdipDisposeImage(gpdstBitmap);
      
  Result := bitmap;
@@ -10368,7 +10483,7 @@ function TGPBitmap.CloneF(x, y, width, height: Single; format: TGPPixelFormat) :
 var
   gpdstBitmap: GpBitmap;
 begin
-  gpdstBitmap := nil;
+  gpdstBitmap := NIL;
   ErrorCheck( GdipCloneBitmapArea(
                              x,
                              y,
@@ -10379,28 +10494,38 @@ begin
                              gpdstBitmap));
 
  Result := TGPBitmap.CreateGdiPlus(gpdstBitmap, False);
- if (Result = nil) then
+ if (Result = NIL) then
    GdipDisposeImage(gpdstBitmap);
      
 end;
 
-function TGPBitmap.LockBits(rect: TGPRect; flags: Cardinal; format: TGPPixelFormat ) : TGPBitmapData;
+procedure TGPBitmap.LockBitsInternal(rect: TGPRect; flags: Cardinal; format: TGPPixelFormat; var AData : TGPBitmapDataRecord );
 begin
   ErrorCheck( GdipBitmapLockBits(
                                   GpBitmap(FNativeImage),
                                   @rect,
                                   flags,
                                   format,
-                                  @Result));
+                                  @AData));
 end;
 
-function TGPBitmap.UnlockBits(var lockedBitmapData: TGPBitmapData) : TGPBitmap;
+function TGPBitmap.UnlockBits(var lockedBitmapData: TGPBitmapDataRecord) : TGPBitmap;
 begin
   ErrorCheck( GdipBitmapUnlockBits(
                                   GpBitmap(FNativeImage),
                                   @lockedBitmapData));
                                     
   Result := Self;
+end;
+
+function TGPBitmap.LockBits( rect: TGPRect; flags: Cardinal; format: TGPPixelFormat ) : IGPBitmapData;
+var
+  ABitmapData : TGPBitmapData;
+
+begin
+  ABitmapData := TGPBitmapData.Create( Self );
+  LockBitsInternal(rect, flags, format, ABitmapData.FData );
+  Result := ABitmapData;
 end;
 
 function TGPBitmap.GetPixel(x, y: Integer) : TGPColor;
@@ -10439,7 +10564,7 @@ end;
 constructor TGPBitmap.Create(surface: IDirectDrawSurface7);
 var bitmap: GpBitmap;
 begin
-  bitmap := nil;
+  bitmap := NIL;
   ErrorCheck( GdipCreateBitmapFromDirectDrawSurface(surface, bitmap));
   SetNativeImage(bitmap);
 end;
@@ -10447,7 +10572,7 @@ end;
 constructor TGPBitmap.CreateData(var gdiBitmapInfo: TBITMAPINFO; gdiBitmapData: Pointer);
 var bitmap: GpBitmap;
 begin
-  bitmap := nil;
+  bitmap := NIL;
   ErrorCheck( GdipCreateBitmapFromGdiDib(@gdiBitmapInfo, gdiBitmapData, bitmap));
   SetNativeImage(bitmap);
 end;
@@ -10455,7 +10580,7 @@ end;
 constructor TGPBitmap.CreateHBITMAP(hbm: HBITMAP; hpal: HPALETTE);
 var bitmap: GpBitmap;
 begin
-  bitmap := nil;
+  bitmap := NIL;
   ErrorCheck( GdipCreateBitmapFromHBITMAP(hbm, hpal, bitmap));
   SetNativeImage(bitmap);
 end;
@@ -10463,7 +10588,7 @@ end;
 constructor TGPBitmap.CreateHICON(hicon: HICON);
 var bitmap: GpBitmap;
 begin
-  bitmap := nil;
+  bitmap := NIL;
   ErrorCheck( GdipCreateBitmapFromHICON(hicon, bitmap));
   SetNativeImage(bitmap);
 end;
@@ -10471,7 +10596,7 @@ end;
 constructor TGPBitmap.CreateRes(hInstance: HMODULE; bitmapName: WideString);
 var bitmap: GpBitmap;
 begin
-  bitmap := nil;
+  bitmap := NIL;
   ErrorCheck( GdipCreateBitmapFromResource(hInstance, PWideChar(bitmapName), bitmap));
   SetNativeImage(bitmap);
 end;
@@ -10561,7 +10686,7 @@ var
   graphics: GpGraphics;
     
 begin
-  graphics:= nil;
+  graphics:= NIL;
   ErrorCheck( GdipCreateFromHDC( canvas.Handle, graphics));
   SetNativeGraphics(graphics);
 end;
@@ -10572,7 +10697,7 @@ var
   graphics: GpGraphics;
 
 begin
-  graphics:= nil;
+  graphics:= NIL;
   ErrorCheck( GdipCreateFromHDC( ahdc, graphics));
   SetNativeGraphics(graphics);
 end;
@@ -10582,7 +10707,7 @@ var
   graphics: GpGraphics;
     
 begin
-  graphics:= nil;
+  graphics:= NIL;
   ErrorCheck( GdipCreateFromHDC2( ahdc, hdevice, graphics));
   SetNativeGraphics(graphics);
 end;
@@ -10592,7 +10717,7 @@ var
   graphics: GpGraphics;
     
 begin
-  graphics:= nil;
+  graphics:= NIL;
   if( icm ) then
     ErrorCheck( GdipCreateFromHWNDICM(hwnd, graphics))
 
@@ -10607,8 +10732,8 @@ var
   graphics: GpGraphics;
     
 begin
-  graphics:= nil;
-  if (image <> nil) then
+  graphics:= NIL;
+  if (image <> NIL) then
     ErrorCheck( GdipGetImageGraphicsContext(image.GetNativeImage(), graphics));
       
   SetNativeGraphics(graphics);
@@ -11647,13 +11772,13 @@ begin
     nPen := pen.GetNativePen()
 
   else
-    nPen  := nil;
+    nPen  := NIL;
 
   if( Assigned(path) ) then
     nPath := path.GetNativePath()
 
   else
-    nPath := nil;
+    nPath := NIL;
       
   ErrorCheck( GdipDrawPath(FNativeGraphics, nPen, nPath));
                              
@@ -12169,7 +12294,7 @@ begin
 {
   APath := TGPGraphicsPath.Create();
   APath.StartFigure();
-  APath.AddString( string_, font.GetFamily(), font.GetStyle(), font.GetSize(), origin, nil );
+  APath.AddString( string_, font.GetFamily(), font.GetStyle(), font.GetSize(), origin, NIL );
   APath.CloseFigure();
 
 //    AOldUnit := GetPageUnit();
@@ -12212,19 +12337,19 @@ begin
     nfont := font.GetNativeFont()
 
   else
-    nfont := nil;
+    nfont := NIL;
 
   if( Assigned(stringFormat)) then
     nstringFormat := stringFormat.GetNativeFormat()
       
   else
-    nstringFormat := nil;
+    nstringFormat := NIL;
 
   if( Assigned(brush)) then
     nbrush := brush.GetNativeBrush()
 
   else
-    nbrush := nil;
+    nbrush := NIL;
       
   ErrorCheck( GdipDrawString(
       FNativeGraphics,
@@ -12249,13 +12374,13 @@ begin
     nfont := font.GetNativeFont()
 
   else
-    nfont := nil;
+    nfont := NIL;
 
   if( Assigned(brush)) then
     nbrush := brush.GetNativeBrush()
 
   else
-    nbrush := nil;
+    nbrush := NIL;
 
   ErrorCheck( GdipDrawString(
       FNativeGraphics,
@@ -12263,7 +12388,7 @@ begin
       Length( string_ ),
       nfont,
       @layoutRect,
-      nil,
+      NIL,
       nbrush));
 
   Result := Self;
@@ -12284,13 +12409,13 @@ begin
     nfont := font.GetNativeFont()
 
   else
-    nfont := nil;
+    nfont := NIL;
 
   if( Assigned(Brush)) then
     nBrush := Brush.GetNativeBrush()
 
   else
-    nBrush := nil;
+    nBrush := NIL;
 
   ErrorCheck( GdipDrawString(
       FNativeGraphics,
@@ -12298,7 +12423,7 @@ begin
       Length( string_ ),
       nfont,
       @rect,
-      nil,
+      NIL,
       nbrush));
                              
   Result := Self;
@@ -12320,19 +12445,19 @@ begin
     nfont := font.GetNativeFont()
 
   else
-    nfont := nil;
+    nfont := NIL;
 
   if( Assigned(stringFormat)) then
     nstringFormat := stringFormat.GetNativeFormat()
 
   else
-    nstringFormat := nil;
+    nstringFormat := NIL;
 
   if( Assigned(brush)) then
     nbrush := brush.GetNativeBrush()
 
   else
-    nbrush := nil;
+    nbrush := NIL;
 
   ErrorCheck( GdipDrawString(
       FNativeGraphics,
@@ -12348,10 +12473,10 @@ end;
 
 //  procedure TGPGraphics.MeasureString(string_: WideString; length: Integer; font: IGPFont;
 //       const layoutRect: TGPRectF; stringFormat: TGPStringFormat; out boundingBox: TGPRectF;
-//       codepointsFitted: PInteger = nil; linesFilled: PInteger = nil);
+//       codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL);
 function TGPGraphics.GetStringBoundingBoxF(string_: WideString; font: IGPFont;
   const layoutRect: TGPRectF; stringFormat: IGPStringFormat;
-  codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPRectF;
+  codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL) : TGPRectF;
 
 var
   nFont: GpFont;
@@ -12361,13 +12486,13 @@ begin
     nfont := font.GetNativeFont()
 
   else
-    nfont := nil;
+    nfont := NIL;
       
   if( Assigned(stringFormat)) then
     nstringFormat := stringFormat.GetNativeFormat()
 
   else
-    nstringFormat := nil;
+    nstringFormat := NIL;
       
   ErrorCheck( GdipMeasureString(
       FNativeGraphics,
@@ -12407,7 +12532,7 @@ begin
 end;
 
 function TGPGraphics.GetStringSizeF(string_: WideString; font: IGPFont;
-    stringFormat: IGPStringFormat = nil) : TGPSizeF;
+    stringFormat: IGPStringFormat = NIL) : TGPSizeF;
 var
   ARect : TGPRectF;
 
@@ -12419,10 +12544,10 @@ end;
 
 //  procedure TGPGraphics.MeasureString(string_: WideString; length: Integer; font: IGPFont;
 //       const layoutRectSize: TGPSizeF; stringFormat: TGPStringFormat; out size: TGPSizeF;
-//       codepointsFitted: PInteger = nil; linesFilled: PInteger = nil);
+//       codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL);
 function TGPGraphics.GetStringSizeF(string_: WideString; font: IGPFont;
-    const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = nil;
-    codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF;
+    const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = NIL;
+    codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL) : TGPSizeF;
 var
   layoutRect, boundingBox: TGPRectF;
   nFont: GpFont;
@@ -12437,13 +12562,13 @@ begin
     nfont := font.GetNativeFont()
 
   else
-    nfont := nil;
+    nfont := NIL;
 
   if( Assigned(stringFormat)) then
     nstringFormat := stringFormat.GetNativeFormat()
 
   else
-    nstringFormat := nil;
+    nstringFormat := NIL;
 
   ErrorCheck( GdipMeasureString(
       FNativeGraphics,
@@ -12480,13 +12605,13 @@ begin
     nfont := font.GetNativeFont()
 
   else
-    nfont := nil;
+    nfont := NIL;
 
   if( Assigned(stringFormat)) then
     nstringFormat := stringFormat.GetNativeFormat()
 
   else
-    nstringFormat := nil;
+    nstringFormat := NIL;
 
   ErrorCheck( GdipMeasureString(
       FNativeGraphics,
@@ -12496,8 +12621,8 @@ begin
       @rect,
       nstringFormat,
       @Result,
-      nil,
-      nil
+      NIL,
+      NIL
   ));
 end;
 
@@ -12515,7 +12640,7 @@ begin
     nfont := font.GetNativeFont()
 
   else
-    nfont := nil;
+    nfont := NIL;
       
   ErrorCheck( GdipMeasureString(
       FNativeGraphics,
@@ -12523,10 +12648,10 @@ begin
       Length( string_ ),
       nfont,
       @layoutRect,
-      nil,
+      NIL,
       @Result,
-      nil,
-      nil
+      NIL,
+      NIL
   ));
 end;
 
@@ -12543,7 +12668,7 @@ begin
     nfont := font.GetNativeFont()
 
   else
-    nfont := nil;
+    nfont := NIL;
       
   rect.X := origin.X;
   rect.Y := origin.Y;
@@ -12556,29 +12681,29 @@ begin
       Length( string_ ),
       nfont,
       @rect,
-      nil,
+      NIL,
       @Result,
-      nil,
-      nil
+      NIL,
+      NIL
   ));
 end;
 
 function TGPGraphics.MeasureStringF(string_: WideString; font: IGPFont;
-  stringFormat: IGPStringFormat = nil ) : TGPSizeF;
+  stringFormat: IGPStringFormat = NIL ) : TGPSizeF;
 begin
   Result := GetStringSizeF( string_, font, stringFormat );
 end;
 
 function TGPGraphics.MeasureStringF(string_: WideString; font: IGPFont;
-  const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = nil;
-  codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPSizeF;
+  const layoutRectSize: TGPSizeF; stringFormat: IGPStringFormat = NIL;
+  codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL) : TGPSizeF;
 begin
   Result := GetStringSizeF( string_, font, layoutRectSize, stringFormat, codepointsFitted, linesFilled );
 end;
 
 function TGPGraphics.MeasureStringF(string_: WideString; font: IGPFont;
   const layoutRect: TGPRectF; stringFormat: IGPStringFormat;
-  codepointsFitted: PInteger = nil; linesFilled: PInteger = nil) : TGPRectF;
+  codepointsFitted: PInteger = NIL; linesFilled: PInteger = NIL) : TGPRectF;
 begin
   Result := GetStringBoundingBoxF( string_, font, layoutRect, stringFormat, codepointsFitted, linesFilled );
 end;
@@ -12601,7 +12726,7 @@ begin
   Result := GetStringBoundingBoxF( string_, font, origin );
 end;
 
-function TGPGraphics.MeasureCharacterRanges(string_: WideString; font: IGPFont;
+function TGPGraphics.MeasureCharacterRangesF(string_: WideString; font: IGPFont;
     const layoutRect: TGPRectF; stringFormat: IGPStringFormat ) : TGPRegionArray;
 var
   nativeRegions: Pointer;
@@ -12609,23 +12734,34 @@ var
   nFont: GpFont;
   nstringFormat: GpstringFormat;
   regionCount : Integer;
+  ARanges : array of TGPCharacterRange;
+
 type
   TArrayGpRegion = array of GpRegion;
+
 begin
   if( Assigned(font) ) then
     nfont := font.GetNativeFont()
 
   else
-    nfont := nil;
+    nfont := NIL;
 
-  if( Assigned(stringFormat) ) then
-    nstringFormat := stringFormat.GetNativeFormat()
+  if( not Assigned(stringFormat) ) then
+    begin
+    stringFormat := TGPStringFormat.Create();
+    SetLength( ARanges, Length( string_ ));
+    for i := 0 to Length( string_ ) - 1 do
+      begin
+      ARanges[ i ].First := i;
+      ARanges[ i ].Length := 1;
+      end;
 
-  else
-    nstringFormat := nil;
+    stringFormat.SetMeasurableCharacterRanges( ARanges );
+    end;
+
+  nstringFormat := stringFormat.GetNativeFormat();
 
   regionCount := stringFormat.GetMeasurableCharacterRangeCount();
-
   GetMem(nativeRegions, Sizeof(GpRegion)* regionCount);
 
   SetLength( Result, regionCount ); 
@@ -12650,6 +12786,84 @@ begin
   FreeMem(nativeRegions, Sizeof(GpRegion)* regionCount);
 end;
 
+function TGPGraphics.MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      const origin: TGPPointF; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray;
+begin
+  Result := MeasureCharacterRangesF( string_, font, GetStringBoundingBoxF( string_, font, origin, stringFormat ), stringFormat );
+end;
+
+function TGPGraphics.MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+      stringFormat: IGPStringFormat = NIL ) : TGPRegionArray;
+begin
+  Result := MeasureCharacterRangesF( string_, font, GetStringBoundingBoxF( string_, font, MakePointF( 0, 0 ), stringFormat ), stringFormat );
+end;
+
+function TGPGraphics.MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+  const layoutRect: TGPRectF; ranges : array of TGPCharacterRange; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray;
+var
+  nativeRegions: Pointer;
+  i: Integer;
+  nFont: GpFont;
+  nstringFormat: GpstringFormat;
+  regionCount : Integer;
+  AClonedStringFormat : IGPStringFormat;
+
+type
+  TArrayGpRegion = array of GpRegion;
+
+begin
+  if( Assigned(font) ) then
+    nfont := font.GetNativeFont()
+
+  else
+    nfont := NIL;
+
+  if( Assigned(stringFormat) ) then
+    AClonedStringFormat := stringFormat.Clone()
+
+  else
+    AClonedStringFormat := TGPStringFormat.Create();
+
+  AClonedStringFormat.SetMeasurableCharacterRanges( ranges );
+  nstringFormat := AClonedStringFormat.GetNativeFormat();
+
+  regionCount := AClonedStringFormat.GetMeasurableCharacterRangeCount();
+  GetMem(nativeRegions, Sizeof(GpRegion)* regionCount);
+
+  SetLength( Result, regionCount );
+
+  for i := 0 to regionCount - 1 do
+    begin
+    Result[i] := TGPRegion.Create();
+    TArrayGpRegion(nativeRegions)[i] := Result[i].GetNativeRegion();
+    end;
+
+  ErrorCheck( GdipMeasureCharacterRanges(
+      FNativeGraphics,
+      PWideChar(string_),
+      Length( string_ ),
+      nfont,
+      @layoutRect,
+      nstringFormat,
+      regionCount,
+      nativeRegions
+  ));
+
+  FreeMem(nativeRegions, Sizeof(GpRegion)* regionCount);
+end;
+
+function TGPGraphics.MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+  const origin: TGPPointF; ranges : array of TGPCharacterRange; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray;
+begin
+  Result := MeasureCharacterRangesF( string_, font, GetStringBoundingBoxF( string_, font, origin, stringFormat ), ranges, stringFormat );
+end;
+
+function TGPGraphics.MeasureCharacterRangesF(string_: WideString; font: IGPFont;
+  ranges : array of TGPCharacterRange; stringFormat: IGPStringFormat = NIL ) : TGPRegionArray;
+begin
+  Result := MeasureCharacterRangesF( string_, font, GetStringBoundingBoxF( string_, font, MakePointF( 0, 0 ), stringFormat ), ranges, stringFormat );
+end;
+
 function TGPGraphics.DrawDriverString(text: PUINT16; length: Integer; font: IGPFont;
      brush: IGPBrush; positions: PGPPointF; flags: Integer;
      matrix: IGPMatrix) : TGPGraphics;
@@ -12662,19 +12876,19 @@ begin
     nfont := font.GetNativeFont()
 
   else
-    nfont := nil;
+    nfont := NIL;
 
   if( Assigned(brush)) then
     nbrush := brush.GetNativeBrush()
 
   else
-    nbrush := nil;
+    nbrush := NIL;
 
   if( Assigned(matrix)) then
     nmatrix := matrix.GetNativeMatrix()
 
   else
-    nmatrix := nil;
+    nmatrix := NIL;
 
   ErrorCheck( GdipDrawDriverString(
       FNativeGraphics,
@@ -12702,13 +12916,13 @@ begin
     nfont := font.GetNativeFont()
 
   else
-    nfont := nil;
+    nfont := NIL;
       
   if( Assigned(matrix)) then
     nmatrix := matrix.GetNativeMatrix()
 
   else
-    nmatrix := nil;
+    nmatrix := NIL;
 
   ErrorCheck( GdipMeasureDriverString(
       FNativeGraphics,
@@ -12750,7 +12964,7 @@ begin
     nImage := Image.GetNativeImage()
 
   else
-    nImage := nil;
+    nImage := NIL;
 
   ErrorCheck( GdipDrawImage(FNativeGraphics, nImage, x, y));
   Result := Self;
@@ -12769,7 +12983,7 @@ begin
     nImage := Image.GetNativeImage()
 
   else
-    nImage := nil;
+    nImage := NIL;
 
   ErrorCheck( GdipDrawImageRect(FNativeGraphics,
                              nImage,
@@ -12794,7 +13008,7 @@ begin
     nImage := Image.GetNativeImage()
 
   else
-    nImage := nil;
+    nImage := NIL;
       
   ErrorCheck( GdipDrawImageI(FNativeGraphics,
                           nimage,
@@ -12821,7 +13035,7 @@ begin
     nImage := Image.GetNativeImage()
 
   else
-    nImage := nil;
+    nImage := NIL;
 
   ErrorCheck( GdipDrawImageRectI(FNativeGraphics,
                           nimage,
@@ -12943,7 +13157,7 @@ begin
     nImage := Image.GetNativeImage()
 
   else
-    nImage := nil;
+    nImage := NIL;
 
   ErrorCheck( GdipDrawImagePoints(FNativeGraphics,
                            nimage,
@@ -12966,7 +13180,7 @@ begin
     nImage := Image.GetNativeImage()
 
   else
-    nImage := nil;
+    nImage := NIL;
 
   ErrorCheck( GdipDrawImagePointsI(FNativeGraphics,
                             nimage,
@@ -12985,7 +13199,7 @@ begin
     nImage := Image.GetNativeImage()
 
   else
-    nImage := nil;
+    nImage := NIL;
       
   ErrorCheck( GdipDrawImagePointRect(FNativeGraphics,
                               nimage,
@@ -12997,7 +13211,7 @@ begin
 end;
 
 function TGPGraphics.DrawImageF(image: IGPImage; const destRect: TGPRectF; srcx, srcy, srcwidth, srcheight: Single;
-     srcUnit: TGPUnit; imageAttributes: IGPImageAttributes = nil; callback: TGPDrawImageAbortProc = nil) : TGPGraphics;
+     srcUnit: TGPUnit; imageAttributes: IGPImageAttributes = NIL; callback: TGPDrawImageAbortProc = NIL) : TGPGraphics;
 var
   nImage: GpImage;
   nimageAttributes: GpimageAttributes;
@@ -13008,13 +13222,13 @@ begin
     nImage := Image.GetNativeImage()
 
   else
-    nImage := nil;
+    nImage := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntAbortDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13036,7 +13250,7 @@ end;
 
 function TGPGraphics.DrawImageF(image: IGPImage; destPoints: array of TGPPointF;
      srcx, srcy, srcwidth, srcheight: Single; srcUnit: TGPUnit;
-     imageAttributes: IGPImageAttributes = nil; callback: TGPDrawImageAbortProc = nil) : TGPGraphics;
+     imageAttributes: IGPImageAttributes = NIL; callback: TGPDrawImageAbortProc = NIL) : TGPGraphics;
 var
   nImage: GpImage;
   nimageAttributes: GpimageAttributes;
@@ -13047,13 +13261,13 @@ begin
     nImage := Image.GetNativeImage()
 
   else
-    nImage := nil;
+    nImage := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntAbortDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13081,7 +13295,7 @@ begin
     nImage := Image.GetNativeImage()
 
   else
-    nImage := nil;
+    nImage := NIL;
       
   ErrorCheck( GdipDrawImagePointRectI(FNativeGraphics,
                                nimage,
@@ -13097,8 +13311,8 @@ begin
 end;
 
 function TGPGraphics.DrawImage(image: IGPImage; const destRect: TGPRect; srcx, srcy, srcwidth,
-     srcheight: Integer; srcUnit: TGPUnit; imageAttributes: IGPImageAttributes = nil;
-     callback: TGPDrawImageAbortProc = nil) : TGPGraphics;
+     srcheight: Integer; srcUnit: TGPUnit; imageAttributes: IGPImageAttributes = NIL;
+     callback: TGPDrawImageAbortProc = NIL) : TGPGraphics;
 var
   nImage: GpImage;
   nimageAttributes: GpimageAttributes;
@@ -13109,13 +13323,13 @@ begin
     nImage := Image.GetNativeImage()
 
   else
-    nImage := nil;
+    nImage := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntAbortDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13139,7 +13353,7 @@ end;
 
 function TGPGraphics.DrawImage(image: IGPImage; destPoints: array of TGPPoint;
      srcx, srcy, srcwidth, srcheight: Integer; srcUnit: TGPUnit;
-     imageAttributes: IGPImageAttributes = nil; callback: TGPDrawImageAbortProc = nil) : TGPGraphics;
+     imageAttributes: IGPImageAttributes = NIL; callback: TGPDrawImageAbortProc = NIL) : TGPGraphics;
 var
   nImage: GpImage;
   nimageAttributes: GpimageAttributes;
@@ -13151,13 +13365,13 @@ begin
     nImage := Image.GetNativeImage()
 
   else
-    nImage := nil;
+    nImage := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
 
   ADispatcher := TGPIntAbortDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13221,7 +13435,7 @@ end;
 
     
 function TGPGraphics.EnumerateMetafileF(metafile: IGPMetafile; const destPoint: TGPPointF;
-    callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics;
+    callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics;
 var
   nMetafile: GpMetafile;
   nimageAttributes: GpimageAttributes;
@@ -13233,13 +13447,13 @@ begin
     nMetafile := GpMetafile(Metafile.GetNativeImage())
 
   else
-    nMetafile := nil;
+    nMetafile := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13256,7 +13470,7 @@ end;
 
     
 function TGPGraphics.EnumerateMetafile(metafile: IGPMetafile; const destPoint: TGPPoint;
-     callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics;
+     callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics;
 var
   nMetafile: GpMetafile;
   nimageAttributes: GpimageAttributes;
@@ -13268,13 +13482,13 @@ begin
     nMetafile := GpMetafile(Metafile.GetNativeImage())
 
   else
-    nMetafile := nil;
+    nMetafile := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13291,7 +13505,7 @@ end;
 
 
 function TGPGraphics.EnumerateMetafileF(metafile: IGPMetafile; const destRect: TGPRectF;
-     callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics;
+     callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics;
 var
   nMetafile: GpMetafile;
   nimageAttributes: GpimageAttributes;
@@ -13303,13 +13517,13 @@ begin
     nMetafile := GpMetafile(Metafile.GetNativeImage())
 
   else
-    nMetafile := nil;
+    nMetafile := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13326,7 +13540,7 @@ end;
 
 
 function TGPGraphics.EnumerateMetafile(metafile: IGPMetafile; const destRect: TGPRect;
-     callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics;
+     callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics;
 var
   nMetafile: GpMetafile;
   nimageAttributes: GpimageAttributes;
@@ -13338,13 +13552,13 @@ begin
     nMetafile := GpMetafile(Metafile.GetNativeImage())
 
   else
-    nMetafile := nil;
+    nMetafile := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13361,7 +13575,7 @@ end;
 
 
 function TGPGraphics.EnumerateMetafileF(metafile: IGPMetafile; destPoints: array of TGPPointF;
-     callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics;
+     callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics;
 var
   nMetafile: GpMetafile;
   nimageAttributes: GpimageAttributes;
@@ -13373,13 +13587,13 @@ begin
     nMetafile := GpMetafile(Metafile.GetNativeImage())
 
   else
-    nMetafile := nil;
+    nMetafile := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13397,7 +13611,7 @@ end;
 
     
 function TGPGraphics.EnumerateMetafile(metafile: IGPMetafile; destPoints: array of TGPPoint;
-     callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = nil) : TGPGraphics;
+     callback: TGPEnumerateMetafileProc; imageAttributes: IGPImageAttributes = NIL) : TGPGraphics;
 var
   nMetafile: GpMetafile;
   nimageAttributes: GpimageAttributes;
@@ -13409,13 +13623,13 @@ begin
     nMetafile := GpMetafile(Metafile.GetNativeImage())
 
   else
-    nMetafile := nil;
+    nMetafile := NIL;
 
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13434,7 +13648,7 @@ end;
     
 function TGPGraphics.EnumerateMetafileF(metafile: IGPMetafile; const destPoint: TGPPointF;
      const srcRect: TGPRectF; srcUnit: TGPUnit; callback: TGPEnumerateMetafileProc;
-     imageAttributes: IGPImageAttributes = nil) : TGPGraphics;
+     imageAttributes: IGPImageAttributes = NIL) : TGPGraphics;
 var
   nMetafile: GpMetafile;
   nimageAttributes: GpimageAttributes;
@@ -13446,13 +13660,13 @@ begin
     nMetafile := GpMetafile(Metafile.GetNativeImage())
 
   else
-    nMetafile := nil;
+    nMetafile := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13472,7 +13686,7 @@ end;
     
 function TGPGraphics.EnumerateMetafile(metafile : IGPMetafile; const destPoint : TGPPoint;
      const srcRect : TGPRect; srcUnit : TGPUnit; callback : TGPEnumerateMetafileProc;
-     imageAttributes : IGPImageAttributes = nil) : TGPGraphics;
+     imageAttributes : IGPImageAttributes = NIL) : TGPGraphics;
 var
   nMetafile: GpMetafile;
   nimageAttributes: GpimageAttributes;
@@ -13484,13 +13698,13 @@ begin
     nMetafile := GpMetafile(Metafile.GetNativeImage())
 
   else
-    nMetafile := nil;
+    nMetafile := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13510,7 +13724,7 @@ end;
 
 function TGPGraphics.EnumerateMetafileF(metafile: IGPMetafile; const destRect: TGPRectF;
      const srcRect: TGPRectF; srcUnit: TGPUnit; callback: TGPEnumerateMetafileProc;
-     imageAttributes: IGPImageAttributes = nil) : TGPGraphics;
+     imageAttributes: IGPImageAttributes = NIL) : TGPGraphics;
 var
   nMetafile: GpMetafile;
   nimageAttributes: GpimageAttributes;
@@ -13522,13 +13736,13 @@ begin
     nMetafile := GpMetafile(Metafile.GetNativeImage())
 
   else
-    nMetafile := nil;
+    nMetafile := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13547,7 +13761,7 @@ end;
 
 
 function TGPGraphics.EnumerateMetafile(metafile : IGPMetafile; const destRect, srcRect: TGPRect;
-     srcUnit : TGPUnit; callback : TGPEnumerateMetafileProc; imageAttributes : IGPImageAttributes = nil) : TGPGraphics;
+     srcUnit : TGPUnit; callback : TGPEnumerateMetafileProc; imageAttributes : IGPImageAttributes = NIL) : TGPGraphics;
 var
   nMetafile: GpMetafile;
   nimageAttributes: GpimageAttributes;
@@ -13559,13 +13773,13 @@ begin
     nMetafile := GpMetafile(Metafile.GetNativeImage())
 
   else
-    nMetafile := nil;
+    nMetafile := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13585,7 +13799,7 @@ end;
     
 function TGPGraphics.EnumerateMetafileF( metafile: IGPMetafile; destPoints: array of TGPPointF;
   const srcRect: TGPRectF; srcUnit: TGPUnit; callback: TGPEnumerateMetafileProc;
-  imageAttributes: IGPImageAttributes = nil) : TGPGraphics;
+  imageAttributes: IGPImageAttributes = NIL) : TGPGraphics;
 var
   nMetafile: GpMetafile;
   nimageAttributes: GpimageAttributes;
@@ -13597,13 +13811,13 @@ begin
     nMetafile := GpMetafile(Metafile.GetNativeImage())
 
   else
-    nMetafile := nil;
+    nMetafile := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -13624,7 +13838,7 @@ end;
 
 function TGPGraphics.EnumerateMetafile(metafile: IGPMetafile; destPoints: array of TGPPoint;
   const srcRect: TGPRect; srcUnit: TGPUnit; callback: TGPEnumerateMetafileProc;
-  imageAttributes: IGPImageAttributes = nil) : TGPGraphics;
+  imageAttributes: IGPImageAttributes = NIL) : TGPGraphics;
 var
   nMetafile: GpMetafile;
   nimageAttributes: GpimageAttributes;
@@ -13636,13 +13850,13 @@ begin
     nMetafile := GpMetafile(Metafile.GetNativeImage())
 
   else
-    nMetafile := nil;
+    nMetafile := NIL;
       
   if( Assigned(imageAttributes)) then
     nimageAttributes := imageAttributes.GetNativeImageAttr()
 
   else
-    nimageAttributes := nil;
+    nimageAttributes := NIL;
       
   ADispatcher := TGPIntDispatcher.Create();
   ADispatcherIntf := ADispatcher; 
@@ -14015,18 +14229,18 @@ end;
 
 constructor TGPFontFamily.Create();
 begin
-  FNativeFamily := nil;
+  FNativeFamily := NIL;
 end;
 
-constructor TGPFontFamily.Create(name: WideString; fontCollection: IGPFontCollection = nil);
+constructor TGPFontFamily.Create(name: WideString; fontCollection: IGPFontCollection = NIL);
 var nfontCollection: GpfontCollection;
 begin
-  FNativeFamily := nil;
+  FNativeFamily := NIL;
   if( Assigned(fontCollection)) then
     nfontCollection := fontCollection.GetNativeFontCollection()
 
   else
-    nfontCollection := nil;
+    nfontCollection := NIL;
       
   ErrorCheck( GdipCreateFontFamilyFromName(PWideChar(name), nfontCollection, FNativeFamily));
 end;
@@ -14040,7 +14254,7 @@ class function TGPFontFamily.GenericSansSerif: TGPFontFamily;
 var
   nFontFamily: GpFontFamily;
 begin
-  if (GenericSansSerifFontFamily <> nil) then
+  if (GenericSansSerifFontFamily <> NIL) then
   begin
     Result := GenericSansSerifFontFamily;
     exit;
@@ -14054,7 +14268,7 @@ end;
 class function TGPFontFamily.GenericSerif: TGPFontFamily;
 var nFontFamily: GpFontFamily;
 begin
-  if (GenericSerifFontFamily <> nil) then
+  if (GenericSerifFontFamily <> NIL) then
   begin
     Result := GenericSerifFontFamily;
     exit;
@@ -14069,7 +14283,7 @@ end;
 class function TGPFontFamily.GenericMonospace: TGPFontFamily;
 var nFontFamily: GpFontFamily;
 begin
-  if (GenericMonospaceFontFamily <> nil) then
+  if (GenericMonospaceFontFamily <> NIL) then
   begin
     Result := GenericMonospaceFontFamily;
     exit;
@@ -14093,14 +14307,14 @@ function TGPFontFamily.Clone() : TGPFontFamily;
 var
   clonedFamily: GpFontFamily;
 begin
-  clonedFamily := nil;
+  clonedFamily := NIL;
   ErrorCheck( GdipCloneFontFamily (FNativeFamily, clonedFamily));
   Result := TGPFontFamily.CreateGdiPlus(clonedFamily, False);
 end;
 
 function TGPFontFamily.IsAvailable() : Boolean;
 begin
-  Result := (FNativeFamily <> nil);
+  Result := (FNativeFamily <> NIL);
 end;
 
 function TGPFontFamily.IsStyleAvailable(style: Integer) : Boolean;
@@ -14154,7 +14368,7 @@ end;
 constructor TGPFont.Create(hdc: HDC);
 var font: GpFont;
 begin
-  font := nil;
+  font := NIL;
   ErrorCheck( GdipCreateFontFromDC(hdc, font));
   SetNativeFont(font);
 end;
@@ -14162,7 +14376,7 @@ end;
 constructor TGPFont.Create(hdc: HDC; logfont: PLogFontA);
 var font: GpFont;
 begin
-  font := nil;
+  font := NIL;
   if( Assigned(logfont)) then
     ErrorCheck( GdipCreateFontFromLogfontA(hdc, logfont, font))
       
@@ -14175,7 +14389,7 @@ end;
 constructor TGPFont.Create(hdc: HDC; logfont: PLogFontW);
 var font: GpFont;
 begin
-  font := nil;
+  font := NIL;
   if( Assigned(logfont)) then
     ErrorCheck( GdipCreateFontFromLogfontW(hdc, logfont, font))
       
@@ -14190,7 +14404,7 @@ var
   font: GpFont;
   lf: LOGFONTA;
 begin
-  font := nil;
+  font := NIL;
   if Boolean(hfont) then
     begin
     if( Boolean(GetObjectA(hfont, sizeof(LOGFONTA), @lf))) then
@@ -14213,12 +14427,12 @@ var
   font: GpFont;
   nFontFamily: GpFontFamily;
 begin
-  font := nil;
+  font := NIL;
   if( Assigned(Family)) then
     nFontFamily := Family.GetNativeFamily()
 
   else
-    nFontFamily := nil;
+    nFontFamily := NIL;
       
   ErrorCheck( GdipCreateFont(nFontFamily, emSize, PInteger(@style)^, Integer(unit_), font));
   SetNativeFont(font);
@@ -14231,7 +14445,7 @@ var
   family: IGPFontFamily;
   nativeFamily: GpFontFamily;
 begin
-  FNativeFont := nil;
+  FNativeFont := NIL;
   family := TGPFontFamily.Create(familyName, fontCollection);
   nativeFamily := family.GetNativeFamily();
 
@@ -14262,7 +14476,7 @@ begin
     nGraphics := g.GetNativeGraphics()
 
   else
-    nGraphics := nil;
+    nGraphics := NIL;
       
   ErrorCheck( GdipGetLogFontA(FNativeFont, nGraphics, Result ));
 end;
@@ -14276,7 +14490,7 @@ begin
     nGraphics := g.GetNativeGraphics()
 
   else
-    nGraphics := nil;
+    nGraphics := NIL;
       
   ErrorCheck( GdipGetLogFontW(FNativeFont, nGraphics, Result ));
 end;
@@ -14284,7 +14498,7 @@ end;
 function TGPFont.Clone() : TGPFont;
 var cloneFont: GpFont;
 begin
-  cloneFont := nil;
+  cloneFont := NIL;
   ErrorCheck( GdipCloneFont(FNativeFont, cloneFont));
   Result := TGPFont.CreateGdiPlus(cloneFont, False);
 end;
@@ -14296,7 +14510,7 @@ end;
 
 function TGPFont.IsAvailable: Boolean;
 begin
-  Result := (FNativeFont <> nil);
+  Result := (FNativeFont <> NIL);
 end;
 
 function TGPFont.GetStyle: Integer;
@@ -14321,7 +14535,7 @@ begin
     ngraphics := graphics.GetNativeGraphics()
 
   else
-    ngraphics := nil;
+    ngraphics := NIL;
       
   ErrorCheck( GdipGetFontHeight(FNativeFont, ngraphics, Result));
 end;
@@ -14363,7 +14577,7 @@ end;
 
 constructor TGPFontCollection.Create();
 begin
-  FNativeFontCollection := nil;
+  FNativeFontCollection := NIL;
 end;
 
 destructor TGPFontCollection.Destroy();
@@ -14433,7 +14647,7 @@ begin
 
   getMem(nativeFamilyList, numSought * SizeOf(GpFontFamily));
   try
-    if nativeFamilyList = nil then
+    if nativeFamilyList = NIL then
       ErrorCheck( OutOfMemory);
 
     ErrorCheck( GdipGetFontCollectionFamilyList(
@@ -14454,7 +14668,7 @@ end;
 }
 constructor TGPInstalledFontCollection.Create();
 begin
-  FNativeFontCollection := nil;
+  FNativeFontCollection := NIL;
   ErrorCheck( GdipNewInstalledFontCollection(FNativeFontCollection));
 end;
 
@@ -14465,7 +14679,7 @@ end;
 
 constructor TGPPrivateFontCollection.Create();
 begin
-  FNativeFontCollection := nil;
+  FNativeFontCollection := NIL;
   ErrorCheck( GdipNewPrivateFontCollection(FNativeFontCollection));
 end;
 
@@ -14499,21 +14713,21 @@ end;
 
 constructor TGPGraphicsPath.Create(fillMode: TGPFillMode = FillModeAlternate);
 begin
-  FNativePath := nil;
+  FNativePath := NIL;
   ErrorCheck( GdipCreatePath(fillMode, FNativePath));
 end;
 
 constructor TGPGraphicsPath.Create( points : array of TGPPointF; types : array of BYTE;
     fillMode: TGPFillMode = FillModeAlternate );
 begin
-  FNativePath := nil;
+  FNativePath := NIL;
   ErrorCheck( GdipCreatePath2( @points[ 0 ], @types[ 0 ], Min( Length( points ), Length( types )), fillMode, FNativePath));
 end;
 
 constructor TGPGraphicsPath.Create( points : array of TGPPoint; types : array of BYTE;
     fillMode: TGPFillMode = FillModeAlternate );
 begin
-  FNativePath := nil;
+  FNativePath := NIL;
   ErrorCheck( GdipCreatePath2I( @points[ 0 ], @types[ 0 ], Min( Length( points ), Length( types )), fillMode, FNativePath));
 end;
 
@@ -14526,7 +14740,7 @@ function TGPGraphicsPath.Clone: TGPGraphicsPath;
 var
   clonepath: GpPath;
 begin
-  clonepath := nil;
+  clonepath := NIL;
   ErrorCheck( GdipClonePath(FNativePath, clonepath));
   Result := TGPGraphicsPath.CreateGdiPlus(clonepath, False);
 end;
@@ -14573,27 +14787,27 @@ begin
     if( Assigned(pathData.FPoints)) then
       begin
       FreeMem(pathData.FPoints);
-      pathData.FPoints := nil;
+      pathData.FPoints := NIL;
       end;
 
     if( Assigned(pathData.FTypes)) then
       begin
       FreeMem(pathData.FTypes);
-      pathData.FTypes := nil;
+      pathData.FTypes := NIL;
       end;
     end;
 
   if (pathData.FCount = 0) then
     begin
     getmem(pathData.FPoints, SizeOf(TGPPointF) * count);
-    if (pathData.FPoints = nil) then
+    if (pathData.FPoints = NIL) then
       ErrorCheck( OutOfMemory);
 
     Getmem(pathData.FTypes, count);
-    if (pathData.FTypes = nil) then
+    if (pathData.FTypes = NIL) then
       begin
       freemem(pathData.FPoints);
-      pathData.FPoints := nil;
+      pathData.FPoints := NIL;
       ErrorCheck( OutOfMemory);
       end;
         
@@ -15016,7 +15230,7 @@ function TGPGraphicsPath.AddPath(addingPath: IGPGraphicsPath; connect: Boolean) 
 var
   nativePath2: GpPath;
 begin
-  nativePath2 := nil;
+  nativePath2 := NIL;
   if( Assigned(addingPath)) then
     nativePath2 := addingPath.GetNativePath();
       
@@ -15066,8 +15280,8 @@ begin
   rect.Width := 0.0;
   rect.Height := 0.0;
 
-  gpff := nil;
-  gpsf := nil;
+  gpff := NIL;
+  gpsf := NIL;
   if( Assigned(family)) then
     gpff := family.GetNativeFamily();
 
@@ -15091,8 +15305,8 @@ var
   gpff : GPFONTFAMILY;
   gpsf : GPSTRINGFORMAT;
 begin
-  gpff := nil;
-  gpsf := nil;
+  gpff := NIL;
+  gpsf := NIL;
   if( Assigned(family)) then
     gpff := family.GetNativeFamily();
 
@@ -15122,8 +15336,8 @@ begin
   rect.Y := origin.Y;
   rect.Width := 0;
   rect.Height := 0;
-  gpff := nil;
-  gpsf := nil;
+  gpff := NIL;
+  gpsf := NIL;
   if( Assigned(family)) then
     gpff := family.GetNativeFamily();
 
@@ -15147,8 +15361,8 @@ var
   gpff : GPFONTFAMILY;
   gpsf : GPSTRINGFORMAT;
 begin
-  gpff := nil;
-  gpsf := nil;
+  gpff := NIL;
+  gpsf := NIL;
   if( Assigned(family)) then
     gpff := family.GetNativeFamily();
       
@@ -15171,14 +15385,14 @@ end;
 
   // This is not always the tightest bounds.
 
-function TGPGraphicsPath.GetBoundsF( matrix: IGPMatrix = nil; pen: IGPPen = nil) : TGPRectF;
+function TGPGraphicsPath.GetBoundsF( matrix: IGPMatrix = NIL; pen: IGPPen = NIL) : TGPRectF;
 var
   nativeMatrix: GpMatrix;
   nativePen: GpPen;
 
 begin
-  nativeMatrix := nil;
-  nativePen    := nil;
+  nativeMatrix := NIL;
+  nativePen    := NIL;
   if( Assigned(matrix)) then
     nativeMatrix := matrix.GetNativeMatrix();
 
@@ -15188,14 +15402,14 @@ begin
   ErrorCheck( GdipGetPathWorldBounds(FNativePath, @Result, nativeMatrix, nativePen));
 end;
 
-function TGPGraphicsPath.GetBounds( matrix: IGPMatrix = nil; pen: IGPPen = nil) : TGPRect;
+function TGPGraphicsPath.GetBounds( matrix: IGPMatrix = NIL; pen: IGPPen = NIL) : TGPRect;
 var
   nativeMatrix: GpMatrix;
   nativePen: GpPen;
     
 begin
-  nativeMatrix := nil;
-  nativePen    := nil;
+  nativeMatrix := NIL;
+  nativePen    := NIL;
   if( Assigned(matrix)) then
     nativeMatrix := matrix.GetNativeMatrix();
       
@@ -15206,13 +15420,13 @@ begin
 end;
 
   // Once flattened, the resultant path is made of line segments and
-  // the original path information is lost.  When matrix is nil the
+  // the original path information is lost.  When matrix is NIL the
   // identity matrix is assumed.
 
-function TGPGraphicsPath.Flatten(matrix: IGPMatrix = nil; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
+function TGPGraphicsPath.Flatten(matrix: IGPMatrix = NIL; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
 var nativeMatrix: GpMatrix;
 begin
-  nativeMatrix := nil;
+  nativeMatrix := NIL;
   if( Assigned(matrix)) then
     nativeMatrix := matrix.GetNativeMatrix();
       
@@ -15220,13 +15434,13 @@ begin
   Result := Self;
 end;
 
-function TGPGraphicsPath.Widen( pen: IGPPen; matrix: IGPMatrix = nil; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
+function TGPGraphicsPath.Widen( pen: IGPPen; matrix: IGPMatrix = NIL; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
 var nativeMatrix: GpMatrix;
 begin
   if( pen = NIL ) then
     ErrorCheck( InvalidParameter );
 
-  nativeMatrix := nil;
+  nativeMatrix := NIL;
   if( Assigned(matrix)) then
     nativeMatrix := matrix.GetNativeMatrix();
       
@@ -15234,10 +15448,10 @@ begin
   Result := Self;
 end;
 
-function TGPGraphicsPath.Outline(matrix: IGPMatrix = nil; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
+function TGPGraphicsPath.Outline(matrix: IGPMatrix = NIL; flatness: Single = FlatnessDefault) : TGPGraphicsPath;
 var nativeMatrix: GpMatrix;
 begin
-  nativeMatrix := nil;
+  nativeMatrix := NIL;
   if( Assigned(matrix)) then
     nativeMatrix := matrix.GetNativeMatrix();
       
@@ -15246,20 +15460,20 @@ begin
 end;
 
   // Once this is called, the resultant path is made of line segments and
-  // the original path information is lost.  When matrix is nil, the
+  // the original path information is lost.  When matrix is NIL, the
   // identity matrix is assumed.
 
-function TGPGraphicsPath.Warp(destPoints: PGPPointF; count: Integer; srcRect: TGPRectF;
-          matrix: IGPMatrix = nil; warpMode: TGPWarpMode = WarpModePerspective;
+function TGPGraphicsPath.Warp( destPoints : array of TGPPointF; srcRect: TGPRectF;
+          matrix: IGPMatrix = NIL; warpMode: TGPWarpMode = WarpModePerspective;
           flatness: Single = FlatnessDefault) : TGPGraphicsPath;
 var nativeMatrix: GpMatrix;
 begin
-  nativeMatrix := nil;
+  nativeMatrix := NIL;
   if( Assigned(matrix)) then
     nativeMatrix := matrix.GetNativeMatrix();
       
-  ErrorCheck( GdipWarpPath(FNativePath, nativeMatrix, destPoints,
-              count, srcRect.X, srcRect.Y, srcRect.Width, srcRect.Height,
+  ErrorCheck( GdipWarpPath(FNativePath, nativeMatrix, @destPoints[ 0 ],
+              Length( destPoints ), srcRect.X, srcRect.Y, srcRect.Width, srcRect.Height,
               warpMode, flatness));
                 
   Result := Self;
@@ -15299,19 +15513,19 @@ begin
   ErrorCheck( GdipGetPathPointsI(FNativePath, @Result[ 0 ], count ));
 end;
 
-function TGPGraphicsPath.IsVisibleF(point: TGPPointF; g: IGPGraphics = nil) : Boolean;
+function TGPGraphicsPath.IsVisibleF(point: TGPPointF; g: IGPGraphics = NIL) : Boolean;
 begin
   Result := IsVisibleF(point.X, point.Y, g);
 end;
 
-function TGPGraphicsPath.IsVisibleF(x, y: Single; g: IGPGraphics = nil) : Boolean;
+function TGPGraphicsPath.IsVisibleF(x, y: Single; g: IGPGraphics = NIL) : Boolean;
 var
   booln: BOOL;
   nativeGraphics: GpGraphics;
     
 begin
   booln := False;
-  nativeGraphics := nil;
+  nativeGraphics := NIL;
   if( Assigned(g)) then
     nativeGraphics := g.GetNativeGraphics();
       
@@ -15319,19 +15533,19 @@ begin
   Result := booln;
 end;
 
-function TGPGraphicsPath.IsVisible(point: TGPPoint; g : IGPGraphics = nil) : Boolean;
+function TGPGraphicsPath.IsVisible(point: TGPPoint; g : IGPGraphics = NIL) : Boolean;
 begin
   Result := IsVisible(point.X, point.Y, g);
 end;
 
-function TGPGraphicsPath.IsVisible(x, y: Integer; g: IGPGraphics = nil) : Boolean;
+function TGPGraphicsPath.IsVisible(x, y: Integer; g: IGPGraphics = NIL) : Boolean;
 var
   booln: BOOL;
   nativeGraphics: GpGraphics;
 
 begin
   booln := False;
-  nativeGraphics := nil;
+  nativeGraphics := NIL;
   if( Assigned(g)) then
     nativeGraphics := g.GetNativeGraphics();
       
@@ -15339,20 +15553,20 @@ begin
   Result := booln;
 end;
 
-function TGPGraphicsPath.IsOutlineVisibleF(point: TGPPointF; pen: IGPPen; g: IGPGraphics = nil) : Boolean;
+function TGPGraphicsPath.IsOutlineVisibleF(point: TGPPointF; pen: IGPPen; g: IGPGraphics = NIL) : Boolean;
 begin
   Result := IsOutlineVisibleF(point.X, point.Y, pen, g);
 end;
 
-function TGPGraphicsPath.IsOutlineVisibleF(x, y: Single; pen: IGPPen; g: IGPGraphics = nil) : Boolean;
+function TGPGraphicsPath.IsOutlineVisibleF(x, y: Single; pen: IGPPen; g: IGPGraphics = NIL) : Boolean;
 var
   booln: BOOL;
   nativeGraphics: GpGraphics;
   nativePen: GpPen;
 begin
   booln := False;
-  nativeGraphics := nil;
-  nativePen := nil;
+  nativeGraphics := NIL;
+  nativePen := NIL;
   if( Assigned(g)) then
     nativeGraphics := g.GetNativeGraphics();
 
@@ -15363,20 +15577,20 @@ begin
   Result := booln;
 end;
 
-function TGPGraphicsPath.IsOutlineVisible(point: TGPPoint; pen: IGPPen; g: IGPGraphics = nil) : Boolean;
+function TGPGraphicsPath.IsOutlineVisible(point: TGPPoint; pen: IGPPen; g: IGPGraphics = NIL) : Boolean;
 begin
   Result := IsOutlineVisible(point.X, point.Y, pen, g);
 end;
 
-function TGPGraphicsPath.IsOutlineVisible(x, y: Integer; pen: IGPPen; g: IGPGraphics = nil) : Boolean;
+function TGPGraphicsPath.IsOutlineVisible(x, y: Integer; pen: IGPPen; g: IGPGraphics = NIL) : Boolean;
 var
   booln: BOOL;
   nativeGraphics: GpGraphics;
   nativePen: GpPen;
 begin
   booln := False;
-  nativeGraphics := nil;
-  nativePen := nil;
+  nativeGraphics := NIL;
+  nativePen := NIL;
   if( Assigned(g)) then
     nativeGraphics := g.GetNativeGraphics();
 
@@ -15390,7 +15604,7 @@ end;
 constructor TGPGraphicsPath.Create(path: IGPGraphicsPath);
 var clonepath: GpPath;
 begin
-  clonepath := nil;
+  clonepath := NIL;
   ErrorCheck( GdipClonePath(path.GetNativePath(), clonepath));
   SetNativePath(clonepath);
 end;
@@ -15419,11 +15633,11 @@ var
   nativePath: GpPath;
   iter: GpPathIterator;
 begin
-  nativePath := nil;
+  nativePath := NIL;
   if( Assigned(path)) then
     nativePath := path.GetNativePath();
       
-  iter := nil;
+  iter := NIL;
   ErrorCheck( GdipCreatePathIter(iter, nativePath));
   SetNativeIterator(iter);
 end;
@@ -15446,7 +15660,7 @@ var
   AValue : BOOL;
     
 begin
-  nativePath := nil;
+  nativePath := NIL;
   if( Assigned(path)) then
     nativePath := path.GetNativePath();
       
@@ -15474,7 +15688,7 @@ end;
 function TGPGraphicsPathIterator.NextMarker(path: IGPGraphicsPath) : Integer;
 var nativePath: GpPath;
 begin
-  nativePath := nil;
+  nativePath := NIL;
   if( Assigned(path)) then
     nativePath := path.GetNativePath();
       
@@ -15536,7 +15750,7 @@ end;
 constructor TGPPathGradientBrush.CreateF(points: array of TGPPointF; wrapMode: TGPWrapMode = WrapModeClamp);
 var brush: GpPathGradient;
 begin
-  brush := nil;
+  brush := NIL;
   ErrorCheck( GdipCreatePathGradient(@points[ 0 ], Length( points ), wrapMode, brush));
   SetNativeBrush(brush);
 end;
@@ -15544,7 +15758,7 @@ end;
 constructor TGPPathGradientBrush.Create(points: array of TGPPoint; wrapMode: TGPWrapMode = WrapModeClamp);
 var brush: GpPathGradient;
 begin
-  brush := nil;
+  brush := NIL;
   ErrorCheck( GdipCreatePathGradientI(@points[ 0 ], Length( points ), wrapMode, brush));
   SetNativeBrush(brush);
 end;
@@ -15638,7 +15852,7 @@ end;
 function TGPPathGradientBrush.SetGraphicsPath(path: IGPGraphicsPath) : TGPPathGradientBrush;
 begin
   Result := Self;
-  if(path = nil) then
+  if(path = NIL) then
     ErrorCheck( InvalidParameter);
 
   ErrorCheck( GdipSetPathGradientPath(GpPathGradient(GetNativeBrush()), path.GetNativePath() ));
@@ -16273,8 +16487,8 @@ end;
 constructor TGPPathData.Create();
 begin
   FCount := 0;
-  FPoints := nil;
-  FTypes := nil;
+  FPoints := NIL;
+  FTypes := NIL;
 end;
 
 destructor TGPPathData.Destroy();
@@ -16327,7 +16541,7 @@ begin
 Result := (pixfmt and PixelFormatCanonical) <> 0;
 end;
 
-{$IFDEF VER230} // Delphi 16.0
+{$IFDEF DELPHI16_UP} // Delphi 16.0
 function ColorToRGB(Color: TColor): Longint;
 begin
   if Color < 0 then
@@ -16529,7 +16743,7 @@ begin
     Result :=  @FHeader.FWmfHeader
 
   else
-    Result := nil;
+    Result := NIL;
       
 end;
 
@@ -16539,7 +16753,7 @@ begin
     Result := @FHeader.FEmfHeader
 
   else
-    Result := nil;
+    Result := NIL;
       
 end;
 
@@ -16825,7 +17039,7 @@ begin
 
   GInitialized := True;
   // Initialize StartupInput structure
-  StartupInput.DebugEventCallback := nil;
+  StartupInput.DebugEventCallback := NIL;
   StartupInput.SuppressBackgroundThread := True;
   StartupInput.SuppressExternalCodecs   := False;
   StartupInput.GdiplusVersion := 1;

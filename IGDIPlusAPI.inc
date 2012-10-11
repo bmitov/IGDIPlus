@@ -10,7 +10,8 @@ type
   GpRectF           = PGPRectF;
   GpRect            = PGPRect;
   GpSizeF           = PGPSizeF;
-  
+  PGPBitmapDataRecord = ^TGPBitmapDataRecord;
+
   GpEnumerateMetafileProc = function(recordType: TGPEmfPlusRecordType; flags: UINT;
     dataSize: UINT; data: PBYTE; callbackData: pointer): BOOL; stdcall;
 
@@ -1132,10 +1133,10 @@ type
     out dstBitmap: GPBITMAP): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipBitmapLockBits(bitmap: GPBITMAP; rect: GPRECT; flags: UINT;
-    format: TGPPixelFormat; lockedBitmapData: PGPBitmapData): GpStatus; stdcall; external WINGDIPDLL;
+    format: TGPPixelFormat; lockedBitmapData: PGPBitmapDataRecord): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipBitmapUnlockBits(bitmap: GPBITMAP;
-    lockedBitmapData: PGPBitmapData): GpStatus; stdcall; external WINGDIPDLL;
+    lockedBitmapData: PGPBitmapDataRecord): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipBitmapGetPixel(bitmap: GPBITMAP; x: Integer; y: Integer;
     var color: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
