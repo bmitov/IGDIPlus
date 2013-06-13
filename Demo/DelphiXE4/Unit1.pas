@@ -3,7 +3,8 @@ unit Unit1;
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
 
 type
   TForm1 = class(TForm)
@@ -36,7 +37,7 @@ begin
   AGraphics := TGPGraphics.Create( Canvas );
   AGraphics.SmoothingMode := SmoothingModeAntiAlias;
   AGraphics.TextRenderingHint := TextRenderingHintAntiAlias;
-  
+
   ALeftTopCorner := MakePointF( 20, 20 );
   AFont := TGPFont.Create( 'Microsoft Sans Serif', 40, [ fsBold ] );
   ARect := AGraphics.GetStringBoundingBoxF( 'Welcome to IGDI+', AFont, ALeftTopCorner );
@@ -123,4 +124,4 @@ begin
               0, 0, 200, 80 );
 end;
 
-end. 
+end.

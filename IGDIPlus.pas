@@ -56,6 +56,10 @@ unit IGDIPlus;
 {$DEFINE DELPHI16_UP}
 {$ENDIF}
 
+{$IFDEF VER250} // Delphi 18.0
+{$DEFINE DELPHI16_UP}
+{$ENDIF}
+
 interface
 uses
   Windows,
@@ -83,7 +87,11 @@ type
   TGPSingleArray = array of Single;
   TGPByteArray = array of Byte;
 
+{$IFDEF CPUX64}
+{$HPPEMIT '#pragma link "cbgdiplus.a"'}
+{$ELSE}
 {$HPPEMIT '#pragma link "cbgdiplus.lib"'}
+{$ENDIF}
 
 {$HPPEMIT '__interface _di_IGPFontFamily;' }
 
@@ -1946,7 +1954,7 @@ type
     ProfileNotFound
   );
 
-  type EGPLoadError = class(Exception);
+  type EGPException = class(Exception);
   
 (**************************************************************************\
 *
@@ -1977,8 +1985,8 @@ type
     Height : Single;
   end;
 
-  function MakeSizeF( Width, Height: Single) : TGPSizeF; overload;
-  function MakeSizeF( ASize : Single) : TGPSizeF; overload;
+  function MakeSizeF( Width, Height: Single) : TGPSizeF; overload; inline;
+  function MakeSizeF( ASize : Single) : TGPSizeF; overload; inline;
 
 //--------------------------------------------------------------------------
 // Represents a dimension in a 2D coordinate system (integer coordinates)
@@ -1991,8 +1999,8 @@ type
     Height : Integer;
   end;
 
-  function MakeSize( Width, Height: Integer ) : TGPSize; overload;
-  function MakeSize( ASize : Integer ) : TGPSize; overload;
+  function MakeSize( Width, Height: Integer ) : TGPSize; overload; inline;
+  function MakeSize( ASize : Integer ) : TGPSize; overload; inline;
 
 //--------------------------------------------------------------------------
 // Represents a location in a 2D coordinate system (floating-point coordinates)
@@ -2013,12 +2021,12 @@ type
   PGPPoint = ^TGPPoint;
   TGPPoint = TPoint;
 
-  function MakePointF( X, Y: Single ) : TGPPointF; overload;
-  function MakePointF( XY: Single ) : TGPPointF; overload;
-  function MakePointF( APoint : TGPPoint ) : TGPPointF; overload;
-  function MakePoint( X, Y: Integer ) : TGPPoint; overload;
-  function MakePoint( XY: Integer ) : TGPPoint; overload;
-  function MakePoint( APoint : TPoint ) : TGPPoint; overload;
+  function MakePointF( X, Y: Single ) : TGPPointF; overload; inline;
+  function MakePointF( XY: Single ) : TGPPointF; overload; inline;
+  function MakePointF( APoint : TGPPoint ) : TGPPointF; overload; inline;
+  function MakePoint( X, Y: Integer ) : TGPPoint; overload; inline;
+  function MakePoint( XY: Integer ) : TGPPoint; overload; inline;
+  function MakePoint( APoint : TPoint ) : TGPPoint; overload; inline;
 
 //--------------------------------------------------------------------------
 // Represents a rectangle in a 2D coordinate system (floating-point coordinates)
@@ -2042,22 +2050,22 @@ type
     Height: Integer;
   end;
 
-  function MakeRectF(x, y, width, height: Single) : TGPRectF; overload;
-  function MakeRectF(location: TGPPointF; size: TGPSizeF) : TGPRectF; overload;
-  function MakeRectF( const Rect: TRect ) : TGPRectF; overload;
-  function MakeRectF( const Rect: TGPRect ) : TGPRectF; overload;
+  function MakeRectF(x, y, width, height: Single) : TGPRectF; overload; inline;
+  function MakeRectF(location: TGPPointF; size: TGPSizeF) : TGPRectF; overload; inline;
+  function MakeRectF( const Rect: TRect ) : TGPRectF; overload; inline;
+  function MakeRectF( const Rect: TGPRect ) : TGPRectF; overload; inline;
 
-  function MakeRect(x, y, width, height: Integer) : TGPRect; overload;
-  function MakeRect(location: TGPPoint; size: TGPSize) : TGPRect; overload;
-  function MakeRect(const Rect: TRect) : TGPRect; overload;
-  function RectFrom( const Rect: TGPRect ) : TRect;
-  function GPInflateRect( ARect: TGPRect; CX, CY: Integer ) : TGPRect; overload;
-  function GPInflateRect( ARect: TGPRect; Change: Integer ) : TGPRect; overload;
-  function GPInflateRectF( ARect: TGPRectF; CX, CY: Single ) : TGPRectF; overload;
-  function GPInflateRectF( ARect: TGPRectF; Change: Single ) : TGPRectF; overload;
-  function GPIntersectRect( ARect1 : TGPRect; ARect2 : TGPRect ) : TGPRect;
-  function GPCheckIntersectRect( ARect1 : TGPRect; ARect2 : TGPRect ) : Boolean;
-  function GPEqualRect( ARect1 : TGPRect; ARect2 : TGPRect ) : Boolean;
+  function MakeRect(x, y, width, height: Integer) : TGPRect; overload; inline;
+  function MakeRect(location: TGPPoint; size: TGPSize) : TGPRect; overload; inline;
+  function MakeRect(const Rect: TRect) : TGPRect; overload; inline;
+  function RectFrom( const Rect: TGPRect ) : TRect; inline;
+  function GPInflateRect( ARect: TGPRect; CX, CY: Integer ) : TGPRect; overload; inline;
+  function GPInflateRect( ARect: TGPRect; Change: Integer ) : TGPRect; overload; inline;
+  function GPInflateRectF( ARect: TGPRectF; CX, CY: Single ) : TGPRectF; overload; inline;
+  function GPInflateRectF( ARect: TGPRectF; Change: Single ) : TGPRectF; overload; inline;
+  function GPIntersectRect( ARect1 : TGPRect; ARect2 : TGPRect ) : TGPRect; inline;
+  function GPCheckIntersectRect( ARect1 : TGPRect; ARect2 : TGPRect ) : Boolean; inline;
+  function GPEqualRect( ARect1 : TGPRect; ARect2 : TGPRect ) : Boolean; inline;
 
 type
   PGPCharacterRange = ^TGPCharacterRange;
@@ -2066,7 +2074,7 @@ type
     Length : Integer;
   end;
 
-  function MakeCharacterRange(First, Length: Integer) : TGPCharacterRange;
+  function MakeCharacterRange(First, Length: Integer) : TGPCharacterRange; inline;
 
 (**************************************************************************
 *
@@ -2400,7 +2408,7 @@ const
   aclTeal                 = $FF008080;
   aclThistle              = $FFD8BFD8;
   aclTomato               = $FFFF6347;
-  aclTransparent          = $00FFFFFF;
+  aclTransparent          = $00000000;
   aclTurquoise            = $FF40E0D0;
   aclViolet               = $FFEE82EE;
   aclWheat                = $FFF5DEB3;
@@ -2432,7 +2440,8 @@ type
   function ARGBToColorRef(Color: TGPColor) : COLORREF;
   function StringToRGBAColor( AValue : String ) : TGPColor;
   function RGBAColorToString( AValue : TGPColor ) : String;
-  procedure GetStandardRGBAColorNames( ANames : TStrings );
+  procedure GetStandardRGBAColorNames( ANames : TStrings ); overload;
+  procedure GetStandardRGBAColorNames( Proc: TGetStrProc ); overload;
   function  GPGetColor( AColor : TGPColor ) : TColor;
 
 
@@ -2729,11 +2738,9 @@ type
 //---------------------------------------------------------------------------
 
 type
-  TGPImageLockMode = Integer;
-  const
-    ImageLockModeRead         = $0001;
-    ImageLockModeWrite        = $0002;
-    ImageLockModeUserInputBuf = $0004;
+  TGPImageLockMode = ( ImageLockModeRead, ImageLockModeWrite, ImageLockModeUserInputBuf );
+//---------------------------------------------------------------------------
+  TGPImageLockModes = set of TGPImageLockMode;
 
 //---------------------------------------------------------------------------
 // Information about image pixel data
@@ -3758,10 +3765,10 @@ type
     ['{3514B659-EAB2-4A2E-80F5-7A6AD9E2A64B}']
     function GetNativeImage() : GpImage;
     function Clone() : TGPImage;
-    function Save(filename: WideString; const clsidEncoder: TGUID;
-      encoderParams: PGPEncoderParameters = NIL) : TGPImage; overload;
-    function Save(stream: IStream; const clsidEncoder: TGUID;
-      encoderParams: PGPEncoderParameters  = NIL) : TGPImage; overload;
+    function Save(filename: WideString; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters = NIL) : TGPImage; overload;
+    function Save(stream: IStream; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters  = NIL) : TGPImage; overload;
+    function Save(filename: WideString; const formatName : String = 'bmp' ) : TGPImage; overload;
+    function Save(stream: IStream; const formatName : String = 'bmp' ) : TGPImage; overload;
     function SaveAdd(encoderParams: PGPEncoderParameters) : TGPImage; overload;
     function SaveAdd(newImage: IGPImage; encoderParams: PGPEncoderParameters) : TGPImage; overload;
     function GetType() : TGPImageType;
@@ -3778,8 +3785,7 @@ type
     function GetPaletteSize() : Integer;
     function GetPalette(palette: PGPColorPalette; size: Integer) : TGPImage;
     function SetPalette(palette: PGPColorPalette) : TGPImage;
-    function GetThumbnailImage(thumbWidth, thumbHeight: Cardinal;
-      callback: TGPGetThumbnailImageAbortProc = NIL) : TGPImage;
+    function GetThumbnailImage(thumbWidth, thumbHeight: Cardinal; callback: TGPGetThumbnailImageAbortProc = NIL) : TGPImage;
     function GetFrameDimensionsCount() : Cardinal;
     function GetFrameDimensionsList() : TGUIDArray;
     function GetFrameCount(const dimensionID: TGUID) : Cardinal;
@@ -3790,13 +3796,11 @@ type
     function GetPropertyItemSize(propId: PROPID) : Cardinal;
     function GetPropertyItem(propId: PROPID; propSize: Cardinal; buffer: PGPPropertyItem) : TGPImage;
     function GetPropertySize(out totalBufferSize, numProperties : Cardinal) : TGPImage;
-    function GetAllPropertyItems(totalBufferSize, numProperties: Cardinal;
-      allItems: PGPPropertyItem ) : TGPImage;
+    function GetAllPropertyItems(totalBufferSize, numProperties: Cardinal; allItems: PGPPropertyItem ) : TGPImage;
     function RemovePropertyItem(propId: TPROPID) : TGPImage;
     function SetPropertyItem(const item: TGPPropertyItem) : TGPImage;
     function GetEncoderParameterListSize(const clsidEncoder: TGUID) : Cardinal;
-    function GetEncoderParameterList(const clsidEncoder: TGUID; size: Cardinal;
-      buffer: PGPEncoderParameters) : TGPImage;
+    function GetEncoderParameterList(const clsidEncoder: TGUID; size: Cardinal; buffer: PGPEncoderParameters) : TGPImage;
 
     property Width                : Cardinal        read GetWidth;
     property Height               : Cardinal        read GetHeight;
@@ -3820,7 +3824,9 @@ type
     
   protected
     procedure SetNativeImage(nativeImage: GpImage);
-    function GetNativeImage() : GpImage; 
+    function  GetNativeImage() : GpImage;
+
+  protected
     constructor CreateGdiPlus(nativeImage: GpImage; Dummy : Boolean);
 
   public
@@ -3834,10 +3840,10 @@ type
 
   public
     function Clone() : TGPImage;
-    function Save(filename: WideString; const clsidEncoder: TGUID;
-      encoderParams: PGPEncoderParameters = NIL) : TGPImage; overload;
-    function Save(stream: IStream; const clsidEncoder: TGUID;
-      encoderParams: PGPEncoderParameters  = NIL) : TGPImage; overload;
+    function Save(filename: WideString; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters = NIL) : TGPImage; overload;
+    function Save(stream: IStream; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters  = NIL) : TGPImage; overload;
+    function Save(filename: WideString; const formatName : String ) : TGPImage; overload;
+    function Save(stream: IStream; const formatName : String ) : TGPImage; overload;
     function SaveAdd(encoderParams: PGPEncoderParameters) : TGPImage; overload;
     function SaveAdd(newImage: IGPImage; encoderParams: PGPEncoderParameters) : TGPImage; overload;
     function GetType() : TGPImageType;
@@ -3854,8 +3860,7 @@ type
     function GetPaletteSize() : Integer;
     function GetPalette(palette: PGPColorPalette; size: Integer) : TGPImage;
     function SetPalette(palette: PGPColorPalette) : TGPImage;
-    function GetThumbnailImage(thumbWidth, thumbHeight: Cardinal;
-      callback: TGPGetThumbnailImageAbortProc = NIL) : TGPImage;
+    function GetThumbnailImage(thumbWidth, thumbHeight: Cardinal; callback: TGPGetThumbnailImageAbortProc = NIL) : TGPImage;
     function GetFrameDimensionsCount() : Cardinal;
     function GetFrameDimensionsList() : TGUIDArray;
     function GetFrameCount(const dimensionID: TGUID) : Cardinal;
@@ -3866,13 +3871,11 @@ type
     function GetPropertyItemSize(propId: PROPID) : Cardinal;
     function GetPropertyItem(propId: PROPID; propSize: Cardinal; buffer: PGPPropertyItem) : TGPImage;
     function GetPropertySize(out totalBufferSize, numProperties : Cardinal) : TGPImage;
-    function GetAllPropertyItems(totalBufferSize, numProperties: Cardinal;
-      allItems: PGPPropertyItem ) : TGPImage;
+    function GetAllPropertyItems(totalBufferSize, numProperties: Cardinal; allItems: PGPPropertyItem ) : TGPImage;
     function RemovePropertyItem(propId: TPROPID) : TGPImage;
     function SetPropertyItem(const item: TGPPropertyItem) : TGPImage;
     function GetEncoderParameterListSize(const clsidEncoder: TGUID) : Cardinal;
-    function GetEncoderParameterList(const clsidEncoder: TGUID; size: Cardinal;
-      buffer: PGPEncoderParameters) : TGPImage;
+    function GetEncoderParameterList(const clsidEncoder: TGUID; size: Cardinal; buffer: PGPEncoderParameters) : TGPImage;
 
   end;
 
@@ -3899,7 +3902,8 @@ type
     function  Clone(x, y, width, height: Integer; format: TGPPixelFormat) : TGPBitmap; overload;
     function  CloneF(rect: TGPRectF; format: TGPPixelFormat) : TGPBitmap; overload;
     function  CloneF(x, y, width, height: Single; format: TGPPixelFormat) : TGPBitmap; overload;
-    function  LockBits(rect: TGPRect; flags: Cardinal; format: TGPPixelFormat ) : IGPBitmapData;
+    function  LockBits(rect: TGPRect; flags: TGPImageLockModes; format: TGPPixelFormat ) : IGPBitmapData; overload;
+    function  LockBits( flags: TGPImageLockModes; format: TGPPixelFormat ) : IGPBitmapData; overload;
     function  GetPixel(x, y: Integer) : TGPColor;
     function  SetPixel(x, y: Integer; color: TGPColor) : TGPBitmap;
     procedure SetPixelProp(x, y: Integer; color: TGPColor);
@@ -3943,7 +3947,8 @@ type
     function  Clone(x, y, width, height: Integer; format: TGPPixelFormat) : TGPBitmap; overload;
     function  CloneF(rect: TGPRectF; format: TGPPixelFormat) : TGPBitmap; overload;
     function  CloneF(x, y, width, height: Single; format: TGPPixelFormat) : TGPBitmap; overload;
-    function  LockBits( rect: TGPRect; flags: Cardinal; format: TGPPixelFormat ) : IGPBitmapData;
+    function  LockBits( rect: TGPRect; flags: TGPImageLockModes; format: TGPPixelFormat ) : IGPBitmapData; overload;
+    function  LockBits( flags: TGPImageLockModes; format: TGPPixelFormat ) : IGPBitmapData; overload;
     function  GetPixel(x, y: Integer) : TGPColor;
     function  SetPixel(x, y: Integer; color: TGPColor) : TGPBitmap;
     procedure SetPixelProp(x, y: Integer; color: TGPColor);
@@ -4402,6 +4407,7 @@ type
     function  MultiplyTransform(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function  TranslateTransform(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
+    function  ScaleTransformXY(s : Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function  RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
 
     property Transform  : IGPMatrix read GetTransform write SetTransformProp;
@@ -4418,7 +4424,8 @@ type
     function  ResetTransform() : TGPTextureBrush;
     function  MultiplyTransform(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush;
     function  TranslateTransform(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush;
-    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush;
+    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush; overload;
+    function  ScaleTransform(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush; overload;
     function  RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush;
 
     function  SetWrapMode(wrapMode: TGPWrapMode) : TGPTextureBrush;
@@ -4438,10 +4445,8 @@ type
     constructor Create(image: IGPImage; dstRect: TGPRectF; imageAttributes: IGPImageAttributes = NIL); overload;
     constructor Create(image: IGPImage; dstRect: TGPRect; imageAttributes: IGPImageAttributes = NIL); overload;
     constructor Create(image: IGPImage; wrapMode: TGPWrapMode; dstRect: TGPRect); overload;
-    constructor Create(image: IGPImage; wrapMode: TGPWrapMode; dstX, dstY, dstWidth,
-      dstHeight: Single); overload;
-    constructor Create(image: IGPImage; wrapMode: TGPWrapMode; dstX, dstY, dstWidth,
-      dstHeight: Integer); overload;
+    constructor Create(image: IGPImage; wrapMode: TGPWrapMode; dstX, dstY, dstWidth, dstHeight: Single); overload;
+    constructor Create(image: IGPImage; wrapMode: TGPWrapMode; dstX, dstY, dstWidth, dstHeight: Integer); overload;
     constructor Create(); overload;
 
   protected
@@ -4450,15 +4455,17 @@ type
     function  MultiplyTransformT(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function  TranslateTransformT(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function  ScaleTransformT(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
+    function  ScaleTransformXYT(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function  RotateTransformT(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
-              
+
     function  IGPTransformable.SetTransform = SetTransformT;
     function  IGPTransformable.ResetTransform = ResetTransformT;
     function  IGPTransformable.MultiplyTransform = MultiplyTransformT;
     function  IGPTransformable.TranslateTransform = TranslateTransformT;
     function  IGPTransformable.ScaleTransform = ScaleTransformT;
+    function  IGPTransformable.ScaleTransformXY = ScaleTransformXYT;
     function  IGPTransformable.RotateTransform = RotateTransformT;
-              
+
   public
     function  SetTransform(matrix: IGPMatrix) : TGPTextureBrush;
     procedure SetTransformProp(matrix: IGPMatrix);
@@ -4466,7 +4473,8 @@ type
     function  ResetTransform() : TGPTextureBrush;
     function  MultiplyTransform(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush;
     function  TranslateTransform(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush;
-    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush;
+    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush; overload;
+    function  ScaleTransform(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush; overload;
     function  RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush;
     function  GetWrapMode() : TGPWrapMode;
     function  SetWrapMode(wrapMode: TGPWrapMode) : TGPTextureBrush;
@@ -4502,6 +4510,7 @@ type
     function  MultiplyTransform(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPLinearGradientBrush;
     function  TranslateTransform(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPLinearGradientBrush; overload;
     function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPLinearGradientBrush; overload;
+    function  ScaleTransform(s : Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPLinearGradientBrush; overload;
     function  RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPLinearGradientBrush; overload;
     
     function  SetWrapMode(wrapMode: TGPWrapMode) : TGPLinearGradientBrush;
@@ -4553,7 +4562,8 @@ type
     function  ResetTransform() : TGPLinearGradientBrush;
     function  MultiplyTransform(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPLinearGradientBrush;
     function  TranslateTransform(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPLinearGradientBrush;
-    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPLinearGradientBrush;
+    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPLinearGradientBrush; overload;
+    function  ScaleTransform(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPLinearGradientBrush; overload;
     function  RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPLinearGradientBrush;
 
     procedure SetWrapModeProp(wrapMode: TGPWrapMode);
@@ -4566,6 +4576,7 @@ type
     function MultiplyTransformT(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function TranslateTransformT(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function ScaleTransformT(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
+    function ScaleTransformXYT(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function RotateTransformT(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
 
     function IGPTransformable.SetTransform = SetTransformT;
@@ -4573,6 +4584,7 @@ type
     function IGPTransformable.MultiplyTransform = MultiplyTransformT;
     function IGPTransformable.TranslateTransform = TranslateTransformT;
     function IGPTransformable.ScaleTransform = ScaleTransformT;
+    function  IGPTransformable.ScaleTransformXY = ScaleTransformXYT;
     function IGPTransformable.RotateTransform = RotateTransformT;
 
   end;
@@ -4682,7 +4694,8 @@ type
     function  ResetTransform() : TGPPen;
     function  MultiplyTransform(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen;
     function  TranslateTransform(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen;
-    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen;
+    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen; overload;
+    function  ScaleTransform(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen; overload;
     function  RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen;
               
     function  GetPenType() : TGPPenType;
@@ -4802,7 +4815,8 @@ type
     function  ResetTransform() : TGPPen;
     function  MultiplyTransform(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen;
     function  TranslateTransform(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen;
-    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen;
+    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen; overload;
+    function  ScaleTransform(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen; overload;
     function  RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen;
               
     function  GetPenType() : TGPPenType;
@@ -4839,6 +4853,7 @@ type
     function MultiplyTransformT(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function TranslateTransformT(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function ScaleTransformT(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
+    function ScaleTransformXYT(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function RotateTransformT(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
 
     function IGPTransformable.SetTransform = SetTransformT;
@@ -4846,6 +4861,7 @@ type
     function IGPTransformable.MultiplyTransform = MultiplyTransformT;
     function IGPTransformable.TranslateTransform = TranslateTransformT;
     function IGPTransformable.ScaleTransform = ScaleTransformT;
+    function  IGPTransformable.ScaleTransformXY = ScaleTransformXYT;
     function IGPTransformable.RotateTransform = RotateTransformT;
 
   end;
@@ -5340,7 +5356,8 @@ type
     function  ResetTransform() : TGPPathGradientBrush;
     function  MultiplyTransform(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush;
     function  TranslateTransform(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush;
-    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush;
+    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush; overload;
+    function  ScaleTransform(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush; overload;
     function  RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush;
     function  GetFocusScales(out xScale, yScale: Single) : TGPPathGradientBrush;
     function  SetFocusScales(xScale, yScale: Single) : TGPPathGradientBrush;
@@ -5410,7 +5427,8 @@ type
     function  ResetTransform() : TGPPathGradientBrush;
     function  MultiplyTransform(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush;
     function  TranslateTransform(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush;
-    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush;
+    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush; overload;
+    function  ScaleTransform(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush; overload;
     function  RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush;
     function  GetFocusScales(out xScale, yScale: Single) : TGPPathGradientBrush;
     function  SetFocusScales(xScale, yScale: Single) : TGPPathGradientBrush;
@@ -5424,6 +5442,7 @@ type
     function  MultiplyTransformT(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function  TranslateTransformT(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function  ScaleTransformT(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
+    function  ScaleTransformXYT(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function  RotateTransformT(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
 
     function  IGPTransformable.SetTransform = SetTransformT;
@@ -5431,6 +5450,7 @@ type
     function  IGPTransformable.MultiplyTransform = MultiplyTransformT;
     function  IGPTransformable.TranslateTransform = TranslateTransformT;
     function  IGPTransformable.ScaleTransform = ScaleTransformT;
+    function  IGPTransformable.ScaleTransformXY = ScaleTransformXYT;
     function  IGPTransformable.RotateTransform = RotateTransformT;
 
   end;
@@ -5486,7 +5506,8 @@ type
     function  ResetTransform() : TGPGraphics;
     function  MultiplyTransform(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics;
     function  TranslateTransform(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics;
-    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics;
+    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics; overload;
+    function  ScaleTransform( s : Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics; overload;
     function  RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics;
     function  GetTransform() : IGPMatrix;
     function  SetPageUnit( unit_: TGPUnit ) : TGPGraphics;
@@ -5983,7 +6004,8 @@ type
     function  ResetTransform() : TGPGraphics;
     function  MultiplyTransform(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics;
     function  TranslateTransform(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics;
-    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics;
+    function  ScaleTransform(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics; overload;
+    function  ScaleTransform(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics; overload;
     function  RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics;
     function  GetTransform() : IGPMatrix;
     function  SetPageUnit( unit_: TGPUnit ) : TGPGraphics;
@@ -6403,6 +6425,7 @@ type
     function  MultiplyTransformT(matrix: IGPMatrix; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function  TranslateTransformT(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function  ScaleTransformT(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
+    function  ScaleTransformXYT(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
     function  RotateTransformT(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
 
     function  IGPTransformable.SetTransform = SetTransformT;
@@ -6410,6 +6433,7 @@ type
     function  IGPTransformable.MultiplyTransform = MultiplyTransformT;
     function  IGPTransformable.TranslateTransform = TranslateTransformT;
     function  IGPTransformable.ScaleTransform = ScaleTransformT;
+    function  IGPTransformable.ScaleTransformXY = ScaleTransformXYT;
     function  IGPTransformable.RotateTransform = RotateTransformT;
 
   end;
@@ -6566,7 +6590,7 @@ procedure StopIGDIPlus();
 implementation
 
 uses
-  Math;
+  Math, Types;
 
 type
   TGPBitmapData = class( TGPBase, IGPBitmapData )
@@ -7816,12 +7840,12 @@ var
 begin
   AStatus := GdipGetImageDecodersSize(numDecoders, size);
   if( AStatus <> Ok ) then
-    raise EGPLoadError.Create( GetStatus( AStatus ));
+    raise EGPException.Create( GetStatus( AStatus ));
 
   SetLength( Result, numDecoders );
   AStatus := GdipGetImageDecoders( numDecoders, size, @Result[ 0 ] );
   if( AStatus <> Ok ) then
-    raise EGPLoadError.Create( GetStatus( AStatus ));
+    raise EGPException.Create( GetStatus( AStatus ));
 
 end;
 
@@ -7838,12 +7862,12 @@ var
 begin
   AStatus := GdipGetImageEncodersSize(numEncoders, size);
   if( AStatus <> Ok ) then
-    raise EGPLoadError.Create( GetStatus( AStatus ));
+    raise EGPException.Create( GetStatus( AStatus ));
 
   SetLength( Result, numEncoders );
   AStatus := GdipGetImageEncoders( numEncoders, size, @Result[ 0 ] );
   if( AStatus <> Ok ) then
-    raise EGPLoadError.Create( GetStatus( AStatus ));
+    raise EGPException.Create( GetStatus( AStatus ));
       
 end;
 
@@ -8862,6 +8886,11 @@ begin
   Result := Self;
 end;
 
+function TGPPen.ScaleTransform(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen;
+begin
+  Result := ScaleTransform( s, s, order );
+end;
+
 function TGPPen.RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPen;
 begin
   ErrorCheck( GdipRotatePenTransform(FNativePen, angle, order));
@@ -8896,6 +8925,11 @@ function TGPPen.ScaleTransformT(sx, sy: Single; order: TGPMatrixOrder = MatrixOr
 begin
   ErrorCheck( GdipScalePenTransform(FNativePen, sx, sy, order));
   Result := Self;
+end;
+
+function TGPPen.ScaleTransformXYT(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
+begin
+  Result := ScaleTransformT( s, s, order );
 end;
 
 function TGPPen.RotateTransformT(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
@@ -9316,6 +9350,11 @@ begin
   Result := Self;
 end;
 
+function TGPTextureBrush.ScaleTransform(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush;
+begin
+  Result := ScaleTransform( s, s, order );
+end;
+
 function TGPTextureBrush.RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPTextureBrush;
 begin
   ErrorCheck( GdipRotateTextureTransform(GpTexture(FNativeBrush), angle, order));
@@ -9359,6 +9398,11 @@ begin
                sx, sy, order));
 
   Result := Self;
+end;
+
+function TGPTextureBrush.ScaleTransformXYT(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
+begin
+  Result := ScaleTransformT( s, s, order );
 end;
 
 function TGPTextureBrush.RotateTransformT(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
@@ -9734,6 +9778,11 @@ begin
   Result := Self;
 end;
 
+function TGPLinearGradientBrush.ScaleTransform(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPLinearGradientBrush;
+begin
+  Result := ScaleTransform( s, s, order );
+end;
+
 function TGPLinearGradientBrush.RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPLinearGradientBrush;
 begin
   ErrorCheck( GdipRotateLineTransform(GpLineGradient(FNativeBrush),
@@ -9768,24 +9817,26 @@ end;
 
 function TGPLinearGradientBrush.TranslateTransformT(dx, dy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
 begin
-  ErrorCheck( GdipTranslateLineTransform(GpLineGradient(FNativeBrush),
-                                                             dx, dy, order));
+  ErrorCheck( GdipTranslateLineTransform(GpLineGradient(FNativeBrush), dx, dy, order));
 
   Result := Self;
 end;
 
 function TGPLinearGradientBrush.ScaleTransformT(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
 begin
-  ErrorCheck( GdipScaleLineTransform(GpLineGradient(FNativeBrush),
-                                                           sx, sy, order));
+  ErrorCheck( GdipScaleLineTransform(GpLineGradient(FNativeBrush), sx, sy, order));
 
   Result := Self;
 end;
 
+function TGPLinearGradientBrush.ScaleTransformXYT(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
+begin
+  Result := ScaleTransformT( s, s, order );
+end;
+
 function TGPLinearGradientBrush.RotateTransformT(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
 begin
-  ErrorCheck( GdipRotateLineTransform(GpLineGradient(FNativeBrush),
-                                                            angle, order));
+  ErrorCheck( GdipRotateLineTransform(GpLineGradient(FNativeBrush), angle, order));
 
   Result := Self;
 end;
@@ -9959,30 +10010,50 @@ end;
 function TGPImage.Save(filename: WideString; const clsidEncoder: TGUID;
              encoderParams: PGPEncoderParameters = NIL) : TGPImage;
 begin
-  ErrorCheck( GdipSaveImageToFile(FNativeImage,
-                                                   PWideChar(filename),
-                                                   @clsidEncoder,
-                                                   encoderParams));
+  ErrorCheck( GdipSaveImageToFile( FNativeImage,
+                                   PWideChar(filename),
+                                   @clsidEncoder,
+                                   encoderParams));
 
   Result := Self;
 end;
 
 function TGPImage.Save(stream: IStream; const clsidEncoder: TGUID;
-             encoderParams: PGPEncoderParameters  = NIL) : TGPImage;
+             encoderParams: PGPEncoderParameters = NIL) : TGPImage;
 begin
-  ErrorCheck( GdipSaveImageToStream(FNativeImage,
-                                                     stream,
-                                                     @clsidEncoder,
-                                                     encoderParams));
+  ErrorCheck( GdipSaveImageToStream( FNativeImage,
+                                     stream,
+                                     @clsidEncoder,
+                                     encoderParams));
 
   Result := Self;
 end;
 
+function TGPImage.Save(filename: WideString; const formatName : String ) : TGPImage;
+var
+  pClsid  : TCLSID;
+
+begin
+  if( GetEncoderClsid( 'image/' + formatName, pClsid )) then
+    Exit( Save( filename, pClsid ));
+
+  raise EGPException.Create( 'Unknown image format' );
+end;
+
+function TGPImage.Save(stream: IStream; const formatName : String ) : TGPImage;
+var
+  pClsid  : TCLSID;
+
+begin
+  if( GetEncoderClsid( 'image/' + formatName, pClsid )) then
+    Exit( Save( stream, pClsid ));
+
+  raise EGPException.Create( 'Unknown image format' );
+end;
+
 function TGPImage.SaveAdd(encoderParams: PGPEncoderParameters) : TGPImage;
 begin
-  ErrorCheck( GdipSaveAdd(FNativeImage,
-                                           encoderParams));
-
+  ErrorCheck( GdipSaveAdd(FNativeImage, encoderParams));
   Result := Self;
 end;
 
@@ -10518,13 +10589,35 @@ begin
   Result := Self;
 end;
 
-function TGPBitmap.LockBits( rect: TGPRect; flags: Cardinal; format: TGPPixelFormat ) : IGPBitmapData;
+function TGPBitmap.LockBits( rect: TGPRect; flags : TGPImageLockModes; format: TGPPixelFormat ) : IGPBitmapData;
 var
   ABitmapData : TGPBitmapData;
+  CFlags      : Cardinal;
+  AMode       : TGPImageLockMode;
 
 begin
   ABitmapData := TGPBitmapData.Create( Self );
-  LockBitsInternal(rect, flags, format, ABitmapData.FData );
+  CFlags := 0;
+  for AMode in flags do
+    CFlags := CFlags or ( 1 shl Ord( AMode ));
+
+  LockBitsInternal( rect, CFlags, format, ABitmapData.FData );
+  Result := ABitmapData;
+end;
+
+function TGPBitmap.LockBits( flags : TGPImageLockModes; format: TGPPixelFormat ) : IGPBitmapData;
+var
+  ABitmapData : TGPBitmapData;
+  CFlags      : Cardinal;
+  AMode       : TGPImageLockMode;
+
+begin
+  ABitmapData := TGPBitmapData.Create( Self );
+  CFlags := 0;
+  for AMode in flags do
+    CFlags := CFlags or ( 1 shl Ord( AMode ));
+
+  LockBitsInternal( MakeRect( 0, 0, GetWidth(), GetHeight() ), CFlags, format, ABitmapData.FData );
   Result := ABitmapData;
 end;
 
@@ -10944,6 +11037,11 @@ begin
   Result := Self;
 end;
 
+function TGPGraphics.ScaleTransform(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics;
+begin
+  Result := ScaleTransform( s, s, order );
+end;
+
 function TGPGraphics.RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPGraphics;
 begin
   ErrorCheck( GdipRotateWorldTransform(FNativeGraphics, angle, order));
@@ -10989,17 +11087,18 @@ end;
 
 function TGPGraphics.ScaleTransformT(sx, sy: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
 begin
-  ErrorCheck( GdipScaleWorldTransform(FNativeGraphics,
-                               sx, sy, order));
-
+  ErrorCheck( GdipScaleWorldTransform(FNativeGraphics, sx, sy, order));
   Result := Self;
+end;
+
+function TGPGraphics.ScaleTransformXYT(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
+begin
+  Result := ScaleTransformT( s, s, order );
 end;
 
 function TGPGraphics.RotateTransformT(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
 begin
-  ErrorCheck( GdipRotateWorldTransform(FNativeGraphics,
-                                angle, order));
-
+  ErrorCheck( GdipRotateWorldTransform(FNativeGraphics, angle, order));
   Result := Self;
 end;
 
@@ -16127,6 +16226,11 @@ begin
   Result := Self;
 end;
 
+function TGPPathGradientBrush.ScaleTransform(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush;
+begin
+  Result := ScaleTransform( s, s, order );
+end;
+
 function TGPPathGradientBrush.RotateTransform(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : TGPPathGradientBrush;
 begin
   ErrorCheck( GdipRotatePathGradientTransform(
@@ -16179,6 +16283,11 @@ begin
                     sx, sy, order));
                       
   Result := Self;
+end;
+
+function TGPPathGradientBrush.ScaleTransformXYT(s: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
+begin
+  Result := ScaleTransformT( s, s, order );
 end;
 
 function TGPPathGradientBrush.RotateTransformT(angle: Single; order: TGPMatrixOrder = MatrixOrderPrepend) : IGPTransformable;
@@ -16243,7 +16352,7 @@ end;
 class procedure TGPBase.ErrorCheck( AStatus : TGPStatus );
 begin
   if( AStatus <> Ok ) then
-    raise EGPLoadError.Create( GetStatus( AStatus ));
+    raise EGPException.Create( GetStatus( AStatus ));
 
 end;
 
@@ -16253,22 +16362,22 @@ end;
 
 function ObjectTypeIsValid(type_: TGPObjectType) : Boolean;
 begin
-Result :=  ((type_ >= ObjectTypeMin) and (type_ <= ObjectTypeMax));
+  Result :=  ((type_ >= ObjectTypeMin) and (type_ <= ObjectTypeMax));
 end;
 
 function GDIP_WMF_RECORD_TO_EMFPLUS(n: Integer) : Integer;
 begin
-Result := (n or GDIP_WMF_RECORD_BASE);
+  Result := (n or GDIP_WMF_RECORD_BASE);
 end;
 
 function GDIP_EMFPLUS_RECORD_TO_WMF(n: Integer) : Integer;
 begin
-Result := n and (not GDIP_WMF_RECORD_BASE);
+  Result := n and (not GDIP_WMF_RECORD_BASE);
 end;
 
 function GDIP_IS_WMF_RECORDTYPE(n: Integer) : Boolean;
 begin
-Result := ((n and GDIP_WMF_RECORD_BASE) <> 0);
+  Result := ((n and GDIP_WMF_RECORD_BASE) <> 0);
 end;
 
 
@@ -16947,6 +17056,16 @@ begin
     
 end;
 
+procedure GetStandardRGBAColorNames( Proc: TGetStrProc );
+var
+  I : Integer;
+
+begin
+  for I := 0 to Sizeof( GPColorNames ) div Sizeof( GPColorNames[ 0 ] ) - 1 do
+    Proc( GPColorNames[ I ].Name );
+
+end;
+
 function HexToUInt( AValue : String ) : Cardinal;
 var
   I : Integer;
@@ -17014,7 +17133,7 @@ begin
         Exit;
         end;
 
-  Result := StrToIntDef( AValue, Integer( aclBlack ));
+  Result := TGPColor( StrToInt64Def( AValue, Int64( aclBlack )));
 end;
 
 function RGBAColorToString( AValue : TGPColor ) : String;
