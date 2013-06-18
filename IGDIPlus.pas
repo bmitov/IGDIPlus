@@ -7015,7 +7015,7 @@ end;
 
 function TGPMatrix.GetElements() : TGPMatrixParams;
 begin
-  ErrorCheck( GdipGetMatrixElements(FNativeMatrix, @Result ));
+  ErrorCheck( GdipGetMatrixElements(FNativeMatrix, PSingle(@Result) ));
 end;
 
 function TGPMatrix.SetElements(m11, m12, m21, m22, dx, dy: Single) : TGPMatrix;
@@ -7395,7 +7395,7 @@ end;
 
 function TGPStringFormat.GetDigitSubstitutionLanguage() : LANGID;
 begin
-  ErrorCheck( GdipGetStringFormatDigitSubstitution(FNativeFormat, @Result, NIL));
+  ErrorCheck( GdipGetStringFormatDigitSubstitution(FNativeFormat, PUINT(@Result), NIL));
 end;
 
 function TGPStringFormat.GetDigitSubstitutionMethod() : TGPStringDigitSubstitute;
@@ -9535,7 +9535,7 @@ end;
 function TGPLinearGradientBrush.GetLinearColors(out color1, color2: TGPColor) : TGPLinearGradientBrush;
 var colors: array[0..1] of TGPColor;
 begin
-  ErrorCheck( GdipGetLineColors(GpLineGradient(FNativeBrush), @colors));
+  ErrorCheck( GdipGetLineColors(GpLineGradient(FNativeBrush), PGPColor(@colors)));
   color1 := colors[0];
   color2 := colors[1];
 
@@ -14398,7 +14398,7 @@ var
   str: array[0..LF_FACESIZE - 1] of WideChar;
     
 begin
-  ErrorCheck( GdipGetFamilyName(FNativeFamily, @str, language));
+  ErrorCheck( GdipGetFamilyName(FNativeFamily, PWideChar(@str), language));
   Result := str;
 end;
 
@@ -15774,7 +15774,7 @@ function TGPGraphicsPathIterator.NextPathType(out pathType: TGPPathPointType; ou
 var
   resultCount: Integer;
 begin
-  ErrorCheck( GdipPathIterNextPathType(FNativeIterator, resultCount, @pathType,
+  ErrorCheck( GdipPathIterNextPathType(FNativeIterator, resultCount, PByte(@pathType),
      startIndex, endIndex));
   Result := resultCount;
 end;
