@@ -1,18 +1,22 @@
 const WINGDIPDLL = 'gdiplus.dll';
 
 type
-  GpStatus          = TGPStatus;
-  GpFillMode        = TGPFillMode;
-  GpUnit            = TGPUnit;
-  GpCoordinateSpace = TGPCoordinateSpace;
+  GpStatus          = TIGPStatus;
+  GpFillMode        = TIGPFillMode;
+  GpUnit            = TIGPUnit;
+  GpCoordinateSpace = TIGPCoordinateSpace;
   GpPointF          = PGPPointF;
   GpPoint           = PGPPoint;
   GpRectF           = PGPRectF;
   GpRect            = PGPRect;
   GpSizeF           = PGPSizeF;
-  PGPBitmapDataRecord = ^TGPBitmapDataRecord;
+  PGPBitmapDataRecord = ^TIGPBitmapDataRecord;
 
-  GpEnumerateMetafileProc = function(recordType: TGPEmfPlusRecordType; flags: UINT;
+  TIGPImageAbort = function ( callbackData: Pointer ) : BOOL; stdcall;
+  TIGPDrawImageAbort         = TIGPImageAbort;
+  TIGPGetThumbnailImageAbort = TIGPImageAbort;
+
+  GpEnumerateMetafileProc = function(recordType: TIGPEmfPlusRecordType; flags: UINT;
     dataSize: UINT; data: PBYTE; callbackData: pointer): BOOL; stdcall;
 
   // GDI+ initialization. Must not be called from DllMain - can cause deadlock.
@@ -25,7 +29,7 @@ type
   // output - may be NULL only if input->SuppressBackgroundThread is FALSE.
 
  function GdiplusStartup( out token: Pointer; input: PGPGdiplusStartupInput;
-   output: PGPGdiplusStartupOutput): TGPStatus; stdcall; external WINGDIPDLL;
+   output: PGPGdiplusStartupOutput): TIGPStatus; stdcall; external WINGDIPDLL;
   // GDI+ termination. Must be called before GDI+ is unloaded.
   // Must not be called from DllMain - can cause deadlock.
   //
@@ -201,7 +205,7 @@ type
 
   function GdipWarpPath(path: GPPATH; matrix: GPMATRIX; points: GPPOINTF;
     count: Integer; srcx: Single; srcy: Single; srcwidth: Single;
-    srcheight: Single; warpMode: TGPWarpMode; flatness: Single): GpStatus; stdcall; external WINGDIPDLL;
+    srcheight: Single; warpMode: TIGPWarpMode; flatness: Single): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipTransformPath(path: GPPATH; matrix: GPMATRIX): GpStatus; stdcall; external WINGDIPDLL;
 
@@ -297,19 +301,19 @@ type
     m21: Single; m22: Single; dx: Single; dy: Single): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipMultiplyMatrix(matrix: GPMATRIX; matrix2: GPMATRIX;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipTranslateMatrix(matrix: GPMATRIX; offsetX: Single;
-    offsetY: Single; order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    offsetY: Single; order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipScaleMatrix(matrix: GPMATRIX; scaleX: Single; scaleY: Single;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipRotateMatrix(matrix: GPMATRIX; angle: Single;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipShearMatrix(matrix: GPMATRIX; shearX: Single; shearY: Single;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipInvertMatrix(matrix: GPMATRIX): GpStatus; stdcall; external WINGDIPDLL;
 
@@ -365,16 +369,16 @@ type
   function GdipSetInfinite(region: GpRegion): GpStatus; stdcall; external WINGDIPDLL;
   function GdipSetEmpty(region: GpRegion): GpStatus; stdcall; external WINGDIPDLL;
   function GdipCombineRegionRect(region: GpRegion; rect: GPRECTF;
-    combineMode: TGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
+    combineMode: TIGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipCombineRegionRectI(region: GpRegion; rect: GPRECT;
-    combineMode: TGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
+    combineMode: TIGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipCombineRegionPath(region: GpRegion; path: GPPATH;
-    combineMode: TGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
+    combineMode: TIGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipCombineRegionRegion(region: GpRegion; region2: GpRegion;
-    combineMode: TGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
+    combineMode: TIGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipTranslateRegion(region: GpRegion; dx: Single;
     dy: Single): GpStatus; stdcall; external WINGDIPDLL;
@@ -442,33 +446,33 @@ type
   function GdipDeleteBrush(brush: GPBRUSH): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetBrushType(brush: GPBRUSH;
-    out type_: TGPBrushType): GpStatus; stdcall; external WINGDIPDLL;
+    out type_: TIGPBrushType): GpStatus; stdcall; external WINGDIPDLL;
 
 //----------------------------------------------------------------------------
 // HatchBrush APIs
 //----------------------------------------------------------------------------
 
-  function GdipCreateHatchBrush(hatchstyle: Integer; forecol: TGPColor;
-    backcol: TGPColor; out brush: GPHATCH): GpStatus; stdcall; external WINGDIPDLL;
+  function GdipCreateHatchBrush(hatchstyle: Integer; forecol: TAlphaColor;
+    backcol: TAlphaColor; out brush: GPHATCH): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetHatchStyle(brush: GPHATCH;
-    out hatchstyle: TGPHatchStyle): GpStatus; stdcall; external WINGDIPDLL;
+    out hatchstyle: TIGPHatchStyle): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetHatchForegroundColor(brush: GPHATCH;
-    out forecol: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
+    out forecol: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetHatchBackgroundColor(brush: GPHATCH;
-    out backcol: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
+    out backcol: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
 //----------------------------------------------------------------------------
 // TextureBrush APIs
 //----------------------------------------------------------------------------
 
 
-  function GdipCreateTexture(image: GpImage; wrapmode: TGPWrapMode;
+  function GdipCreateTexture(image: GpImage; wrapmode: TIGPWrapMode;
     var texture: GPTEXTURE): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipCreateTexture2(image: GpImage; wrapmode: TGPWrapMode;
+  function GdipCreateTexture2(image: GpImage; wrapmode: TIGPWrapMode;
     x: Single; y: Single; width: Single; height: Single;
     out texture: GPTEXTURE): GpStatus; stdcall; external WINGDIPDLL;
 
@@ -476,7 +480,7 @@ type
     imageAttributes: GpImageAttributes; x: Single; y: Single; width: Single;
     height: Single; out texture: GPTEXTURE): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipCreateTexture2I(image: GpImage; wrapmode: TGPWrapMode; x: Integer;
+  function GdipCreateTexture2I(image: GpImage; wrapmode: TIGPWrapMode; x: Integer;
     y: Integer; width: Integer; height: Integer;
     out texture: GPTEXTURE): GpStatus; stdcall; external WINGDIPDLL;
 
@@ -493,22 +497,22 @@ type
   function GdipResetTextureTransform(brush: GPTEXTURE): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipMultiplyTextureTransform(brush: GPTEXTURE; matrix: GPMATRIX;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipTranslateTextureTransform(brush: GPTEXTURE; dx: Single;
-    dy: Single; order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    dy: Single; order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipScaleTextureTransform(brush: GPTEXTURE; sx: Single; sy: Single;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipRotateTextureTransform(brush: GPTEXTURE; angle: Single;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetTextureWrapMode(brush: GPTEXTURE;
-    wrapmode: TGPWrapMode): GpStatus; stdcall; external WINGDIPDLL;
+    wrapmode: TIGPWrapMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetTextureWrapMode(brush: GPTEXTURE;
-    var wrapmode: TGPWrapMode): GpStatus; stdcall; external WINGDIPDLL;
+    var wrapmode: TIGPWrapMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetTextureImage(brush: GPTEXTURE;
     out image: GpImage): GpStatus; stdcall; external WINGDIPDLL;
@@ -517,48 +521,48 @@ type
 // SolidBrush APIs
 //----------------------------------------------------------------------------
 
-  function GdipCreateSolidFill(color: TGPColor;
+  function GdipCreateSolidFill(color: TAlphaColor;
     out brush: GPSOLIDFILL): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetSolidFillColor(brush: GPSOLIDFILL;
-    color: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
+    color: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetSolidFillColor(brush: GPSOLIDFILL;
-    out color: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
+    out color: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
 //----------------------------------------------------------------------------
 // LineBrush APIs
 //----------------------------------------------------------------------------
 
-  function GdipCreateLineBrush(point1: GPPOINTF; point2: GPPOINTF; color1: TGPColor;
-    color2: TGPColor; wrapMode: TGPWrapMode;
+  function GdipCreateLineBrush(point1: GPPOINTF; point2: GPPOINTF; color1: TAlphaColor;
+    color2: TAlphaColor; wrapMode: TIGPWrapMode;
     out lineGradient: GpLineGradient): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipCreateLineBrushI(point1: GPPOINT; point2: GPPOINT; color1: TGPColor;
-    color2: TGPColor; wrapMode: TGPWrapMode;
+  function GdipCreateLineBrushI(point1: GPPOINT; point2: GPPOINT; color1: TAlphaColor;
+    color2: TAlphaColor; wrapMode: TIGPWrapMode;
     out lineGradient: GpLineGradient): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipCreateLineBrushFromRect(rect: GPRECTF; color1: TGPColor;
-    color2: TGPColor; mode: TGPLinearGradientMode; wrapMode: TGPWrapMode;
+  function GdipCreateLineBrushFromRect(rect: GPRECTF; color1: TAlphaColor;
+    color2: TAlphaColor; mode: TIGPLinearGradientMode; wrapMode: TIGPWrapMode;
     out lineGradient: GpLineGradient): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipCreateLineBrushFromRectI(rect: GPRECT; color1: TGPColor;
-    color2: TGPColor; mode: TGPLinearGradientMode; wrapMode: TGPWrapMode;
+  function GdipCreateLineBrushFromRectI(rect: GPRECT; color1: TAlphaColor;
+    color2: TAlphaColor; mode: TIGPLinearGradientMode; wrapMode: TIGPWrapMode;
     out lineGradient: GpLineGradient): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipCreateLineBrushFromRectWithAngle(rect: GPRECTF; color1: TGPColor;
-    color2: TGPColor; angle: Single; isAngleScalable: Bool; wrapMode: TGPWrapMode;
+  function GdipCreateLineBrushFromRectWithAngle(rect: GPRECTF; color1: TAlphaColor;
+    color2: TAlphaColor; angle: Single; isAngleScalable: Bool; wrapMode: TIGPWrapMode;
     out lineGradient: GpLineGradient): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipCreateLineBrushFromRectWithAngleI(rect: GPRECT; color1: TGPColor;
-    color2: TGPColor; angle: Single; isAngleScalable: Bool; wrapMode: TGPWrapMode;
+  function GdipCreateLineBrushFromRectWithAngleI(rect: GPRECT; color1: TAlphaColor;
+    color2: TAlphaColor; angle: Single; isAngleScalable: Bool; wrapMode: TIGPWrapMode;
     out lineGradient: GpLineGradient): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipSetLineColors(brush: GpLineGradient; color1: TGPColor;
-    color2: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
+  function GdipSetLineColors(brush: GpLineGradient; color1: TAlphaColor;
+    color2: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetLineColors(brush: GpLineGradient;
-    colors: PGPColor): GpStatus; stdcall; external WINGDIPDLL;
+    colors: PAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetLineRect(brush: GpLineGradient;
     rect: GPRECTF): GpStatus; stdcall; external WINGDIPDLL;
@@ -584,10 +588,10 @@ type
   function GdipGetLinePresetBlendCount(brush: GpLineGradient;
     out count: Integer): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipGetLinePresetBlend(brush: GpLineGradient; blend: PGPColor;
+  function GdipGetLinePresetBlend(brush: GpLineGradient; blend: PAlphaColor;
     positions: PSingle; count: Integer): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipSetLinePresetBlend(brush: GpLineGradient; blend: PGPColor;
+  function GdipSetLinePresetBlend(brush: GpLineGradient; blend: PAlphaColor;
     positions: PSingle; count: Integer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetLineSigmaBlend(brush: GpLineGradient; focus: Single;
@@ -597,10 +601,10 @@ type
     scale: Single): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetLineWrapMode(brush: GpLineGradient;
-    wrapmode: TGPWrapMode): GpStatus; stdcall; external WINGDIPDLL;
+    wrapmode: TIGPWrapMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetLineWrapMode(brush: GpLineGradient;
-    out wrapmode: TGPWrapMode): GpStatus; stdcall; external WINGDIPDLL;
+    out wrapmode: TIGPWrapMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetLineTransform(brush: GpLineGradient;
     matrix: GPMATRIX): GpStatus; stdcall; external WINGDIPDLL;
@@ -611,41 +615,41 @@ type
   function GdipResetLineTransform(brush: GpLineGradient): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipMultiplyLineTransform(brush: GpLineGradient; matrix: GPMATRIX;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipTranslateLineTransform(brush: GpLineGradient; dx: Single;
-    dy: Single; order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    dy: Single; order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipScaleLineTransform(brush: GpLineGradient; sx: Single; sy: Single;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipRotateLineTransform(brush: GpLineGradient; angle: Single;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
 //----------------------------------------------------------------------------
 // PathGradientBrush APIs
 //----------------------------------------------------------------------------
 
   function GdipCreatePathGradient(points: GPPOINTF; count: Integer;
-    wrapMode: TGPWrapMode; out polyGradient: GPPATHGRADIENT): GpStatus; stdcall; external WINGDIPDLL;
+    wrapMode: TIGPWrapMode; out polyGradient: GPPATHGRADIENT): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipCreatePathGradientI(points: GPPOINT; count: Integer;
-    wrapMode: TGPWrapMode; out polyGradient: GPPATHGRADIENT): GpStatus; stdcall; external WINGDIPDLL;
+    wrapMode: TIGPWrapMode; out polyGradient: GPPATHGRADIENT): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipCreatePathGradientFromPath(path: GPPATH;
     out polyGradient: GPPATHGRADIENT): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPathGradientCenterColor(brush: GPPATHGRADIENT;
-    out colors: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
+    out colors: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetPathGradientCenterColor(brush: GPPATHGRADIENT;
-    colors: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
+    colors: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPathGradientSurroundColorsWithCount(brush: GPPATHGRADIENT;
-    color: PGPColor; var count: Integer): GpStatus; stdcall; external WINGDIPDLL;
+    color: PAlphaColor; var count: Integer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetPathGradientSurroundColorsWithCount(brush: GPPATHGRADIENT;
-    color: PGPColor; var count: Integer): GpStatus; stdcall; external WINGDIPDLL;
+    color: PAlphaColor; var count: Integer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPathGradientPath(brush: GPPATHGRADIENT;
     path: GPPATH): GpStatus; stdcall; external WINGDIPDLL;
@@ -696,10 +700,10 @@ type
     var count: Integer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPathGradientPresetBlend(brush: GPPATHGRADIENT;
-    blend: PGPColor; positions: PSingle; count: Integer): GpStatus; stdcall; external WINGDIPDLL;
+    blend: PAlphaColor; positions: PSingle; count: Integer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetPathGradientPresetBlend(brush: GPPATHGRADIENT;
-    blend: PGPColor; positions: PSingle; count: Integer): GpStatus; stdcall; external WINGDIPDLL;
+    blend: PAlphaColor; positions: PSingle; count: Integer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetPathGradientSigmaBlend(brush: GPPATHGRADIENT;
     focus: Single; scale: Single): GpStatus; stdcall; external WINGDIPDLL;
@@ -708,10 +712,10 @@ type
     focus: Single; scale: Single): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPathGradientWrapMode(brush: GPPATHGRADIENT;
-    var wrapmode: TGPWrapMode): GpStatus; stdcall; external WINGDIPDLL;
+    var wrapmode: TIGPWrapMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetPathGradientWrapMode(brush: GPPATHGRADIENT;
-    wrapmode: TGPWrapMode): GpStatus; stdcall; external WINGDIPDLL;
+    wrapmode: TIGPWrapMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPathGradientTransform(brush: GPPATHGRADIENT;
     matrix: GPMATRIX): GpStatus; stdcall; external WINGDIPDLL;
@@ -723,16 +727,16 @@ type
     brush: GPPATHGRADIENT): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipMultiplyPathGradientTransform(brush: GPPATHGRADIENT;
-    matrix: GPMATRIX; order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    matrix: GPMATRIX; order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipTranslatePathGradientTransform(brush: GPPATHGRADIENT;
-    dx: Single; dy: Single; order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    dx: Single; dy: Single; order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipScalePathGradientTransform(brush: GPPATHGRADIENT;
-    sx: Single; sy: Single; order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    sx: Single; sy: Single; order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipRotatePathGradientTransform(brush: GPPATHGRADIENT;
-    angle: Single; order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    angle: Single; order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPathGradientFocusScales(brush: GPPATHGRADIENT;
     var xScale: Single; var yScale: Single): GpStatus; stdcall; external WINGDIPDLL;
@@ -744,7 +748,7 @@ type
 // Pen APIs
 //----------------------------------------------------------------------------
 
-  function GdipCreatePen1(color: TGPColor; width: Single; unit_: GPUNIT;
+  function GdipCreatePen1(color: TAlphaColor; width: Single; unit_: GPUNIT;
     out pen: GPPEN): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipCreatePen2(brush: GPBRUSH; width: Single; unit_: GPUNIT;
@@ -756,31 +760,31 @@ type
   function GdipGetPenWidth(pen: GPPEN; out width: Single): GpStatus; stdcall; external WINGDIPDLL;
   function GdipSetPenUnit(pen: GPPEN; unit_: GPUNIT): GpStatus; stdcall; external WINGDIPDLL;
   function GdipGetPenUnit(pen: GPPEN; var unit_: GPUNIT): GpStatus; stdcall; external WINGDIPDLL;
-  function GdipSetPenLineCap197819(pen: GPPEN; startCap: TGPLineCap;
-    endCap: TGPLineCap; dashCap: TGPDashCap): GpStatus; stdcall; external WINGDIPDLL;
+  function GdipSetPenLineCap197819(pen: GPPEN; startCap: TIGPLineCap;
+    endCap: TIGPLineCap; dashCap: TIGPDashCap): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetPenStartCap(pen: GPPEN;
-    startCap: TGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
+    startCap: TIGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipSetPenEndCap(pen: GPPEN; endCap: TGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
+  function GdipSetPenEndCap(pen: GPPEN; endCap: TIGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetPenDashCap197819(pen: GPPEN;
-    dashCap: TGPDashCap): GpStatus; stdcall; external WINGDIPDLL;
+    dashCap: TIGPDashCap): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPenStartCap(pen: GPPEN;
-    out startCap: TGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
+    out startCap: TIGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPenEndCap(pen: GPPEN;
-    out endCap: TGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
+    out endCap: TIGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPenDashCap197819(pen: GPPEN;
-    out dashCap: TGPDashCap): GpStatus; stdcall; external WINGDIPDLL;
+    out dashCap: TIGPDashCap): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetPenLineJoin(pen: GPPEN;
-    lineJoin: TGPLineJoin): GpStatus; stdcall; external WINGDIPDLL;
+    lineJoin: TIGPLineJoin): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPenLineJoin(pen: GPPEN;
-    var lineJoin: TGPLineJoin): GpStatus; stdcall; external WINGDIPDLL;
+    var lineJoin: TIGPLineJoin): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetPenCustomStartCap(pen: GPPEN;
     customCap: GPCUSTOMLINECAP): GpStatus; stdcall; external WINGDIPDLL;
@@ -801,10 +805,10 @@ type
     out miterLimit: Single): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetPenMode(pen: GPPEN;
-    penMode: TGPPenAlignment): GpStatus; stdcall; external WINGDIPDLL;
+    penMode: TIGPPenAlignment): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPenMode(pen: GPPEN;
-    var penMode: TGPPenAlignment): GpStatus; stdcall; external WINGDIPDLL;
+    var penMode: TIGPPenAlignment): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetPenTransform(pen: GPPEN;
     matrix: GPMATRIX): GpStatus; stdcall; external WINGDIPDLL;
@@ -815,32 +819,32 @@ type
   function GdipResetPenTransform(pen: GPPEN): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipMultiplyPenTransform(pen: GPPEN; matrix: GPMATRIX;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipTranslatePenTransform(pen: GPPEN; dx: Single; dy: Single;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipScalePenTransform(pen: GPPEN; sx: Single; sy: Single;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipRotatePenTransform(pen: GPPEN; angle: Single;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipSetPenColor(pen: GPPEN; argb: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
-  function GdipGetPenColor(pen: GPPEN; out argb: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
+  function GdipSetPenColor(pen: GPPEN; argb: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
+  function GdipGetPenColor(pen: GPPEN; out argb: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
   function GdipSetPenBrushFill(pen: GPPEN; brush: GPBRUSH): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPenBrushFill(pen: GPPEN;
     out brush: GPBRUSH): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPenFillType(pen: GPPEN;
-    out type_: TGPPenType): GpStatus; stdcall; external WINGDIPDLL;
+    out type_: TIGPPenType): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPenDashStyle(pen: GPPEN;
-    out dashstyle: TGPDashStyle): GpStatus; stdcall; external WINGDIPDLL;
+    out dashstyle: TIGPDashStyle): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetPenDashStyle(pen: GPPEN;
-    dashstyle: TGPDashStyle): GpStatus; stdcall; external WINGDIPDLL;
+    dashstyle: TIGPDashStyle): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPenDashOffset(pen: GPPEN;
     out offset: Single): GpStatus; stdcall; external WINGDIPDLL;
@@ -870,7 +874,7 @@ type
 //----------------------------------------------------------------------------
 
   function GdipCreateCustomLineCap(fillPath: GPPATH; strokePath: GPPATH;
-    baseCap: TGPLineCap; baseInset: Single;
+    baseCap: TIGPLineCap; baseInset: Single;
     out customCap: GPCUSTOMLINECAP): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipDeleteCustomLineCap(
@@ -880,25 +884,25 @@ type
     out clonedCap: GPCUSTOMLINECAP): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetCustomLineCapType(customCap: GPCUSTOMLINECAP;
-    var capType: TGPCustomLineCapType): GpStatus; stdcall; external WINGDIPDLL;
+    var capType: TIGPCustomLineCapType): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetCustomLineCapStrokeCaps(customCap: GPCUSTOMLINECAP;
-    startCap: TGPLineCap; endCap: TGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
+    startCap: TIGPLineCap; endCap: TIGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetCustomLineCapStrokeCaps(customCap: GPCUSTOMLINECAP;
-    var startCap: TGPLineCap; var endCap: TGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
+    var startCap: TIGPLineCap; var endCap: TIGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetCustomLineCapStrokeJoin(customCap: GPCUSTOMLINECAP;
-  lineJoin: TGPLineJoin): GpStatus; stdcall; external WINGDIPDLL;
+  lineJoin: TIGPLineJoin): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetCustomLineCapStrokeJoin(customCap: GPCUSTOMLINECAP;
-  var lineJoin: TGPLineJoin): GpStatus; stdcall; external WINGDIPDLL;
+  var lineJoin: TIGPLineJoin): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetCustomLineCapBaseCap(customCap: GPCUSTOMLINECAP;
-  baseCap: TGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
+  baseCap: TIGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetCustomLineCapBaseCap(customCap: GPCUSTOMLINECAP;
-  var baseCap: TGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
+  var baseCap: TIGPLineCap): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetCustomLineCapBaseInset(customCap: GPCUSTOMLINECAP;
   inset: Single): GpStatus; stdcall; external WINGDIPDLL;
@@ -995,7 +999,7 @@ type
   var height: Single): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetImageType(image: GpImage;
-  var type_: TGPImageType): GpStatus; stdcall; external WINGDIPDLL;
+  var type_: TIGPImageType): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetImageWidth(image: GpImage;
   var width: UINT): GpStatus; stdcall; external WINGDIPDLL;
@@ -1016,11 +1020,11 @@ type
   format: PGUID): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetImagePixelFormat(image: GpImage;
-  out format: TGPPixelFormat): GpStatus; stdcall; external WINGDIPDLL;
+  out format: TIGPPixelFormat): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetImageThumbnail(image: GpImage; thumbWidth: UINT;
     thumbHeight: UINT; out thumbImage: GpImage;
-    callback: TGPGetThumbnailImageAbort; callbackData: Pointer): GpStatus; stdcall; external WINGDIPDLL;
+    callback: TIGPGetThumbnailImageAbort; callbackData: Pointer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetEncoderParameterListSize(image: GpImage;
     clsidEncoder: PGUID; out size: UINT): GpStatus; stdcall; external WINGDIPDLL;
@@ -1041,7 +1045,7 @@ type
     frameIndex: UINT): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipImageRotateFlip(image: GpImage;
-    rfType: TGPRotateFlipType): GpStatus; stdcall; external WINGDIPDLL;
+    rfType: TIGPRotateFlipType): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetImagePalette(image: GpImage; palette: PGPColorPalette;
     size: Integer): GpStatus; stdcall; external WINGDIPDLL;
@@ -1095,7 +1099,7 @@ type
     var bitmap: GPBITMAP): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipCreateBitmapFromScan0(width: Integer; height: Integer;
-    stride: Integer; format: TGPPixelFormat; scan0: PBYTE;
+    stride: Integer; format: TIGPPixelFormat; scan0: PBYTE;
     out bitmap: GPBITMAP): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipCreateBitmapFromGraphics(width: Integer; height: Integer;
@@ -1113,7 +1117,7 @@ type
     out bitmap: GPBITMAP): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipCreateHBITMAPFromBitmap(bitmap: GPBITMAP; out hbmReturn: HBITMAP;
-    background: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
+    background: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipCreateBitmapFromHICON(hicon: HICON;
     out bitmap: GPBITMAP): GpStatus; stdcall; external WINGDIPDLL;
@@ -1125,24 +1129,24 @@ type
     lpBitmapName: PWCHAR; out bitmap: GPBITMAP): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipCloneBitmapArea(x: Single; y: Single; width: Single;
-    height: Single; format: TGPPixelFormat; srcBitmap: GPBITMAP;
+    height: Single; format: TIGPPixelFormat; srcBitmap: GPBITMAP;
     out dstBitmap: GPBITMAP): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipCloneBitmapAreaI(x: Integer; y: Integer; width: Integer;
-    height: Integer; format: TGPPixelFormat; srcBitmap: GPBITMAP;
+    height: Integer; format: TIGPPixelFormat; srcBitmap: GPBITMAP;
     out dstBitmap: GPBITMAP): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipBitmapLockBits(bitmap: GPBITMAP; rect: GPRECT; flags: UINT;
-    format: TGPPixelFormat; lockedBitmapData: PGPBitmapDataRecord): GpStatus; stdcall; external WINGDIPDLL;
+    format: TIGPPixelFormat; lockedBitmapData: PGPBitmapDataRecord): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipBitmapUnlockBits(bitmap: GPBITMAP;
     lockedBitmapData: PGPBitmapDataRecord): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipBitmapGetPixel(bitmap: GPBITMAP; x: Integer; y: Integer;
-    var color: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
+    var color: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipBitmapSetPixel(bitmap: GPBITMAP; x: Integer; y: Integer;
-    color: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
+    color: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipBitmapSetResolution(bitmap: GPBITMAP; xdpi: Single;
     ydpi: Single): GpStatus; stdcall; external WINGDIPDLL;
@@ -1161,57 +1165,57 @@ type
     imageattr: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetImageAttributesToIdentity(imageattr: GpImageAttributes;
-    type_: TGPColorAdjustType): GpStatus; stdcall; external WINGDIPDLL;
+    type_: TIGPColorAdjustType): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipResetImageAttributes(imageattr: GpImageAttributes;
-    type_: TGPColorAdjustType): GpStatus; stdcall; external WINGDIPDLL;
+    type_: TIGPColorAdjustType): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetImageAttributesColorMatrix(imageattr: GpImageAttributes;
-    type_: TGPColorAdjustType; enableFlag: Bool; colorMatrix: PGPColorMatrix;
-    grayMatrix: PGPColorMatrix; flags: TGPColorMatrixFlags): GpStatus; stdcall; external WINGDIPDLL;
+    type_: TIGPColorAdjustType; enableFlag: Bool; colorMatrix: PGPColorMatrix;
+    grayMatrix: PGPColorMatrix; flags: TIGPColorMatrixFlags): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetImageAttributesThreshold(imageattr: GpImageAttributes;
-    type_: TGPColorAdjustType; enableFlag: Bool;
+    type_: TIGPColorAdjustType; enableFlag: Bool;
     threshold: Single): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetImageAttributesGamma(imageattr: GpImageAttributes;
-    type_: TGPColorAdjustType; enableFlag: Bool; gamma: Single): GpStatus; stdcall; external WINGDIPDLL;
+    type_: TIGPColorAdjustType; enableFlag: Bool; gamma: Single): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetImageAttributesNoOp(imageattr: GpImageAttributes;
-  type_: TGPColorAdjustType; enableFlag: Bool): GpStatus; stdcall; external WINGDIPDLL;
+  type_: TIGPColorAdjustType; enableFlag: Bool): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetImageAttributesColorKeys(imageattr: GpImageAttributes;
-    type_: TGPColorAdjustType; enableFlag: Bool; colorLow: TGPColor;
-    colorHigh: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
+    type_: TIGPColorAdjustType; enableFlag: Bool; colorLow: TAlphaColor;
+    colorHigh: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetImageAttributesOutputChannel(imageattr: GpImageAttributes;
-    type_: TGPColorAdjustType; enableFlag: Bool;
-    channelFlags: TGPColorChannelFlags): GpStatus; stdcall; external WINGDIPDLL;
+    type_: TIGPColorAdjustType; enableFlag: Bool;
+    channelFlags: TIGPColorChannelFlags): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetImageAttributesOutputChannelColorProfile(imageattr: GpImageAttributes;
-    type_: TGPColorAdjustType; enableFlag: Bool;
+    type_: TIGPColorAdjustType; enableFlag: Bool;
     colorProfileFilename: PWCHAR): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetImageAttributesRemapTable(imageattr: GpImageAttributes;
-    type_: TGPColorAdjustType; enableFlag: Bool; mapSize: UINT;
+    type_: TIGPColorAdjustType; enableFlag: Bool; mapSize: UINT;
     map: PGPColorMap): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetImageAttributesWrapMode(imageAttr: GpImageAttributes;
-    wrap: TGPWrapMode; argb: TGPColor; clamp: Bool): GpStatus; stdcall; external WINGDIPDLL;
+    wrap: TIGPWrapMode; argb: TAlphaColor; clamp: Bool): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetImageAttributesICMMode(imageAttr: GpImageAttributes;
     on_: Bool): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetImageAttributesAdjustedPalette(imageAttr: GpImageAttributes;
     colorPalette: PGPColorPalette;
-    colorAdjustType: TGPColorAdjustType): GpStatus; stdcall; external WINGDIPDLL;
+    colorAdjustType: TIGPColorAdjustType): GpStatus; stdcall; external WINGDIPDLL;
 
 //----------------------------------------------------------------------------
 // Graphics APIs
 //----------------------------------------------------------------------------
 
   function GdipFlush(graphics: GpGraphics;
-    intention: TGPFlushIntention): GpStatus; stdcall; external WINGDIPDLL;
+    intention: TIGPFlushIntention): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipCreateFromHDC(hdc: HDC;
     out graphics: GpGraphics): GpStatus; stdcall; external WINGDIPDLL;
@@ -1230,10 +1234,10 @@ type
   function GdipReleaseDC(graphics: GpGraphics; hdc: HDC): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetCompositingMode(graphics: GpGraphics;
-    compositingMode: TGPCompositingMode): GpStatus; stdcall; external WINGDIPDLL;
+    compositingMode: TIGPCompositingMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetCompositingMode(graphics: GpGraphics;
-    var compositingMode: TGPCompositingMode): GpStatus; stdcall; external WINGDIPDLL;
+    var compositingMode: TIGPCompositingMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetRenderingOrigin(graphics: GpGraphics; x: Integer;
     y: Integer): GpStatus; stdcall; external WINGDIPDLL;
@@ -1242,28 +1246,28 @@ type
     var y: Integer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetCompositingQuality(graphics: GpGraphics;
-    compositingQuality: TGPCompositingQuality): GpStatus; stdcall; external WINGDIPDLL;
+    compositingQuality: TIGPCompositingQuality): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetCompositingQuality(graphics: GpGraphics;
-    var compositingQuality: TGPCompositingQuality): GpStatus; stdcall; external WINGDIPDLL;
+    var compositingQuality: TIGPCompositingQuality): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetSmoothingMode(graphics: GpGraphics;
-    smoothingMode: TGPSmoothingMode): GpStatus; stdcall; external WINGDIPDLL;
+    smoothingMode: TIGPSmoothingMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetSmoothingMode(graphics: GpGraphics;
-    var smoothingMode: TGPSmoothingMode): GpStatus; stdcall; external WINGDIPDLL;
+    var smoothingMode: TIGPSmoothingMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetPixelOffsetMode(graphics: GpGraphics;
-    pixelOffsetMode: TGPPixelOffsetMode): GpStatus; stdcall; external WINGDIPDLL;
+    pixelOffsetMode: TIGPPixelOffsetMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetPixelOffsetMode(graphics: GpGraphics;
-    var pixelOffsetMode: TGPPixelOffsetMode): GpStatus; stdcall; external WINGDIPDLL;
+    var pixelOffsetMode: TIGPPixelOffsetMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetTextRenderingHint(graphics: GpGraphics;
-    mode: TGPTextRenderingHint): GpStatus; stdcall; external WINGDIPDLL;
+    mode: TIGPTextRenderingHint): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetTextRenderingHint(graphics: GpGraphics;
-    var mode: TGPTextRenderingHint): GpStatus; stdcall; external WINGDIPDLL;
+    var mode: TIGPTextRenderingHint): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetTextContrast(graphics: GpGraphics;
     contrast: Integer): GpStatus; stdcall; external WINGDIPDLL;
@@ -1272,10 +1276,10 @@ type
     var contrast: UINT): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetInterpolationMode(graphics: GpGraphics;
-    interpolationMode: TGPInterpolationMode): GpStatus; stdcall; external WINGDIPDLL;
+    interpolationMode: TIGPInterpolationMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetInterpolationMode(graphics: GpGraphics;
-    var interpolationMode: TGPInterpolationMode): GpStatus; stdcall; external WINGDIPDLL;
+    var interpolationMode: TIGPInterpolationMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetWorldTransform(graphics: GpGraphics;
     matrix: GPMATRIX): GpStatus; stdcall; external WINGDIPDLL;
@@ -1283,16 +1287,16 @@ type
   function GdipResetWorldTransform(graphics: GpGraphics): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipMultiplyWorldTransform(graphics: GpGraphics; matrix: GPMATRIX;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipTranslateWorldTransform(graphics: GpGraphics; dx: Single;
-    dy: Single; order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    dy: Single; order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipScaleWorldTransform(graphics: GpGraphics; sx: Single; sy: Single;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipRotateWorldTransform(graphics: GpGraphics; angle: Single;
-    order: TGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
+    order: TIGPMatrixOrder): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetWorldTransform(graphics: GpGraphics;
     matrix: GPMATRIX): GpStatus; stdcall; external WINGDIPDLL;
@@ -1326,7 +1330,7 @@ type
     points: GPPOINT; count: Integer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetNearestColor(graphics: GpGraphics;
-    argb: PGPColor): GpStatus; stdcall; external WINGDIPDLL;
+    argb: PAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
 // Creates the Win9x Halftone Palette (even on NT) with correct Desktop colors
 
@@ -1434,7 +1438,7 @@ type
     points: GPPOINT; count: Integer; tension: Single): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGraphicsClear(graphics: GpGraphics;
-    color: TGPColor): GpStatus; stdcall; external WINGDIPDLL;
+    color: TAlphaColor): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipFillRectangle(graphics: GpGraphics; brush: GPBRUSH; x: Single;
     y: Single; width: Single; height: Single): GpStatus; stdcall; external WINGDIPDLL;
@@ -1524,24 +1528,24 @@ type
     dstx: Single; dsty: Single; dstwidth: Single; dstheight: Single;
     srcx: Single; srcy: Single; srcwidth: Single; srcheight: Single;
     srcUnit: GPUNIT; imageAttributes: GpImageAttributes;
-    callback: TGPDrawImageAbort; callbackData: Pointer): GpStatus; stdcall; external WINGDIPDLL;
+    callback: TIGPDrawImageAbort; callbackData: Pointer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipDrawImageRectRectI(graphics: GpGraphics; image: GpImage;
     dstx: Integer; dsty: Integer; dstwidth: Integer; dstheight: Integer;
     srcx: Integer; srcy: Integer; srcwidth: Integer; srcheight: Integer;
     srcUnit: GPUNIT; imageAttributes: GpImageAttributes;
-    callback: TGPDrawImageAbort; callbackData: Pointer): GpStatus; stdcall; external WINGDIPDLL;
+    callback: TIGPDrawImageAbort; callbackData: Pointer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipDrawImagePointsRect(graphics: GpGraphics; image: GpImage;
     points: GPPOINTF; count: Integer; srcx: Single; srcy: Single;
     srcwidth: Single; srcheight: Single; srcUnit: GPUNIT;
-    imageAttributes: GpImageAttributes; callback: TGPDrawImageAbort;
+    imageAttributes: GpImageAttributes; callback: TIGPDrawImageAbort;
     callbackData: Pointer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipDrawImagePointsRectI(graphics: GpGraphics; image: GpImage;
     points: GPPOINT; count: Integer; srcx: Integer; srcy: Integer;
     srcwidth: Integer; srcheight: Integer; srcUnit: GPUNIT;
-    imageAttributes: GpImageAttributes; callback: TGPDrawImageAbort;
+    imageAttributes: GpImageAttributes; callback: TIGPDrawImageAbort;
     callbackData: Pointer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileDestPoint(graphics: GpGraphics;
@@ -1575,57 +1579,57 @@ type
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileSrcRectDestPoint(graphics: GpGraphics;
-    metafile: GpMetafile; destPoint: PGPPointF; srcRect: PGPRectF; srcUnit: TGPUnit;
+    metafile: GpMetafile; destPoint: PGPPointF; srcRect: PGPRectF; srcUnit: TIGPUnit;
     callback: GpEnumerateMetafileProc; callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileSrcRectDestPointI(graphics: GpGraphics;
-    metafile: GpMetafile; destPoint: PGPPoint; srcRect: PGPRect; srcUnit: TGPUnit;
+    metafile: GpMetafile; destPoint: PGPPoint; srcRect: PGPRect; srcUnit: TIGPUnit;
     callback: GpEnumerateMetafileProc; callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileSrcRectDestRect(graphics: GpGraphics;
-    metafile: GpMetafile; destRect: PGPRectF; srcRect: PGPRectF; srcUnit: TGPUnit;
+    metafile: GpMetafile; destRect: PGPRectF; srcRect: PGPRectF; srcUnit: TIGPUnit;
     callback: GpEnumerateMetafileProc; callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileSrcRectDestRectI(graphics: GpGraphics;
-    metafile: GpMetafile; destRect: PGPRect; srcRect: PGPRect; srcUnit: TGPUnit;
+    metafile: GpMetafile; destRect: PGPRect; srcRect: PGPRect; srcUnit: TIGPUnit;
     callback: GpEnumerateMetafileProc; callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileSrcRectDestPoints(graphics: GpGraphics;
     metafile: GpMetafile; destPoints: PGPPointF; count: Integer; srcRect: PGPRectF;
-    srcUnit: TGPUnit; callback: GpEnumerateMetafileProc; callbackData: Pointer;
+    srcUnit: TIGPUnit; callback: GpEnumerateMetafileProc; callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileSrcRectDestPointsI(graphics: GpGraphics;
     metafile: GpMetafile; destPoints: PGPPoint; count: Integer; srcRect: PGPRect;
-    srcUnit: TGPUnit; callback: GpEnumerateMetafileProc; callbackData: Pointer;
+    srcUnit: TIGPUnit; callback: GpEnumerateMetafileProc; callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipPlayMetafileRecord(metafile: GpMetafile;
-    recordType: TGPEmfPlusRecordType; flags: UINT; dataSize: UINT;
+    recordType: TIGPEmfPlusRecordType; flags: UINT; dataSize: UINT;
     data: PBYTE): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetClipGraphics(graphics: GpGraphics; srcgraphics: GpGraphics;
-    combineMode: TGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
+    combineMode: TIGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetClipRect(graphics: GpGraphics; x: Single; y: Single;
-    width: Single; height: Single; combineMode: TGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
+    width: Single; height: Single; combineMode: TIGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetClipRectI(graphics: GpGraphics; x: Integer; y: Integer;
     width: Integer; height: Integer;
-    combineMode: TGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
+    combineMode: TIGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetClipPath(graphics: GpGraphics; path: GPPATH;
-    combineMode: TGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
+    combineMode: TIGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetClipRegion(graphics: GpGraphics; region: GpRegion;
-    combineMode: TGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
+    combineMode: TIGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetClipHrgn(graphics: GpGraphics; hRgn: HRGN;
-    combineMode: TGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
+    combineMode: TIGPCombineMode): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipResetClip(graphics: GpGraphics): GpStatus; stdcall; external WINGDIPDLL;
 
@@ -1669,24 +1673,24 @@ type
     width: Integer; height: Integer; var result: Bool): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSaveGraphics(graphics: GpGraphics;
-    var state: TGPGraphicsState): GpStatus; stdcall; external WINGDIPDLL;
+    var state: TIGPGraphicsState): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipRestoreGraphics(graphics: GpGraphics;
-    state: TGPGraphicsState): GpStatus; stdcall; external WINGDIPDLL;
+    state: TIGPGraphicsState): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipBeginContainer(graphics: GpGraphics; dstrect: GPRECTF;
     srcrect: GPRECTF; unit_: GPUNIT;
-    var state: TGPGraphicsContainer): GpStatus; stdcall; external WINGDIPDLL;
+    var state: TIGPGraphicsContainer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipBeginContainerI(graphics: GpGraphics; dstrect: GPRECT;
     srcrect: GPRECT; unit_: GPUNIT;
-    var state: TGPGraphicsContainer): GpStatus; stdcall; external WINGDIPDLL;
+    var state: TIGPGraphicsContainer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipBeginContainer2(graphics: GpGraphics;
-    var state: TGPGraphicsContainer): GpStatus; stdcall; external WINGDIPDLL;
+    var state: TIGPGraphicsContainer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEndContainer(graphics: GpGraphics;
-    state: TGPGraphicsContainer): GpStatus; stdcall; external WINGDIPDLL;
+    state: TIGPGraphicsContainer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetMetafileHeaderFromWmf(hWmf: HMETAFILE;
     wmfPlaceableFileHeader: PGPWmfPlaceableFileHeader;
@@ -1727,28 +1731,28 @@ type
   function GdipCreateMetafileFromStream(stream: ISTREAM;
     out metafile: GpMetafile): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipRecordMetafile(referenceHdc: HDC; type_: TGPEmfType;
-    frameRect: GPRECTF; frameUnit: TGPMetafileFrameUnit;
+  function GdipRecordMetafile(referenceHdc: HDC; type_: TIGPEmfType;
+    frameRect: GPRECTF; frameUnit: TIGPMetafileFrameUnit;
     description: PWCHAR; out metafile: GpMetafile): GpStatus; stdcall; external WINGDIPDLL;
 
-  function GdipRecordMetafileI(referenceHdc: HDC; type_: TGPEmfType;
-    frameRect: GPRECT; frameUnit: TGPMetafileFrameUnit; description: PWCHAR;
+  function GdipRecordMetafileI(referenceHdc: HDC; type_: TIGPEmfType;
+    frameRect: GPRECT; frameUnit: TIGPMetafileFrameUnit; description: PWCHAR;
     out metafile: GpMetafile): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipRecordMetafileFileName(fileName: PWCHAR; referenceHdc: HDC;
-    type_: TGPEmfType; frameRect: GPRECTF; frameUnit: TGPMetafileFrameUnit;
+    type_: TIGPEmfType; frameRect: GPRECTF; frameUnit: TIGPMetafileFrameUnit;
     description: PWCHAR; out metafile: GpMetafile): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipRecordMetafileFileNameI(fileName: PWCHAR; referenceHdc: HDC;
-    type_: TGPEmfType; frameRect: GPRECT; frameUnit: TGPMetafileFrameUnit;
+    type_: TIGPEmfType; frameRect: GPRECT; frameUnit: TIGPMetafileFrameUnit;
     description: PWCHAR; out metafile: GpMetafile): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipRecordMetafileStream(stream: ISTREAM; referenceHdc: HDC;
-    type_: TGPEmfType; frameRect: GPRECTF; frameUnit: TGPMetafileFrameUnit;
+    type_: TIGPEmfType; frameRect: GPRECTF; frameUnit: TIGPMetafileFrameUnit;
     description: PWCHAR; out metafile: GpMetafile): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipRecordMetafileStreamI(stream: ISTREAM; referenceHdc: HDC;
-    type_: TGPEmfType; frameRect: GPRECT; frameUnit: TGPMetafileFrameUnit;
+    type_: TIGPEmfType; frameRect: GPRECT; frameUnit: TIGPMetafileFrameUnit;
     description: PWCHAR; out metafile: GpMetafile): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetMetafileDownLevelRasterizationLimit(metafile: GpMetafile;
@@ -1846,7 +1850,7 @@ type
     var style: Integer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetFontSize(font: GPFONT; var size: Single): GpStatus; stdcall; external WINGDIPDLL;
-  function GdipGetFontUnit(font: GPFONT; var unit_: TGPUnit): GpStatus; stdcall; external WINGDIPDLL;
+  function GdipGetFontUnit(font: GPFONT; var unit_: TIGPUnit): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetFontHeight(font: GPFONT; graphics: GpGraphics;
     var height: Single): GpStatus; stdcall; external WINGDIPDLL;
@@ -1934,22 +1938,22 @@ type
     out flags: Integer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetStringFormatAlign(format: GpStringFormat;
-    align: TGPStringAlignment): GpStatus; stdcall; external WINGDIPDLL;
+    align: TIGPStringAlignment): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetStringFormatAlign(format: GpStringFormat;
-    out align: TGPStringAlignment): GpStatus; stdcall; external WINGDIPDLL;
+    out align: TIGPStringAlignment): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetStringFormatLineAlign(format: GpStringFormat;
-    align: TGPStringAlignment): GpStatus; stdcall; external WINGDIPDLL;
+    align: TIGPStringAlignment): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetStringFormatLineAlign(format: GpStringFormat;
-    out align: TGPStringAlignment): GpStatus; stdcall; external WINGDIPDLL;
+    out align: TIGPStringAlignment): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetStringFormatTrimming(format: GpStringFormat;
-    trimming: TGPStringTrimming): GpStatus; stdcall; external WINGDIPDLL;
+    trimming: TIGPStringTrimming): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetStringFormatTrimming(format: GpStringFormat;
-    out trimming: TGPStringTrimming): GpStatus; stdcall; external WINGDIPDLL;
+    out trimming: TIGPStringTrimming): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSetStringFormatHotkeyPrefix(format: GpStringFormat;
     hotkeyPrefix: Integer): GpStatus; stdcall; external WINGDIPDLL;
@@ -1970,7 +1974,7 @@ type
 
   function GdipSetStringFormatDigitSubstitution(format: GpStringFormat;
     language: LANGID;
-    substitute: TGPStringDigitSubstitute): GpStatus; stdcall; external WINGDIPDLL;
+    substitute: TIGPStringDigitSubstitute): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetStringFormatDigitSubstitution(format: GpStringFormat;
     language: PUINT; substitute: PGPStringDigitSubstitute): GpStatus; stdcall; external WINGDIPDLL;

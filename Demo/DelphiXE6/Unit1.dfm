@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 208
   Top = 149
   Caption = 'IGDI+ Demo'
-  ClientHeight = 335
+  ClientHeight = 333
   ClientWidth = 595
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
