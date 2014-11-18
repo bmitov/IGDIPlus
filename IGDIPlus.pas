@@ -902,7 +902,6 @@ type
     EmfPlusRecordTypeMax = EmfPlusRecordTotal-1,
     EmfPlusRecordTypeMin = EmfPlusRecordTypeHeader
   );
-{$ENDIF} //MSWINDOWS
 
 (*$HPPEMIT 'enum TIGPEmfPlusRecordType' *)
 (*$HPPEMIT '{' *)
@@ -1191,6 +1190,8 @@ type
 (*$HPPEMIT '    EmfPlusRecordTypeMax = EmfPlusRecordTotal-1,' *)
 (*$HPPEMIT '    EmfPlusRecordTypeMin = EmfPlusRecordTypeHeader' *)
 (*$HPPEMIT '};' *)
+
+{$ENDIF} //MSWINDOWS
 
 //---------------------------------------------------------------------------
 // StringFormatFlags
@@ -1847,12 +1848,12 @@ type
 //----------------------------------------------------------------------------
 // Color mode
 //----------------------------------------------------------------------------
-
+{
   TIGPColorMode = (
     ColorModeARGB32,
     ColorModeARGB64
   );
-
+}
 //----------------------------------------------------------------------------
 // Color Channel flags 
 //----------------------------------------------------------------------------
@@ -5177,12 +5178,10 @@ type
     // DrawCurve
     function  DrawCurveF( pen: IGPPen; const points: array of TPointF ) : TIGPGraphics; overload;
     function  DrawCurveF( pen: IGPPen; const points: array of TPointF; tension: Single) : TIGPGraphics; overload;
-    function  DrawCurveF( pen: IGPPen; const points: array of TPointF; offset,
-      numberOfSegments: Integer; tension: Single = 0.5) : TIGPGraphics; overload;
+    function  DrawCurveF( pen: IGPPen; const points: array of TPointF; offset, numberOfSegments: Integer; tension: Single = 0.5) : TIGPGraphics; overload;
     function  DrawCurve( pen: IGPPen; const points: array of TPoint ) : TIGPGraphics; overload;
     function  DrawCurve( pen: IGPPen; const points: array of TPoint; tension: Single) : TIGPGraphics; overload;
-    function  DrawCurve( pen: IGPPen; const points: array of TPoint; offset, numberOfSegments: Integer;
-      tension: Single = 0.5) : TIGPGraphics; overload;
+    function  DrawCurve( pen: IGPPen; const points: array of TPoint; offset, numberOfSegments: Integer; tension: Single = 0.5) : TIGPGraphics; overload;
 
     // DrawClosedCurve
     function  DrawClosedCurveF( pen: IGPPen; const points: array of TPointF ) : TIGPGraphics; overload;
@@ -17024,5 +17023,3 @@ finalization
 
 {$ENDIF}
 end.
-
-
