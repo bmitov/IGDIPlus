@@ -1,6 +1,6 @@
 {******************************************************************************
 
-              Copyright (C) 2008-2014 by Boian Mitov
+              Copyright (C) 2008-2015 by Boian Mitov
               mitov@mitov.com
               www.mitov.com
               www.igdiplus.org
@@ -3299,14 +3299,18 @@ type
     function GetNativeImage() : GpImage;
     function Clone() : TIGPImage;
     function Save(filename: WideString; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters = NIL) : TIGPImage; overload;
-    function Save(stream: IStream; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters  = NIL) : TIGPImage; overload;
+    function Save(stream: IStream; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters = NIL) : TIGPImage; overload;
     function Save(filename: WideString; const formatName : String = 'bmp' ) : TIGPImage; overload;
     function Save(stream: IStream; const formatName : String = 'bmp' ) : TIGPImage; overload;
+    function Save(stream: TStream; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters = NIL) : TIGPImage; overload;
+    function Save(stream: TStream; const formatName : String = 'bmp' ) : TIGPImage; overload;
     function SaveAdd(encoderParams: PGPEncoderParameters) : TIGPImage; overload;
     function SaveAdd(newImage: IGPImage; encoderParams: PGPEncoderParameters) : TIGPImage; overload;
     function GetType() : TIGPImageType;
     function GetPhysicalDimension() : TIGPSizeF;
     function GetBounds(out srcRect: TIGPRectF; out srcUnit: TIGPUnit) : TIGPImage;
+    function AsBytes( const formatName : String = 'bmp' ) : TBytes; overload;
+    function AsBytes( clsidEncoder: TGUID; encoderParams: PGPEncoderParameters = NIL ) : TBytes; overload;
     function GetWidth() : Cardinal;
     function GetHeight() : Cardinal;
     function GetHorizontalResolution() : Single;
@@ -3365,7 +3369,9 @@ type
 
   public
     constructor Create(filename: WideString; useEmbeddedColorManagement: Boolean = False); overload;
-    constructor Create(stream: IStream; useEmbeddedColorManagement: Boolean  = False); overload;
+    constructor Create(stream: IStream; useEmbeddedColorManagement: Boolean = False); overload;
+    constructor Create(stream: TStream; useEmbeddedColorManagement: Boolean = False); overload;
+    constructor Create(ABytes : TBytes; useEmbeddedColorManagement: Boolean = False); overload;
     destructor  Destroy(); override;
 
   public
@@ -3375,14 +3381,18 @@ type
   public
     function Clone() : TIGPImage;
     function Save(filename: WideString; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters = NIL) : TIGPImage; overload;
-    function Save(stream: IStream; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters  = NIL) : TIGPImage; overload;
+    function Save(stream: IStream; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters = NIL) : TIGPImage; overload;
     function Save(filename: WideString; const formatName : String ) : TIGPImage; overload;
     function Save(stream: IStream; const formatName : String ) : TIGPImage; overload;
+    function Save(stream: TStream; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters = NIL) : TIGPImage; overload;
+    function Save(stream: TStream; const formatName : String = 'bmp' ) : TIGPImage; overload;
     function SaveAdd(encoderParams: PGPEncoderParameters) : TIGPImage; overload;
     function SaveAdd(newImage: IGPImage; encoderParams: PGPEncoderParameters) : TIGPImage; overload;
     function GetType() : TIGPImageType;
     function GetPhysicalDimension() : TIGPSizeF;
     function GetBounds(out srcRect: TIGPRectF; out srcUnit: TIGPUnit) : TIGPImage;
+    function AsBytes( const formatName : String = 'bmp' ) : TBytes; overload;
+    function AsBytes( clsidEncoder: TGUID; encoderParams: PGPEncoderParameters = NIL ) : TBytes; overload;
     function GetWidth() : Cardinal;
     function GetHeight() : Cardinal;
     function GetHorizontalResolution() : Single;
@@ -9572,9 +9582,10 @@ begin
   end;
 end;
 
-constructor TIGPImage.Create(stream: IStream;
-                useEmbeddedColorManagement: Boolean  = False);
+constructor TIGPImage.Create(stream: IStream; useEmbeddedColorManagement: Boolean = False);
 begin
+  inherited Create();
+
   FNativeImage := NIL;
   if(useEmbeddedColorManagement) then
     ErrorCheck( GdipLoadImageFromStreamICM(stream, FNativeImage))
@@ -9582,6 +9593,90 @@ begin
   else
     ErrorCheck( GdipLoadImageFromStream(stream, FNativeImage));
       
+end;
+
+constructor TIGPImage.Create(stream: TStream; useEmbeddedColorManagement: Boolean = False);
+var
+  AStream     : IStream;
+  AStream1    : IStream;
+  AObjectData : HGlobal;
+  cbRead      : LongInt;
+{$IFDEF VER290} // Delphi XE8
+  ASize1      : LargeUInt;
+  ASize2      : LargeUInt;
+{$ELSE} // Delphi XE8
+  ASize1      : Int64;
+  ASize2      : Int64;
+{$ENDIF} // Delphi XE8
+  ABuffer     : TBytes;
+
+begin
+  AObjectData := GlobalAlloc(GMEM_MOVEABLE, 0);
+  try
+    CreateStreamOnHGlobal( AObjectData, False, AStream );
+
+    AStream1 := TStreamAdapter.Create( stream );
+    AStream1.Seek( 0, STREAM_SEEK_END, ASize1 );
+    AStream1.Seek( 0, STREAM_SEEK_SET, ASize2 );
+    SetLength( ABuffer, ASize1 );
+    AStream1.Read( @ABuffer[ 0 ], ASize1, @cbRead );
+    AStream.Write( @ABuffer[ 0 ], ASize1, @cbRead );
+//    AStream1.CopyTo( AStream, ASize1, cbRead, cbWritten );
+    Create( AStream, useEmbeddedColorManagement );
+
+  finally
+    GlobalFree( AObjectData);
+    end;
+
+end;
+
+constructor TIGPImage.Create(ABytes : TBytes; useEmbeddedColorManagement: Boolean = False);
+var
+  AStream       : IStream;
+  AStream1      : IStream;
+  ADelphiStream : TMemoryStream;
+  AObjectData   : HGlobal;
+{$IFDEF VER290} // Delphi XE8
+  ASize1        : LargeUInt;
+  ASize2        : LargeUInt;
+{$ELSE} // Delphi XE8
+  ASize1        : Int64;
+  ASize2        : Int64;
+{$ENDIF} // Delphi XE8
+  ABuffer       : TBytes;
+  cbRead        : LongInt;
+
+begin
+  if( Length( ABytes ) <> 0 ) then
+    begin
+    ADelphiStream := TMemoryStream.Create();
+    ADelphiStream.WriteData( ABytes, Length( ABytes ));
+    ADelphiStream.Position := 0;
+    try
+      AObjectData := GlobalAlloc(GMEM_MOVEABLE, 0);
+      try
+        CreateStreamOnHGlobal( AObjectData, False, AStream );
+
+        AStream1 := TStreamAdapter.Create( ADelphiStream );
+        AStream1.Seek( 0, STREAM_SEEK_END, ASize1 );
+        AStream1.Seek( 0, STREAM_SEEK_SET, ASize2 );
+        SetLength( ABuffer, ASize1 );
+        AStream1.Read( @ABuffer[ 0 ], ASize1, @cbRead );
+        AStream.Write( @ABuffer[ 0 ], ASize1, @cbRead );
+
+        Create( AStream, useEmbeddedColorManagement );
+      finally
+        GlobalFree( AObjectData );
+        end;
+
+    finally
+      ADelphiStream.Free();
+      end;
+    end
+
+  else
+    inherited Create();
+
 end;
 
 class function TIGPImage.FromFile(filename: WideString;
@@ -9659,6 +9754,24 @@ begin
   raise EGPException.Create( 'Unknown image format' );
 end;
 
+function TIGPImage.Save(stream: TStream; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters = NIL) : TIGPImage;
+var
+  AStreamAdapter : IStream;
+
+begin
+  AStreamAdapter := TStreamAdapter.Create( stream );
+  Result := Save( AStreamAdapter, clsidEncoder, encoderParams );
+end;
+
+function TIGPImage.Save(stream: TStream; const formatName : String = 'bmp' ) : TIGPImage;
+var
+  AStreamAdapter : IStream;
+
+begin
+  AStreamAdapter := TStreamAdapter.Create( stream );
+  Result := Save( AStreamAdapter, formatName );
+end;
+
 function TIGPImage.SaveAdd(encoderParams: PGPEncoderParameters) : TIGPImage;
 begin
   ErrorCheck( GdipSaveAdd(FNativeImage, encoderParams));
@@ -9693,7 +9806,41 @@ begin
   Result := Self;
 end;
 
-function TIGPImage.GetWidth: Cardinal;
+function TIGPImage.AsBytes( const formatName : String = 'bmp' ) : TBytes;
+var
+  AStream : TMemoryStream;
+
+begin
+  AStream := TMemoryStream.Create();
+  try
+    Save( AStream, formatName );
+    AStream.Position := 0;
+    SetLength( Result, AStream.Size );
+    AStream.Read( Result, 0, AStream.Size );
+  finally
+    AStream.Free();
+    end;
+
+end;
+
+function TIGPImage.AsBytes( clsidEncoder: TGUID; encoderParams: PGPEncoderParameters = NIL ) : TBytes;
+var
+  AStream : TMemoryStream;
+
+begin
+  AStream := TMemoryStream.Create();
+  try
+    Save( AStream, clsidEncoder, encoderParams );
+    AStream.Position := 0;
+    SetLength( Result, AStream.Size );
+    AStream.Read( Result, 0, AStream.Size );
+  finally
+    AStream.Free();
+    end;
+
+end;
+
+function TIGPImage.GetWidth() : Cardinal;
 var width: Cardinal;
 begin
   width := 0;
@@ -9701,7 +9848,7 @@ begin
   Result := width;
 end;
 
-function TIGPImage.GetHeight: Cardinal;
+function TIGPImage.GetHeight() : Cardinal;
 var height: Cardinal;
 begin
   height := 0;
@@ -9709,7 +9856,7 @@ begin
   Result := height;
 end;
 
-function TIGPImage.GetHorizontalResolution: Single;
+function TIGPImage.GetHorizontalResolution() : Single;
 var resolution: Single;
 begin
   resolution := 0.0;
@@ -9717,7 +9864,7 @@ begin
   Result := resolution;
 end;
 
-function TIGPImage.GetVerticalResolution: Single;
+function TIGPImage.GetVerticalResolution() : Single;
 var resolution: Single;
 begin
   resolution := 0.0;
