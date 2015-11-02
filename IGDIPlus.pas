@@ -9601,7 +9601,7 @@ var
   AStream1    : IStream;
   AObjectData : HGlobal;
   cbRead      : LongInt;
-{$IFDEF VER290} // Delphi XE8
+{$if CompilerVersion > 28} // Delphi XE8
   ASize1      : LargeUInt;
   ASize2      : LargeUInt;
 {$ELSE} // Delphi XE8
@@ -9636,7 +9636,7 @@ var
   AStream1      : IStream;
   ADelphiStream : TMemoryStream;
   AObjectData   : HGlobal;
-{$IFDEF VER290} // Delphi XE8
+{$if CompilerVersion > 28} // Delphi XE8
   ASize1        : LargeUInt;
   ASize2        : LargeUInt;
 {$ELSE} // Delphi XE8
@@ -16753,10 +16753,10 @@ end;
 
 function MakeColor(a, r, g, b: Byte) : TAlphaColor; overload;
 begin
-  Result := ((DWORD(b) shl  BlueShift) or
-             (DWORD(g) shl GreenShift) or
-             (DWORD(r) shl   RedShift) or
-             (DWORD(a) shl AlphaShift));
+  Result := ((DWORD(b) shl BlueShift  ) or
+             (DWORD(g) shl GreenShift ) or
+             (DWORD(r) shl RedShift   ) or
+             (DWORD(a) shl AlphaShift ));
 end;
 
 function GPMakeColor( AColor : TColor ) : TAlphaColor; overload;
