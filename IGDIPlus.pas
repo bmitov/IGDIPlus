@@ -280,12 +280,12 @@ type
   );
   
   const
-    HatchStyleTotal = 53;
+    GPHatchStyleTotal = 53;
 
   const
-    HatchStyleLargeGrid = HatchStyleCross; // 4
-    HatchStyleMin       = HatchStyleHorizontal;
-    HatchStyleMax       = HatchStyleSolidDiamond;
+    GPHatchStyleLargeGrid = HatchStyleCross; // 4
+    GPHatchStyleMin       = HatchStyleHorizontal;
+    GPHatchStyleMax       = HatchStyleSolidDiamond;
 
 //--------------------------------------------------------------------------
 // Dash style constants
@@ -577,8 +577,8 @@ type
   );
 
 const
-  ObjectTypeMax = ObjectTypeCustomLineCap;
-  ObjectTypeMin = ObjectTypeBrush;
+  GPObjectTypeMax = ObjectTypeCustomLineCap;
+  GPObjectTypeMin = ObjectTypeBrush;
 
 function ObjectTypeIsValid(type_: TIGPObjectType) : Boolean;
 
@@ -600,9 +600,9 @@ const
 
 
 // macros
-function GDIP_WMF_RECORD_TO_EMFPLUS(n: Integer) : Integer;
-function GDIP_EMFPLUS_RECORD_TO_WMF(n: Integer) : Integer;
-function GDIP_IS_WMF_RECORDTYPE(n: Integer) : Boolean;
+function GP_GDIP_WMF_RECORD_TO_EMFPLUS(n: Integer) : Integer;
+function GP_GDIP_EMFPLUS_RECORD_TO_WMF(n: Integer) : Integer;
+function GP_GDIP_IS_WMF_RECORDTYPE(n: Integer) : Boolean;
 
 
 {$EXTERNALSYM TIGPEmfPlusRecordType}
@@ -1268,16 +1268,16 @@ type
 type
   TIGPStringFormatFlags = Integer;
   const
-    StringFormatFlagsDirectionRightToLeft        = $00000001;
-    StringFormatFlagsDirectionVertical           = $00000002;
-    StringFormatFlagsNoFitBlackBox               = $00000004;
-    StringFormatFlagsDisplayFormatControl        = $00000020;
-    StringFormatFlagsNoFontFallback              = $00000400;
-    StringFormatFlagsMeasureTrailingSpaces       = $00000800;
-    StringFormatFlagsNoWrap                      = $00001000;
-    StringFormatFlagsLineLimit                   = $00002000;
+    GPStringFormatFlagsDirectionRightToLeft        = $00000001;
+    GPStringFormatFlagsDirectionVertical           = $00000002;
+    GPStringFormatFlagsNoFitBlackBox               = $00000004;
+    GPStringFormatFlagsDisplayFormatControl        = $00000020;
+    GPStringFormatFlagsNoFontFallback              = $00000400;
+    GPStringFormatFlagsMeasureTrailingSpaces       = $00000800;
+    GPStringFormatFlagsNoWrap                      = $00001000;
+    GPStringFormatFlagsLineLimit                   = $00002000;
 
-    StringFormatFlagsNoClip                      = $00004000;
+    GPStringFormatFlagsNoClip                      = $00004000;
 
 //---------------------------------------------------------------------------
 // TIGPStringTrimming
@@ -1782,31 +1782,31 @@ type
   TIGPPixelFormat = Integer;
 
 const
-  PixelFormatIndexed     = $00010000; // Indexes into a palette
-  PixelFormatGDI         = $00020000; // Is a GDI-supported format
-  PixelFormatAlpha       = $00040000; // Has an alpha component
-  PixelFormatPAlpha      = $00080000; // Pre-multiplied alpha
-  PixelFormatExtended    = $00100000; // Extended color 16 bits/channel
-  PixelFormatCanonical   = $00200000;
+  GPPixelFormatIndexed     = $00010000; // Indexes into a palette
+  GPPixelFormatGDI         = $00020000; // Is a GDI-supported format
+  GPPixelFormatAlpha       = $00040000; // Has an alpha component
+  GPPixelFormatPAlpha      = $00080000; // Pre-multiplied alpha
+  GPPixelFormatExtended    = $00100000; // Extended color 16 bits/channel
+  GPPixelFormatCanonical   = $00200000;
 
-  PixelFormatUndefined      = 0;
-  PixelFormatDontCare       = 0;
+  GPPixelFormatUndefined      = 0;
+  GPPixelFormatDontCare       = 0;
 
-  PixelFormat1bppIndexed    = (1  or ( 1 shl 8) or PixelFormatIndexed or PixelFormatGDI);
-  PixelFormat4bppIndexed    = (2  or ( 4 shl 8) or PixelFormatIndexed or PixelFormatGDI);
-  PixelFormat8bppIndexed    = (3  or ( 8 shl 8) or PixelFormatIndexed or PixelFormatGDI);
-  PixelFormat16bppGrayScale = (4  or (16 shl 8) or PixelFormatExtended);
-  PixelFormat16bppRGB555    = (5  or (16 shl 8) or PixelFormatGDI);
-  PixelFormat16bppRGB565    = (6  or (16 shl 8) or PixelFormatGDI);
-  PixelFormat16bppARGB1555  = (7  or (16 shl 8) or PixelFormatAlpha or PixelFormatGDI);
-  PixelFormat24bppRGB       = (8  or (24 shl 8) or PixelFormatGDI);
-  PixelFormat32bppRGB       = (9  or (32 shl 8) or PixelFormatGDI);
-  PixelFormat32bppARGB      = (10 or (32 shl 8) or PixelFormatAlpha or PixelFormatGDI or PixelFormatCanonical);
-  PixelFormat32bppPARGB     = (11 or (32 shl 8) or PixelFormatAlpha or PixelFormatPAlpha or PixelFormatGDI);
-  PixelFormat48bppRGB       = (12 or (48 shl 8) or PixelFormatExtended);
-  PixelFormat64bppARGB      = (13 or (64 shl 8) or PixelFormatAlpha  or PixelFormatCanonical or PixelFormatExtended);
-  PixelFormat64bppPARGB     = (14 or (64 shl 8) or PixelFormatAlpha  or PixelFormatPAlpha or PixelFormatExtended);
-  PixelFormatMax            = 15;
+  GPPixelFormat1bppIndexed    = (1  or ( 1 shl 8) or GPPixelFormatIndexed or GPPixelFormatGDI);
+  GPPixelFormat4bppIndexed    = (2  or ( 4 shl 8) or GPPixelFormatIndexed or GPPixelFormatGDI);
+  GPPixelFormat8bppIndexed    = (3  or ( 8 shl 8) or GPPixelFormatIndexed or GPPixelFormatGDI);
+  GPPixelFormat16bppGrayScale = (4  or (16 shl 8) or GPPixelFormatExtended);
+  GPPixelFormat16bppRGB555    = (5  or (16 shl 8) or GPPixelFormatGDI);
+  GPPixelFormat16bppRGB565    = (6  or (16 shl 8) or GPPixelFormatGDI);
+  GPPixelFormat16bppARGB1555  = (7  or (16 shl 8) or GPPixelFormatAlpha or GPPixelFormatGDI);
+  GPPixelFormat24bppRGB       = (8  or (24 shl 8) or GPPixelFormatGDI);
+  GPPixelFormat32bppRGB       = (9  or (32 shl 8) or GPPixelFormatGDI);
+  GPPixelFormat32bppARGB      = (10 or (32 shl 8) or GPPixelFormatAlpha or GPPixelFormatGDI or GPPixelFormatCanonical);
+  GPPixelFormat32bppPARGB     = (11 or (32 shl 8) or GPPixelFormatAlpha or GPPixelFormatPAlpha or GPPixelFormatGDI);
+  GPPixelFormat48bppRGB       = (12 or (48 shl 8) or GPPixelFormatExtended);
+  GPPixelFormat64bppARGB      = (13 or (64 shl 8) or GPPixelFormatAlpha  or GPPixelFormatCanonical or GPPixelFormatExtended);
+  GPPixelFormat64bppPARGB     = (14 or (64 shl 8) or GPPixelFormatAlpha  or GPPixelFormatPAlpha or GPPixelFormatExtended);
+  GPPixelFormatMax            = 15;
 
 function GetPixelFormatSize(pixfmt: TIGPPixelFormat) : Cardinal;
 function IsIndexedPixelFormat(pixfmt: TIGPPixelFormat) : Boolean;
@@ -1815,10 +1815,10 @@ function IsExtendedPixelFormat(pixfmt: TIGPPixelFormat) : Boolean;
 
 //--------------------------------------------------------------------------
 // Determine if the Pixel Format is Canonical format:
-//   PixelFormat32bppARGB
-//   PixelFormat32bppPARGB
-//   PixelFormat64bppARGB
-//   PixelFormat64bppPARGB
+//   GPPixelFormat32bppARGB
+//   GPPixelFormat32bppPARGB
+//   GPPixelFormat64bppARGB
+//   GPPixelFormat64bppPARGB
 //--------------------------------------------------------------------------
 
 function IsCanonicalPixelFormat(pixfmt: TIGPPixelFormat) : Boolean;
@@ -2403,274 +2403,274 @@ type
 //---------------------------------------------------------------------------
 
 const
-  PropertyTagTypeByte      : Integer =  1;
-  PropertyTagTypeASCII     : Integer =  2;
-  PropertyTagTypeShort     : Integer =  3;
-  PropertyTagTypeLong      : Integer =  4;
-  PropertyTagTypeRational  : Integer =  5;
-  PropertyTagTypeUndefined : Integer =  7;
-  PropertyTagTypeSLONG     : Integer =  9;
-  PropertyTagTypeSRational : Integer = 10;
+  GPPropertyTagTypeByte      : Integer =  1;
+  GPPropertyTagTypeASCII     : Integer =  2;
+  GPPropertyTagTypeShort     : Integer =  3;
+  GPPropertyTagTypeLong      : Integer =  4;
+  GPPropertyTagTypeRational  : Integer =  5;
+  GPPropertyTagTypeUndefined : Integer =  7;
+  GPPropertyTagTypeSLONG     : Integer =  9;
+  GPPropertyTagTypeSRational : Integer = 10;
 
 //---------------------------------------------------------------------------
 // Image property ID tags
 //---------------------------------------------------------------------------
 
-  PropertyTagExifIFD            = $8769;
-  PropertyTagGpsIFD             = $8825;
+  GPPropertyTagExifIFD            = $8769;
+  GPPropertyTagGpsIFD             = $8825;
 
-  PropertyTagNewSubfileType     = $00FE;
-  PropertyTagSubfileType        = $00FF;
-  PropertyTagImageWidth         = $0100;
-  PropertyTagImageHeight        = $0101;
-  PropertyTagBitsPerSample      = $0102;
-  PropertyTagCompression        = $0103;
-  PropertyTagPhotometricInterp  = $0106;
-  PropertyTagThreshHolding      = $0107;
-  PropertyTagCellWidth          = $0108;
-  PropertyTagCellHeight         = $0109;
-  PropertyTagFillOrder          = $010A;
-  PropertyTagDocumentName       = $010D;
-  PropertyTagImageDescription   = $010E;
-  PropertyTagEquipMake          = $010F;
-  PropertyTagEquipModel         = $0110;
-  PropertyTagStripOffsets       = $0111;
-  PropertyTagOrientation        = $0112;
-  PropertyTagSamplesPerPixel    = $0115;
-  PropertyTagRowsPerStrip       = $0116;
-  PropertyTagStripBytesCount    = $0117;
-  PropertyTagMinSampleValue     = $0118;
-  PropertyTagMaxSampleValue     = $0119;
-  PropertyTagXResolution        = $011A;   // Image resolution in width direction
-  PropertyTagYResolution        = $011B;   // Image resolution in height direction
-  PropertyTagPlanarConfig       = $011C;   // Image data arrangement
-  PropertyTagPageName           = $011D;
-  PropertyTagXPosition          = $011E;
-  PropertyTagYPosition          = $011F;
-  PropertyTagFreeOffset         = $0120;
-  PropertyTagFreeByteCounts     = $0121;
-  PropertyTagGrayResponseUnit   = $0122;
-  PropertyTagGrayResponseCurve  = $0123;
-  PropertyTagT4Option           = $0124;
-  PropertyTagT6Option           = $0125;
-  PropertyTagResolutionUnit     = $0128;   // Unit of X and Y resolution
-  PropertyTagPageNumber         = $0129;
-  PropertyTagTransferFuncition  = $012D;
-  PropertyTagSoftwareUsed       = $0131;
-  PropertyTagDateTime           = $0132;
-  PropertyTagArtist             = $013B;
-  PropertyTagHostComputer       = $013C;
-  PropertyTagPredictor          = $013D;
-  PropertyTagWhitePoint         = $013E;
-  PropertyTagPrimaryChromaticities = $013F;
-  PropertyTagColorMap           = $0140;
-  PropertyTagHalftoneHints      = $0141;
-  PropertyTagTileWidth          = $0142;
-  PropertyTagTileLength         = $0143;
-  PropertyTagTileOffset         = $0144;
-  PropertyTagTileByteCounts     = $0145;
-  PropertyTagInkSet             = $014C;
-  PropertyTagInkNames           = $014D;
-  PropertyTagNumberOfInks       = $014E;
-  PropertyTagDotRange           = $0150;
-  PropertyTagTargetPrinter      = $0151;
-  PropertyTagExtraSamples       = $0152;
-  PropertyTagSampleFormat       = $0153;
-  PropertyTagSMinSampleValue    = $0154;
-  PropertyTagSMaxSampleValue    = $0155;
-  PropertyTagTransferRange      = $0156;
+  GPPropertyTagNewSubfileType     = $00FE;
+  GPPropertyTagSubfileType        = $00FF;
+  GPPropertyTagImageWidth         = $0100;
+  GPPropertyTagImageHeight        = $0101;
+  GPPropertyTagBitsPerSample      = $0102;
+  GPPropertyTagCompression        = $0103;
+  GPPropertyTagPhotometricInterp  = $0106;
+  GPPropertyTagThreshHolding      = $0107;
+  GPPropertyTagCellWidth          = $0108;
+  GPPropertyTagCellHeight         = $0109;
+  GPPropertyTagFillOrder          = $010A;
+  GPPropertyTagDocumentName       = $010D;
+  GPPropertyTagImageDescription   = $010E;
+  GPPropertyTagEquipMake          = $010F;
+  GPPropertyTagEquipModel         = $0110;
+  GPPropertyTagStripOffsets       = $0111;
+  GPPropertyTagOrientation        = $0112;
+  GPPropertyTagSamplesPerPixel    = $0115;
+  GPPropertyTagRowsPerStrip       = $0116;
+  GPPropertyTagStripBytesCount    = $0117;
+  GPPropertyTagMinSampleValue     = $0118;
+  GPPropertyTagMaxSampleValue     = $0119;
+  GPPropertyTagXResolution        = $011A;   // Image resolution in width direction
+  GPPropertyTagYResolution        = $011B;   // Image resolution in height direction
+  GPPropertyTagPlanarConfig       = $011C;   // Image data arrangement
+  GPPropertyTagPageName           = $011D;
+  GPPropertyTagXPosition          = $011E;
+  GPPropertyTagYPosition          = $011F;
+  GPPropertyTagFreeOffset         = $0120;
+  GPPropertyTagFreeByteCounts     = $0121;
+  GPPropertyTagGrayResponseUnit   = $0122;
+  GPPropertyTagGrayResponseCurve  = $0123;
+  GPPropertyTagT4Option           = $0124;
+  GPPropertyTagT6Option           = $0125;
+  GPPropertyTagResolutionUnit     = $0128;   // Unit of X and Y resolution
+  GPPropertyTagPageNumber         = $0129;
+  GPPropertyTagTransferFuncition  = $012D;
+  GPPropertyTagSoftwareUsed       = $0131;
+  GPPropertyTagDateTime           = $0132;
+  GPPropertyTagArtist             = $013B;
+  GPPropertyTagHostComputer       = $013C;
+  GPPropertyTagPredictor          = $013D;
+  GPPropertyTagWhitePoint         = $013E;
+  GPPropertyTagPrimaryChromaticities = $013F;
+  GPPropertyTagColorMap           = $0140;
+  GPPropertyTagHalftoneHints      = $0141;
+  GPPropertyTagTileWidth          = $0142;
+  GPPropertyTagTileLength         = $0143;
+  GPPropertyTagTileOffset         = $0144;
+  GPPropertyTagTileByteCounts     = $0145;
+  GPPropertyTagInkSet             = $014C;
+  GPPropertyTagInkNames           = $014D;
+  GPPropertyTagNumberOfInks       = $014E;
+  GPPropertyTagDotRange           = $0150;
+  GPPropertyTagTargetPrinter      = $0151;
+  GPPropertyTagExtraSamples       = $0152;
+  GPPropertyTagSampleFormat       = $0153;
+  GPPropertyTagSMinSampleValue    = $0154;
+  GPPropertyTagSMaxSampleValue    = $0155;
+  GPPropertyTagTransferRange      = $0156;
 
-  PropertyTagJPEGProc               = $0200;
-  PropertyTagJPEGInterFormat        = $0201;
-  PropertyTagJPEGInterLength        = $0202;
-  PropertyTagJPEGRestartInterval    = $0203;
-  PropertyTagJPEGLosslessPredictors = $0205;
-  PropertyTagJPEGPointTransforms    = $0206;
-  PropertyTagJPEGQTables            = $0207;
-  PropertyTagJPEGDCTables           = $0208;
-  PropertyTagJPEGACTables           = $0209;
+  GPPropertyTagJPEGProc               = $0200;
+  GPPropertyTagJPEGInterFormat        = $0201;
+  GPPropertyTagJPEGInterLength        = $0202;
+  GPPropertyTagJPEGRestartInterval    = $0203;
+  GPPropertyTagJPEGLosslessPredictors = $0205;
+  GPPropertyTagJPEGPointTransforms    = $0206;
+  GPPropertyTagJPEGQTables            = $0207;
+  GPPropertyTagJPEGDCTables           = $0208;
+  GPPropertyTagJPEGACTables           = $0209;
 
-  PropertyTagYCbCrCoefficients  = $0211;
-  PropertyTagYCbCrSubsampling   = $0212;
-  PropertyTagYCbCrPositioning   = $0213;
-  PropertyTagREFBlackWhite      = $0214;
+  GPPropertyTagYCbCrCoefficients  = $0211;
+  GPPropertyTagYCbCrSubsampling   = $0212;
+  GPPropertyTagYCbCrPositioning   = $0213;
+  GPPropertyTagREFBlackWhite      = $0214;
 
-  PropertyTagICCProfile         = $8773;   // This TAG is defined by ICC
+  GPPropertyTagICCProfile         = $8773;   // This TAG is defined by ICC
                                            // for embedded ICC in TIFF
-  PropertyTagGamma                = $0301;
-  PropertyTagICCProfileDescriptor = $0302;
-  PropertyTagSRGBRenderingIntent  = $0303;
+  GPPropertyTagGamma                = $0301;
+  GPPropertyTagICCProfileDescriptor = $0302;
+  GPPropertyTagSRGBRenderingIntent  = $0303;
 
-  PropertyTagImageTitle         = $0320;
-  PropertyTagCopyright          = $8298;
+  GPPropertyTagImageTitle         = $0320;
+  GPPropertyTagCopyright          = $8298;
 
 // Extra TAGs (Like Adobe Image Information tags etc.)
 
-  PropertyTagResolutionXUnit           = $5001;
-  PropertyTagResolutionYUnit           = $5002;
-  PropertyTagResolutionXLengthUnit     = $5003;
-  PropertyTagResolutionYLengthUnit     = $5004;
-  PropertyTagPrintFlags                = $5005;
-  PropertyTagPrintFlagsVersion         = $5006;
-  PropertyTagPrintFlagsCrop            = $5007;
-  PropertyTagPrintFlagsBleedWidth      = $5008;
-  PropertyTagPrintFlagsBleedWidthScale = $5009;
-  PropertyTagHalftoneLPI               = $500A;
-  PropertyTagHalftoneLPIUnit           = $500B;
-  PropertyTagHalftoneDegree            = $500C;
-  PropertyTagHalftoneShape             = $500D;
-  PropertyTagHalftoneMisc              = $500E;
-  PropertyTagHalftoneScreen            = $500F;
-  PropertyTagJPEGQuality               = $5010;
-  PropertyTagGridSize                  = $5011;
-  PropertyTagThumbnailFormat           = $5012;  // 1 = JPEG, 0 = RAW RGB
-  PropertyTagThumbnailWidth            = $5013;
-  PropertyTagThumbnailHeight           = $5014;
-  PropertyTagThumbnailColorDepth       = $5015;
-  PropertyTagThumbnailPlanes           = $5016;
-  PropertyTagThumbnailRawBytes         = $5017;
-  PropertyTagThumbnailSize             = $5018;
-  PropertyTagThumbnailCompressedSize   = $5019;
-  PropertyTagColorTransferFunction     = $501A;
-  PropertyTagThumbnailData             = $501B;    // RAW thumbnail bits in
+  GPPropertyTagResolutionXUnit           = $5001;
+  GPPropertyTagResolutionYUnit           = $5002;
+  GPPropertyTagResolutionXLengthUnit     = $5003;
+  GPPropertyTagResolutionYLengthUnit     = $5004;
+  GPPropertyTagPrintFlags                = $5005;
+  GPPropertyTagPrintFlagsVersion         = $5006;
+  GPPropertyTagPrintFlagsCrop            = $5007;
+  GPPropertyTagPrintFlagsBleedWidth      = $5008;
+  GPPropertyTagPrintFlagsBleedWidthScale = $5009;
+  GPPropertyTagHalftoneLPI               = $500A;
+  GPPropertyTagHalftoneLPIUnit           = $500B;
+  GPPropertyTagHalftoneDegree            = $500C;
+  GPPropertyTagHalftoneShape             = $500D;
+  GPPropertyTagHalftoneMisc              = $500E;
+  GPPropertyTagHalftoneScreen            = $500F;
+  GPPropertyTagJPEGQuality               = $5010;
+  GPPropertyTagGridSize                  = $5011;
+  GPPropertyTagThumbnailFormat           = $5012;  // 1 = JPEG, 0 = RAW RGB
+  GPPropertyTagThumbnailWidth            = $5013;
+  GPPropertyTagThumbnailHeight           = $5014;
+  GPPropertyTagThumbnailColorDepth       = $5015;
+  GPPropertyTagThumbnailPlanes           = $5016;
+  GPPropertyTagThumbnailRawBytes         = $5017;
+  GPPropertyTagThumbnailSize             = $5018;
+  GPPropertyTagThumbnailCompressedSize   = $5019;
+  GPPropertyTagColorTransferFunction     = $501A;
+  GPPropertyTagThumbnailData             = $501B;    // RAW thumbnail bits in
                                                    // JPEG format or RGB format
                                                    // depends on
                                                    // PropertyTagThumbnailFormat
 
   // Thumbnail related TAGs
 
-  PropertyTagThumbnailImageWidth        = $5020;   // Thumbnail width
-  PropertyTagThumbnailImageHeight       = $5021;   // Thumbnail height
-  PropertyTagThumbnailBitsPerSample     = $5022;   // Number of bits per
+  GPPropertyTagThumbnailImageWidth        = $5020;   // Thumbnail width
+  GPPropertyTagThumbnailImageHeight       = $5021;   // Thumbnail height
+  GPPropertyTagThumbnailBitsPerSample     = $5022;   // Number of bits per
                                                    // component
-  PropertyTagThumbnailCompression       = $5023;   // Compression Scheme
-  PropertyTagThumbnailPhotometricInterp = $5024;   // Pixel composition
-  PropertyTagThumbnailImageDescription  = $5025;   // Image Tile
-  PropertyTagThumbnailEquipMake         = $5026;   // Manufacturer of Image
+  GPPropertyTagThumbnailCompression       = $5023;   // Compression Scheme
+  GPPropertyTagThumbnailPhotometricInterp = $5024;   // Pixel composition
+  GPPropertyTagThumbnailImageDescription  = $5025;   // Image Tile
+  GPPropertyTagThumbnailEquipMake         = $5026;   // Manufacturer of Image
                                                    // Input equipment
-  PropertyTagThumbnailEquipModel        = $5027;   // Model of Image input
+  GPPropertyTagThumbnailEquipModel        = $5027;   // Model of Image input
                                                    // equipment
-  PropertyTagThumbnailStripOffsets    = $5028;  // Image data location
-  PropertyTagThumbnailOrientation     = $5029;  // Orientation of image
-  PropertyTagThumbnailSamplesPerPixel = $502A;  // Number of components
-  PropertyTagThumbnailRowsPerStrip    = $502B;  // Number of rows per strip
-  PropertyTagThumbnailStripBytesCount = $502C;  // Bytes per compressed
+  GPPropertyTagThumbnailStripOffsets    = $5028;  // Image data location
+  GPPropertyTagThumbnailOrientation     = $5029;  // Orientation of image
+  GPPropertyTagThumbnailSamplesPerPixel = $502A;  // Number of components
+  GPPropertyTagThumbnailRowsPerStrip    = $502B;  // Number of rows per strip
+  GPPropertyTagThumbnailStripBytesCount = $502C;  // Bytes per compressed
                                                 // strip
-  PropertyTagThumbnailResolutionX     = $502D;  // Resolution in width
+  GPPropertyTagThumbnailResolutionX     = $502D;  // Resolution in width
                                                 // direction
-  PropertyTagThumbnailResolutionY     = $502E;  // Resolution in height
+  GPPropertyTagThumbnailResolutionY     = $502E;  // Resolution in height
                                                 // direction
-  PropertyTagThumbnailPlanarConfig    = $502F;  // Image data arrangement
-  PropertyTagThumbnailResolutionUnit  = $5030;  // Unit of X and Y
+  GPPropertyTagThumbnailPlanarConfig    = $502F;  // Image data arrangement
+  GPPropertyTagThumbnailResolutionUnit  = $5030;  // Unit of X and Y
                                                 // Resolution
-  PropertyTagThumbnailTransferFunction = $5031;  // Transfer function
-  PropertyTagThumbnailSoftwareUsed     = $5032;  // Software used
-  PropertyTagThumbnailDateTime         = $5033;  // File change date and
+  GPPropertyTagThumbnailTransferFunction = $5031;  // Transfer function
+  GPPropertyTagThumbnailSoftwareUsed     = $5032;  // Software used
+  GPPropertyTagThumbnailDateTime         = $5033;  // File change date and
                                                  // time
-  PropertyTagThumbnailArtist          = $5034;  // Person who created the
+  GPPropertyTagThumbnailArtist          = $5034;  // Person who created the
                                                 // image
-  PropertyTagThumbnailWhitePoint      = $5035;  // White point chromaticity
-  PropertyTagThumbnailPrimaryChromaticities = $5036;
+  GPPropertyTagThumbnailWhitePoint      = $5035;  // White point chromaticity
+  GPPropertyTagThumbnailPrimaryChromaticities = $5036;
                                                     // Chromaticities of
                                                     // primaries
-  PropertyTagThumbnailYCbCrCoefficients = $5037; // Color space transforma-
+  GPPropertyTagThumbnailYCbCrCoefficients = $5037; // Color space transforma-
                                                  // tion coefficients
-  PropertyTagThumbnailYCbCrSubsampling = $5038;  // Subsampling ratio of Y
+  GPPropertyTagThumbnailYCbCrSubsampling = $5038;  // Subsampling ratio of Y
                                                  // to C
-  PropertyTagThumbnailYCbCrPositioning = $5039;  // Y and C position
-  PropertyTagThumbnailRefBlackWhite    = $503A;  // Pair of black and white
+  GPPropertyTagThumbnailYCbCrPositioning = $5039;  // Y and C position
+  GPPropertyTagThumbnailRefBlackWhite    = $503A;  // Pair of black and white
                                                  // reference values
-  PropertyTagThumbnailCopyRight       = $503B;   // CopyRight holder
+  GPPropertyTagThumbnailCopyRight       = $503B;   // CopyRight holder
 
-  PropertyTagLuminanceTable           = $5090;
-  PropertyTagChrominanceTable         = $5091;
+  GPPropertyTagLuminanceTable           = $5090;
+  GPPropertyTagChrominanceTable         = $5091;
 
-  PropertyTagFrameDelay               = $5100;
-  PropertyTagLoopCount                = $5101;
+  GPPropertyTagFrameDelay               = $5100;
+  GPPropertyTagLoopCount                = $5101;
 
-  PropertyTagPixelUnit         = $5110;  // Unit specifier for pixel/unit
-  PropertyTagPixelPerUnitX     = $5111;  // Pixels per unit in X
-  PropertyTagPixelPerUnitY     = $5112;  // Pixels per unit in Y
-  PropertyTagPaletteHistogram  = $5113;  // Palette histogram
+  GPPropertyTagPixelUnit         = $5110;  // Unit specifier for pixel/unit
+  GPPropertyTagPixelPerUnitX     = $5111;  // Pixels per unit in X
+  GPPropertyTagPixelPerUnitY     = $5112;  // Pixels per unit in Y
+  GPPropertyTagPaletteHistogram  = $5113;  // Palette histogram
 
   // EXIF specific tag
 
-  PropertyTagExifExposureTime  = $829A;
-  PropertyTagExifFNumber       = $829D;
+  GPPropertyTagExifExposureTime  = $829A;
+  GPPropertyTagExifFNumber       = $829D;
 
-  PropertyTagExifExposureProg  = $8822;
-  PropertyTagExifSpectralSense = $8824;
-  PropertyTagExifISOSpeed      = $8827;
-  PropertyTagExifOECF          = $8828;
+  GPPropertyTagExifExposureProg  = $8822;
+  GPPropertyTagExifSpectralSense = $8824;
+  GPPropertyTagExifISOSpeed      = $8827;
+  GPPropertyTagExifOECF          = $8828;
 
-  PropertyTagExifVer           = $9000;
-  PropertyTagExifDTOrig        = $9003; // Date & time of original
-  PropertyTagExifDTDigitized   = $9004; // Date & time of digital data generation
+  GPPropertyTagExifVer           = $9000;
+  GPPropertyTagExifDTOrig        = $9003; // Date & time of original
+  GPPropertyTagExifDTDigitized   = $9004; // Date & time of digital data generation
 
-  PropertyTagExifCompConfig    = $9101;
-  PropertyTagExifCompBPP       = $9102;
+  GPPropertyTagExifCompConfig    = $9101;
+  GPPropertyTagExifCompBPP       = $9102;
 
-  PropertyTagExifShutterSpeed  = $9201;
-  PropertyTagExifAperture      = $9202;
-  PropertyTagExifBrightness    = $9203;
-  PropertyTagExifExposureBias  = $9204;
-  PropertyTagExifMaxAperture   = $9205;
-  PropertyTagExifSubjectDist   = $9206;
-  PropertyTagExifMeteringMode  = $9207;
-  PropertyTagExifLightSource   = $9208;
-  PropertyTagExifFlash         = $9209;
-  PropertyTagExifFocalLength   = $920A;
-  PropertyTagExifMakerNote     = $927C;
-  PropertyTagExifUserComment   = $9286;
-  PropertyTagExifDTSubsec      = $9290;  // Date & Time subseconds
-  PropertyTagExifDTOrigSS      = $9291;  // Date & Time original subseconds
-  PropertyTagExifDTDigSS       = $9292;  // Date & TIme digitized subseconds
+  GPPropertyTagExifShutterSpeed  = $9201;
+  GPPropertyTagExifAperture      = $9202;
+  GPPropertyTagExifBrightness    = $9203;
+  GPPropertyTagExifExposureBias  = $9204;
+  GPPropertyTagExifMaxAperture   = $9205;
+  GPPropertyTagExifSubjectDist   = $9206;
+  GPPropertyTagExifMeteringMode  = $9207;
+  GPPropertyTagExifLightSource   = $9208;
+  GPPropertyTagExifFlash         = $9209;
+  GPPropertyTagExifFocalLength   = $920A;
+  GPPropertyTagExifMakerNote     = $927C;
+  GPPropertyTagExifUserComment   = $9286;
+  GPPropertyTagExifDTSubsec      = $9290;  // Date & Time subseconds
+  GPPropertyTagExifDTOrigSS      = $9291;  // Date & Time original subseconds
+  GPPropertyTagExifDTDigSS       = $9292;  // Date & TIme digitized subseconds
 
-  PropertyTagExifFPXVer        = $A000;
-  PropertyTagExifColorSpace    = $A001;
-  PropertyTagExifPixXDim       = $A002;
-  PropertyTagExifPixYDim       = $A003;
-  PropertyTagExifRelatedWav    = $A004;  // related sound file
-  PropertyTagExifInterop       = $A005;
-  PropertyTagExifFlashEnergy   = $A20B;
-  PropertyTagExifSpatialFR     = $A20C;  // Spatial Frequency Response
-  PropertyTagExifFocalXRes     = $A20E;  // Focal Plane X Resolution
-  PropertyTagExifFocalYRes     = $A20F;  // Focal Plane Y Resolution
-  PropertyTagExifFocalResUnit  = $A210;  // Focal Plane Resolution Unit
-  PropertyTagExifSubjectLoc    = $A214;
-  PropertyTagExifExposureIndex = $A215;
-  PropertyTagExifSensingMethod = $A217;
-  PropertyTagExifFileSource    = $A300;
-  PropertyTagExifSceneType     = $A301;
-  PropertyTagExifCfaPattern    = $A302;
+  GPPropertyTagExifFPXVer        = $A000;
+  GPPropertyTagExifColorSpace    = $A001;
+  GPPropertyTagExifPixXDim       = $A002;
+  GPPropertyTagExifPixYDim       = $A003;
+  GPPropertyTagExifRelatedWav    = $A004;  // related sound file
+  GPPropertyTagExifInterop       = $A005;
+  GPPropertyTagExifFlashEnergy   = $A20B;
+  GPPropertyTagExifSpatialFR     = $A20C;  // Spatial Frequency Response
+  GPPropertyTagExifFocalXRes     = $A20E;  // Focal Plane X Resolution
+  GPPropertyTagExifFocalYRes     = $A20F;  // Focal Plane Y Resolution
+  GPPropertyTagExifFocalResUnit  = $A210;  // Focal Plane Resolution Unit
+  GPPropertyTagExifSubjectLoc    = $A214;
+  GPPropertyTagExifExposureIndex = $A215;
+  GPPropertyTagExifSensingMethod = $A217;
+  GPPropertyTagExifFileSource    = $A300;
+  GPPropertyTagExifSceneType     = $A301;
+  GPPropertyTagExifCfaPattern    = $A302;
 
-  PropertyTagGpsVer            = $0000;
-  PropertyTagGpsLatitudeRef    = $0001;
-  PropertyTagGpsLatitude       = $0002;
-  PropertyTagGpsLongitudeRef   = $0003;
-  PropertyTagGpsLongitude      = $0004;
-  PropertyTagGpsAltitudeRef    = $0005;
-  PropertyTagGpsAltitude       = $0006;
-  PropertyTagGpsGpsTime        = $0007;
-  PropertyTagGpsGpsSatellites  = $0008;
-  PropertyTagGpsGpsStatus      = $0009;
-  PropertyTagGpsGpsMeasureMode = $00A;
-  PropertyTagGpsGpsDop         = $000B;  // Measurement precision
-  PropertyTagGpsSpeedRef       = $000C;
-  PropertyTagGpsSpeed          = $000D;
-  PropertyTagGpsTrackRef       = $000E;
-  PropertyTagGpsTrack          = $000F;
-  PropertyTagGpsImgDirRef      = $0010;
-  PropertyTagGpsImgDir         = $0011;
-  PropertyTagGpsMapDatum       = $0012;
-  PropertyTagGpsDestLatRef     = $0013;
-  PropertyTagGpsDestLat        = $0014;
-  PropertyTagGpsDestLongRef    = $0015;
-  PropertyTagGpsDestLong       = $0016;
-  PropertyTagGpsDestBearRef    = $0017;
-  PropertyTagGpsDestBear       = $0018;
-  PropertyTagGpsDestDistRef    = $0019;
-  PropertyTagGpsDestDist       = $001A;
+  GPPropertyTagGpsVer            = $0000;
+  GPPropertyTagGpsLatitudeRef    = $0001;
+  GPPropertyTagGpsLatitude       = $0002;
+  GPPropertyTagGpsLongitudeRef   = $0003;
+  GPPropertyTagGpsLongitude      = $0004;
+  GPPropertyTagGpsAltitudeRef    = $0005;
+  GPPropertyTagGpsAltitude       = $0006;
+  GPPropertyTagGpsGpsTime        = $0007;
+  GPPropertyTagGpsGpsSatellites  = $0008;
+  GPPropertyTagGpsGpsStatus      = $0009;
+  GPPropertyTagGpsGpsMeasureMode = $00A;
+  GPPropertyTagGpsGpsDop         = $000B;  // Measurement precision
+  GPPropertyTagGpsSpeedRef       = $000C;
+  GPPropertyTagGpsSpeed          = $000D;
+  GPPropertyTagGpsTrackRef       = $000E;
+  GPPropertyTagGpsTrack          = $000F;
+  GPPropertyTagGpsImgDirRef      = $0010;
+  GPPropertyTagGpsImgDir         = $0011;
+  GPPropertyTagGpsMapDatum       = $0012;
+  GPPropertyTagGpsDestLatRef     = $0013;
+  GPPropertyTagGpsDestLat        = $0014;
+  GPPropertyTagGpsDestLongRef    = $0015;
+  GPPropertyTagGpsDestLong       = $0016;
+  GPPropertyTagGpsDestBearRef    = $0017;
+  GPPropertyTagGpsDestBear       = $0018;
+  GPPropertyTagGpsDestDistRef    = $0019;
+  GPPropertyTagGpsDestDist       = $001A;
 
 (**************************************************************************\
 *
@@ -2798,11 +2798,11 @@ type
 
 type
   TIGPGraphics = class;
+  TIGPBitmap = class;
 {$IFDEF MSWINDOWS}
   TIGPPen = class;
   TIGPBrush = class;
   TIGPMatrix = class;
-  TIGPBitmap = class;
   TIGPMetafile = class;
   TIGPFontFamily = class;
   TIGPGraphicsPath = class;
@@ -2831,9 +2831,6 @@ type
   end;
 
   TIGPMatrix = class
-  end;
-
-  TIGPBitmap = class
   end;
 
   TIGPMetafile = class
@@ -3296,6 +3293,7 @@ type
 
   IGPImage = interface
     ['{3514B659-EAB2-4A2E-80F5-7A6AD9E2A64B}']
+{$IFDEF MSWINDOWS}
     function GetNativeImage() : GpImage;
     function Clone() : TIGPImage;
     function Save(filename: WideString; const clsidEncoder: TGUID; encoderParams: PGPEncoderParameters = NIL) : TIGPImage; overload;
@@ -3352,7 +3350,7 @@ type
     property PhysicalDimension    : TIGPSizeF        read GetPhysicalDimension;
     property PropertyCount        : Cardinal        read GetPropertyCount;
     property PropertyIdList       : TArray<TPropID>  read GetPropertyIdList;
-
+{$ENDIF}
   end;
 
 {$IFDEF MSWINDOWS}
@@ -3443,6 +3441,7 @@ type
 
   IGPBitmap = interface( IGPImage )
     ['{A242C124-6A5D-4F1F-9AC4-50A93D12E15B}']
+{$IFDEF MSWINDOWS}
     function  Clone( const rect: TIGPRect; format: TIGPPixelFormat) : TIGPBitmap; overload;
     function  Clone(x, y, width, height: Integer; format: TIGPPixelFormat) : TIGPBitmap; overload;
     function  CloneF( const rect: TIGPRectF; format: TIGPPixelFormat) : TIGPBitmap; overload;
@@ -3457,7 +3456,7 @@ type
     function  GetHICON() : HICON;
 
     property Pixels[ X, Y : Integer ] : TAlphaColor read GetPixel write SetPixelProp; default;
-    
+{$ENDIF}
   end;
   
 {$IFDEF MSWINDOWS}
@@ -3475,7 +3474,7 @@ type
 
   public
     constructor Create( width, height, stride : Integer; format : TIGPPixelFormat; scan0 : PBYTE);  overload;
-    constructor Create( width, height : Integer; format : TIGPPixelFormat = PixelFormat32bppARGB);  overload;
+    constructor Create( width, height : Integer; format : TIGPPixelFormat = GPPixelFormat32bppARGB);  overload;
     constructor Create( width, height : Integer; target : TIGPGraphics); overload;
 
   public
@@ -3508,6 +3507,12 @@ type
     class function FromHICON(hicon: HICON) : TIGPBitmap;
     class function FromResource(hInstance: HMODULE; bitmapName: WideString) : TIGPBitmap;
     
+  end;
+{$ELSE}
+  TIGPBitmap = class( TInterfacedObject, IGPBitmap )
+  public
+    constructor Create( width, height : Integer; format : TIGPPixelFormat = GPPixelFormat32bppARGB);  overload;
+
   end;
 {$ENDIF}
 
@@ -4440,7 +4445,7 @@ type
 
   IGPStringFormat = interface
     ['{F07F7F74-9E3C-4B01-BC57-B892B69B6FD3}']
-    function GetNativeFormat() : GpStringFormat;
+    function  GetNativeFormat() : GpStringFormat;
     
     function  Clone() : TIGPStringFormat;
 
@@ -10188,7 +10193,7 @@ begin
 
   else
     ErrorCheck( GdipCreateBitmapFromFile(PWideChar(filename), bitmap));
-      
+
   SetNativeImage(bitmap);
 end;
 
@@ -10198,10 +10203,10 @@ begin
   bitmap := NIL;
   if(useEmbeddedColorManagement) then
     ErrorCheck( GdipCreateBitmapFromStreamICM(stream, bitmap))
-      
+
   else
     ErrorCheck( GdipCreateBitmapFromStream(stream, bitmap));
-      
+
   SetNativeImage(bitmap);
 end;
 
@@ -10234,10 +10239,15 @@ begin
 
   SetNativeImage(bitmap);
 end;
+{$ENDIF}
 
-constructor TIGPBitmap.Create(width, height: Integer; format: TIGPPixelFormat = PixelFormat32bppARGB);
-var bitmap: GpBitmap;
+constructor TIGPBitmap.Create(width, height: Integer; format: TIGPPixelFormat = GPPixelFormat32bppARGB);
+{$IFDEF MSWINDOWS}
+var
+  bitmap: GpBitmap;
+{$ENDIF}
 begin
+{$IFDEF MSWINDOWS}
   bitmap := NIL;
   ErrorCheck( GdipCreateBitmapFromScan0(width,
                                                      height,
@@ -10247,8 +10257,10 @@ begin
                                                      bitmap));
 
   SetNativeImage(bitmap);
+{$ENDIF}
 end;
 
+{$IFDEF MSWINDOWS}
 constructor TIGPBitmap.Create(width, height: Integer; target: TIGPGraphics);
 var bitmap: GpBitmap;
 begin
@@ -16253,20 +16265,20 @@ end;
 
 function ObjectTypeIsValid(type_: TIGPObjectType) : Boolean;
 begin
-  Result :=  ((type_ >= ObjectTypeMin) and (type_ <= ObjectTypeMax));
+  Result :=  ((type_ >= GPObjectTypeMin) and (type_ <= GPObjectTypeMax));
 end;
 
-function GDIP_WMF_RECORD_TO_EMFPLUS(n: Integer) : Integer;
+function GP_GDIP_WMF_RECORD_TO_EMFPLUS(n: Integer) : Integer;
 begin
   Result := (n or GDIP_WMF_RECORD_BASE);
 end;
 
-function GDIP_EMFPLUS_RECORD_TO_WMF(n: Integer) : Integer;
+function GP_GDIP_EMFPLUS_RECORD_TO_WMF(n: Integer) : Integer;
 begin
   Result := n and (not GDIP_WMF_RECORD_BASE);
 end;
 
-function GDIP_IS_WMF_RECORDTYPE(n: Integer) : Boolean;
+function GP_GDIP_IS_WMF_RECORDTYPE(n: Integer) : Boolean;
 begin
   Result := ((n and GDIP_WMF_RECORD_BASE) <> 0);
 end;
@@ -16673,22 +16685,22 @@ end;
 
 function IsIndexedPixelFormat(pixfmt: TIGPPixelFormat) : Boolean;
 begin
-Result := (pixfmt and PixelFormatIndexed) <> 0;
+Result := (pixfmt and GPPixelFormatIndexed) <> 0;
 end;
 
 function IsAlphaPixelFormat(pixfmt: TIGPPixelFormat) : Boolean;
 begin
-Result := (pixfmt and PixelFormatAlpha) <> 0;
+Result := (pixfmt and GPPixelFormatAlpha) <> 0;
 end;
 
 function IsExtendedPixelFormat(pixfmt: TIGPPixelFormat) : Boolean;
 begin
-Result := (pixfmt and PixelFormatExtended) <> 0;
+Result := (pixfmt and GPPixelFormatExtended) <> 0;
 end;
 
 function IsCanonicalPixelFormat(pixfmt: TIGPPixelFormat) : Boolean;
 begin
-  Result := (pixfmt and PixelFormatCanonical) <> 0;
+  Result := (pixfmt and GPPixelFormatCanonical) <> 0;
 end;
 
 function ColorToRGB(Color: TColor): Longint;
