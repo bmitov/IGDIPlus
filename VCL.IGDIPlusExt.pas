@@ -38,40 +38,65 @@ uses
 type
   TIGPBitmapHelper = class helper for TIGPBitmap
   public
-    constructor Create( ABitmap : TBitmap ); overload;
-    constructor Create( AIcon : TIcon ); overload;
+    class function Create( ABitmap : TBitmap ) : IGPBitmap; overload;
+    class function Create( AIcon : TIcon ) : IGPBitmap; overload;
+
+  public
+    constructor CreateObject( ABitmap : TBitmap ); overload;
+    constructor CreateObject( AIcon : TIcon ); overload;
 
   end;
 //---------------------------------------------------------------------------
   TIGPGraphicsHelper = class helper for TIGPGraphics
   public
-    constructor Create( canvas : TCanvas ); overload;
+    class function Create( canvas : TCanvas ) : IGPGraphics; overload;
 
   public
-    class function FromCanvas( canvas : TCanvas ) : TIGPGraphics; overload;
+    constructor CreateObject( canvas : TCanvas ); overload;
+
+  public
+    class function FromCanvas( canvas : TCanvas ) : IGPGraphics; overload;
 
   end;
 //---------------------------------------------------------------------------
 implementation
 //---------------------------------------------------------------------------
-constructor TIGPBitmapHelper.Create( ABitmap : TBitmap );
+constructor TIGPBitmapHelper.CreateObject( ABitmap : TBitmap );
 begin
-  CreateHBitmap( ABitmap.Handle, ABitmap.Palette );
+  CreateHBitmapObject( ABitmap.Handle, ABitmap.Palette );
 end;
 //---------------------------------------------------------------------------
-constructor TIGPBitmapHelper.Create( AIcon : TIcon );
+constructor TIGPBitmapHelper.CreateObject( AIcon : TIcon );
 begin
-  CreateHICON( AIcon.Handle );
+  CreateHICONObject( AIcon.Handle );
 end;
 //---------------------------------------------------------------------------
-class function TIGPGraphicsHelper.FromCanvas( canvas : TCanvas ) : TIGPGraphics;
+class function TIGPBitmapHelper.Create( ABitmap : TBitmap ) : IGPBitmap;
+begin
+  Result := CreateObject( ABitmap );
+end;
+//---------------------------------------------------------------------------
+class function TIGPBitmapHelper.Create( AIcon : TIcon ) : IGPBitmap;
+begin
+  Result := CreateObject( AIcon );
+end;
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+class function TIGPGraphicsHelper.FromCanvas( canvas : TCanvas ) : IGPGraphics;
 begin
   Result := TIGPGraphics.Create(canvas);
 end;
 //---------------------------------------------------------------------------
-constructor TIGPGraphicsHelper.Create( canvas : TCanvas );
+constructor TIGPGraphicsHelper.CreateObject( canvas : TCanvas );
 begin
-  Create( canvas.Handle );
+  CreateObject( canvas.Handle );
+end;
+//---------------------------------------------------------------------------
+class function TIGPGraphicsHelper.Create( canvas : TCanvas ) : IGPGraphics;
+begin
+  Result := CreateObject( canvas );
 end;
 //---------------------------------------------------------------------------
 end.
