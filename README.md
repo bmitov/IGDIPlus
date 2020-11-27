@@ -9,7 +9,7 @@ For example, to make this:
 
 ... you write code like this:
 
-`
+```
 procedure TForm1.FormPaint(Sender: TObject);
 var
  AGraphics      : IGPGraphics;
@@ -109,4 +109,4 @@ begin
        .SetWrapMode( WrapModeTileFlipX ),
        0, 0, 200, 80 );
 end;
-`
+```
