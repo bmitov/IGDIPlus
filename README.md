@@ -9,7 +9,7 @@ For example, to make this:
 
 ... you write code like this:
 
-```
+```Component Pascal
 procedure TForm1.FormPaint(Sender: TObject);
 var
  AGraphics      : IGPGraphics;
