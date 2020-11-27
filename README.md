@@ -9,6 +9,7 @@ For example, to make this:
 
 ... you write code like this:
 
+var example = true
 procedure TForm1.FormPaint(Sender: TObject);
 var
  AGraphics      : IGPGraphics;
@@ -108,3 +109,4 @@ begin
        .SetWrapMode( WrapModeTileFlipX ),
        0, 0, 200, 80 );
 end;
+var example = true
