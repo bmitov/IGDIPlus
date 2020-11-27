@@ -1,4 +1,8 @@
+{$IF DEFINED(WIN64) or DEFINED(WIN32)}
 const WINGDIPDLL = 'gdiplus.dll';
+{$ELSE}
+const WINGDIPDLL = CrossVclLib;
+{$ENDIF}
 
 type
   GpStatus          = TIGPStatus;
@@ -1829,8 +1833,10 @@ type
 
   function GdipCreateFontFromDC(hdc: HDC; out font: GPFONT): GpStatus; stdcall; external WINGDIPDLL;
 
+{$IF DEFINED(WIN64) or DEFINED(WIN32)}
   function GdipCreateFontFromLogfontA(hdc: HDC; logfont: PLOGFONTA;
     out font: GPFONT): GpStatus; stdcall; external WINGDIPDLL;
+{$ENDIF}
 
   function GdipCreateFontFromLogfontW(hdc: HDC; logfont: PLOGFONTW;
     out font: GPFONT): GpStatus; stdcall; external WINGDIPDLL;
@@ -1858,8 +1864,10 @@ type
   function GdipGetFontHeightGivenDPI(font: GPFONT; dpi: Single;
     var height: Single): GpStatus; stdcall; external WINGDIPDLL;
 
+{$IF DEFINED(WIN64) or DEFINED(WIN32)}
   function GdipGetLogFontA(font: GPFONT; graphics: GpGraphics;
     var logfontA: LOGFONTA): GpStatus; stdcall; external WINGDIPDLL;
+{$ENDIF}
 
   function GdipGetLogFontW(font: GPFONT; graphics: GpGraphics;
     var logfontW: LOGFONTW): GpStatus; stdcall; external WINGDIPDLL;
