@@ -30,6 +30,8 @@
 ******************************************************************************}
 unit VCL.IGDIPlusExt;
 
+{$HPPEMIT NOUSINGNAMESPACE}
+
 interface
 
 uses
