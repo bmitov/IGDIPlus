@@ -9978,7 +9978,7 @@ begin
   Result := resolution;
 end;
 
-function TIGPImage.GetFlags : Cardinal;
+function TIGPImage.GetFlags() : Cardinal;
 begin
   var AFlags : Cardinal := 0;
   ErrorCheck( GdipGetImageFlags(FNativeImage, AFlags));
@@ -10019,12 +10019,12 @@ begin
 
 end;
 
-function TIGPImage.GetPixelFormat : TIGPPixelFormat;
+function TIGPImage.GetPixelFormat() : TIGPPixelFormat;
 begin
   ErrorCheck( GdipGetImagePixelFormat(FNativeImage, Result ));
 end;
 
-function TIGPImage.GetPaletteSize : Integer;
+function TIGPImage.GetPaletteSize() : Integer;
 begin
   var ASize : Integer := 0;
   ErrorCheck( GdipGetImagePaletteSize(FNativeImage, ASize ));
@@ -10091,7 +10091,7 @@ begin
   Result := newImage;
 end;
 
-function TIGPImage.GetFrameDimensionsCount : Cardinal;
+function TIGPImage.GetFrameDimensionsCount() : Cardinal;
 begin
   ErrorCheck( GdipImageGetFrameDimensionsCount(FNativeImage, Result ));
 end;
