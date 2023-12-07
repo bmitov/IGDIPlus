@@ -1,6 +1,6 @@
 {******************************************************************************
 
-              Copyright (C) 2008-2015 by Boian Mitov
+              Copyright (C) 2008-2023 by Boian Mitov
               mitov@mitov.com
               www.mitov.com
               www.igdiplus.org
@@ -40,8 +40,8 @@ uses
 type
   TIGPBitmapHelper = class helper for TIGPBitmap
   public
-    class function Create( ABitmap : TBitmap ) : IGPBitmap; overload;
-    class function Create( AIcon : TIcon ) : IGPBitmap; overload;
+    class function Create( ABitmap : TBitmap ) : IGPBitmap; overload; inline;
+    class function Create( AIcon : TIcon ) : IGPBitmap; overload; inline;
 
   public
     constructor CreateObject( ABitmap : TBitmap ); overload;
@@ -49,15 +49,35 @@ type
 
   end;
 //---------------------------------------------------------------------------
+  TIGPVclBitmapHelper = class helper for TBitmap
+  protected
+    function  GetGPBitmap() : IGPBitmap; inline;
+    function  GetGraphics() : IGPGraphics; inline;
+
+  public
+    property GPBitmap : IGPBitmap   read GetGPBitmap;
+    property Graphics : IGPGraphics read GetGraphics;
+
+  end;
+//---------------------------------------------------------------------------
   TIGPGraphicsHelper = class helper for TIGPGraphics
   public
-    class function Create( canvas : TCanvas ) : IGPGraphics; overload;
+    class function Create( canvas : TCanvas ) : IGPGraphics; overload; inline;
 
   public
     constructor CreateObject( canvas : TCanvas ); overload;
 
   public
-    class function FromCanvas( canvas : TCanvas ) : IGPGraphics; overload;
+    class function FromCanvas( canvas : TCanvas ) : IGPGraphics; overload; inline;
+
+  end;
+//---------------------------------------------------------------------------
+  TIGPVclCanvasHelper = class helper for TCanvas
+  protected
+    function  GetGraphics() : IGPGraphics; inline;
+
+  public
+    property Graphics : IGPGraphics read GetGraphics;
 
   end;
 //---------------------------------------------------------------------------
@@ -86,6 +106,19 @@ end;
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
+function TIGPVclBitmapHelper.GetGPBitmap() : IGPBitmap;
+begin
+  Result := TIGPBitmap.CreateObject( Self );
+end;
+//---------------------------------------------------------------------------
+function TIGPVclBitmapHelper.GetGraphics() : IGPGraphics;
+begin
+  Result := TIGPGraphics.CreateObject( Canvas );
+end;
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 class function TIGPGraphicsHelper.FromCanvas( canvas : TCanvas ) : IGPGraphics;
 begin
   Result := TIGPGraphics.Create(canvas);
@@ -100,5 +133,16 @@ class function TIGPGraphicsHelper.Create( canvas : TCanvas ) : IGPGraphics;
 begin
   Result := CreateObject( canvas );
 end;
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+function TIGPVclCanvasHelper.GetGraphics() : IGPGraphics;
+begin
+  Result := TIGPGraphics.CreateObject( Self );
+end;
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 end.
