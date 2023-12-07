@@ -26,27 +26,19 @@ uses
 {$R *.dfm}
 
 procedure TForm1.FormPaint(Sender: TObject);
-var
-  AGraphics       : IGPGraphics;
-  AFont           : IGPFont;
-  ALeftTopCorner  : TPointF;
-  ARect           : TIGPRectF;
-  ARect1          : TIGPRectF;
-  APath           : IGPGraphicsPath;
-
 begin
-  AGraphics := TIGPGraphics.Create( Canvas );
-  AGraphics.SmoothingMode := SmoothingModeAntiAlias;
-  AGraphics.TextRenderingHint := TextRenderingHintAntiAlias;
+  var AGraphics := TIGPGraphics.Create( Canvas );
+  AGraphics.SmoothingMode := TIGPSmoothingMode.AntiAlias;
+  AGraphics.TextRenderingHint := TIGPTextRenderingHint.AntiAlias;
 
-  ALeftTopCorner := TPointF.Create( 20, 20 );
-  AFont := TIGPFont.Create( 'Microsoft Sans Serif', 40, [ fsBold ] );
-  ARect := AGraphics.GetStringBoundingBoxF( 'Welcome to IGDI+', AFont, ALeftTopCorner );
-  ARect1 := GPInflateRectF( ARect, 10, 10 );
+  var ALeftTopCorner := TPointF.Create( 20, 20 );
+  var AFont := TIGPFont.Create( 'Microsoft Sans Serif', 40, [ fsBold ] );
+  var ARect := AGraphics.GetStringBoundingBoxF( 'Welcome to IGDI+', AFont, ALeftTopCorner );
+  var ARect1 := ARect.Inflate( 10, 10 );
 
   // Draw a fancy rounded rectangle.
   AGraphics.DrawRoundRectangleF(
-              TIGPPen.Create( TIGPLinearGradientBrush.Create( GPInflateRectF( ARect1, 2, 2 ), aclRed, aclBlue, LinearGradientModeVertical ), 4 ),
+              TIGPPen.Create( TIGPLinearGradientBrush.Create( ARect1.Inflate( 2, 2 ), aclRed, aclBlue, TIGPLinearGradientMode.Vertical ), 4 ),
               TIGPPathGradientBrush.Create(
                   TIGPGraphicsPath.Create().AddRoundRectangleF( ARect1, TIGPSizeF.Create( 20, 20 ) )
                    )
@@ -64,35 +56,35 @@ begin
            .DrawStringF( 'Welcome to IGDI+',
                         AFont,
                         ALeftTopCorner,
-                        TIGPLinearGradientBrush.Create( ARect, aclRed, aclBlue, LinearGradientModeForwardDiagonal ));
+                        TIGPLinearGradientBrush.Create( ARect, aclRed, aclBlue, TIGPLinearGradientMode.ForwardDiagonal ));
 
 
   // Draw a closed curve.
   AGraphics.DrawClosedCurveF( TIGPPen.Create( aclRed, 3 ), TIGPSolidBrush.Create( aclBlue ),
               [
-              TPointF.Create( 60,  160 ),
-              TPointF.Create( 150, 180 ),
-              TPointF.Create( 200, 140 ),
-              TPointF.Create( 180, 220 ),
-              TPointF.Create( 120, 200 ),
-              TPointF.Create( 80,  260 )
+                TPointF.Create( 60,  160 ),
+                TPointF.Create( 150, 180 ),
+                TPointF.Create( 200, 140 ),
+                TPointF.Create( 180, 220 ),
+                TPointF.Create( 120, 200 ),
+                TPointF.Create( 80,  260 )
               ] );
 
   // Draw a semitransparent star.
-  APath := TIGPGraphicsPath.Create();
+  var APath := TIGPGraphicsPath.Create();
   APath.AddLinesF(
     [
-    TPointF.Create( 75, 0 ),
-    TPointF.Create( 100, 50 ),
-    TPointF.Create( 150, 50 ),
-    TPointF.Create( 112, 75 ),
-    TPointF.Create( 150, 150 ),
-    TPointF.Create( 75, 100 ),
-    TPointF.Create( 0, 150 ),
-    TPointF.Create( 37, 75 ),
-    TPointF.Create( 0, 50 ),
-    TPointF.Create( 50, 50 )
-     ] );
+      TPointF.Create( 75, 0 ),
+      TPointF.Create( 100, 50 ),
+      TPointF.Create( 150, 50 ),
+      TPointF.Create( 112, 75 ),
+      TPointF.Create( 150, 150 ),
+      TPointF.Create( 75, 100 ),
+      TPointF.Create( 0, 150 ),
+      TPointF.Create( 37, 75 ),
+      TPointF.Create( 0, 50 ),
+      TPointF.Create( 50, 50 )
+    ] );
 
   AGraphics.TranslateTransform( 420, 30 )
            .FillPath(
@@ -100,16 +92,16 @@ begin
                 .SetCenterColor( MakeColor( 200, 255, 0, 0))
                 .SetSurroundColors(
                   [
-                  MakeColor(80, 0, 0, 0),
-                  MakeColor(80, 0, 255, 0),
-                  MakeColor(80, 0, 0, 255),
-                  MakeColor(80, 255, 255, 255),
-                  MakeColor(80, 0, 0, 0),
-                  MakeColor(80, 0, 255, 0),
-                  MakeColor(80, 0, 0, 255),
-                  MakeColor(80, 255, 255, 255),
-                  MakeColor(80, 0, 0, 0),
-                  MakeColor(80, 0, 255, 0)
+                    MakeColor(80, 0, 0, 0),
+                    MakeColor(80, 0, 255, 0),
+                    MakeColor(80, 0, 0, 255),
+                    MakeColor(80, 255, 255, 255),
+                    MakeColor(80, 0, 0, 0),
+                    MakeColor(80, 0, 255, 0),
+                    MakeColor(80, 0, 0, 255),
+                    MakeColor(80, 255, 255, 255),
+                    MakeColor(80, 0, 0, 0),
+                    MakeColor(80, 0, 255, 0)
                   ] ),
 
               APath );
@@ -121,7 +113,7 @@ begin
            .DrawEllipseF(
               TIGPPen.Create( aclRed, 3 ),
               TIGPLinearGradientBrush.Create( TPointF.Create( 0, 0 ), TPointF.Create( 20, 20 ), aclYellow, aclGreen )
-              .SetWrapMode( WrapModeTileFlipX ),
+              .SetWrapMode( TIGPWrapMode.TileFlipX ),
               0, 0, 200, 80 );
 end;
 
