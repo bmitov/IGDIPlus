@@ -9,8 +9,8 @@ type
   GpFillMode        = TIGPFillMode;
   GpUnit            = TIGPUnit;
   GpCoordinateSpace = TIGPCoordinateSpace;
-  GpPointF          = PGPPointF;
-  GpPoint           = PGPPoint;
+  GpPointF          = PPointF;
+  GpPoint           = PPoint;
   GpRectF           = PGPRectF;
   GpRect            = PGPRect;
   GpSizeF           = PGPSizeF;
@@ -1553,12 +1553,12 @@ type
     callbackData: Pointer): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileDestPoint(graphics: GpGraphics;
-    metafile: GpMetafile; destPoint: PGPPointF; callback: GpEnumerateMetafileProc;
+    metafile: GpMetafile; destPoint: PPointF; callback: GpEnumerateMetafileProc;
     callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileDestPointI(graphics: GpGraphics;
-    metafile: GpMetafile; destPoint: PGPPoint; callback: GpEnumerateMetafileProc;
+    metafile: GpMetafile; destPoint: PPoint; callback: GpEnumerateMetafileProc;
     callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
@@ -1573,22 +1573,22 @@ type
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileDestPoints(graphics: GpGraphics;
-    metafile: GpMetafile; destPoints: PGPPointF; count: Integer;
+    metafile: GpMetafile; destPoints: PPointF; count: Integer;
     callback: GpEnumerateMetafileProc; callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileDestPointsI(graphics: GpGraphics;
-    metafile: GpMetafile; destPoints: PGPPoint; count: Integer;
+    metafile: GpMetafile; destPoints: PPoint; count: Integer;
     callback: GpEnumerateMetafileProc; callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileSrcRectDestPoint(graphics: GpGraphics;
-    metafile: GpMetafile; destPoint: PGPPointF; srcRect: PGPRectF; srcUnit: TIGPUnit;
+    metafile: GpMetafile; destPoint: PPointF; srcRect: PGPRectF; srcUnit: TIGPUnit;
     callback: GpEnumerateMetafileProc; callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileSrcRectDestPointI(graphics: GpGraphics;
-    metafile: GpMetafile; destPoint: PGPPoint; srcRect: PGPRect; srcUnit: TIGPUnit;
+    metafile: GpMetafile; destPoint: PPoint; srcRect: PGPRect; srcUnit: TIGPUnit;
     callback: GpEnumerateMetafileProc; callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
@@ -1603,12 +1603,12 @@ type
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileSrcRectDestPoints(graphics: GpGraphics;
-    metafile: GpMetafile; destPoints: PGPPointF; count: Integer; srcRect: PGPRectF;
+    metafile: GpMetafile; destPoints: PPointF; count: Integer; srcRect: PGPRectF;
     srcUnit: TIGPUnit; callback: GpEnumerateMetafileProc; callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipEnumerateMetafileSrcRectDestPointsI(graphics: GpGraphics;
-    metafile: GpMetafile; destPoints: PGPPoint; count: Integer; srcRect: PGPRect;
+    metafile: GpMetafile; destPoints: PPoint; count: Integer; srcRect: PGPRect;
     srcUnit: TIGPUnit; callback: GpEnumerateMetafileProc; callbackData: Pointer;
     imageAttributes: GpImageAttributes): GpStatus; stdcall; external WINGDIPDLL;
 
@@ -1914,11 +1914,11 @@ type
 
   function GdipDrawDriverString(graphics: GpGraphics; const text: PUINT16;
     length: Integer; const font: GPFONT; const brush: GPBRUSH;
-    const positions: PGPPointF; flags: Integer;
+    const positions: PPointF; flags: Integer;
     const matrix: GPMATRIX): GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipMeasureDriverString(graphics: GpGraphics; text: PUINT16;
-    length: Integer; font: GPFONT; positions: PGPPointF; flags: Integer;
+    length: Integer; font: GPFONT; positions: PPointF; flags: Integer;
     matrix: GPMATRIX; boundingBox: PGPRectF): GpStatus; stdcall; external WINGDIPDLL;
 
 //----------------------------------------------------------------------------
