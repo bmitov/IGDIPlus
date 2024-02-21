@@ -2205,14 +2205,11 @@ const
 
   function  MakeARGBColor( AAlpha : Byte; AColor : TAlphaColor ) : TAlphaColor;
   function  MakeColor( AAlpha : Byte; AColor : TColor ) : TAlphaColor; overload;
-  function  GPMakeGrayScaleColor( AAlpha : Byte; AColor : Byte ) : TAlphaColor;
+  function  MakeGrayScaleColor( AAlpha : Byte; AColor : Byte ) : TAlphaColor;
   function  MakeColor( AColor : TColor ) : TAlphaColor; overload;
+  function  MakeColor( AGrayScale : Byte ) : TAlphaColor; overload;
   function  MakeColor( r, g, b : Byte ) : TAlphaColor; overload;
   function  MakeColor( a, r, g, b : Byte ) : TAlphaColor; overload;
-  function  GPMakeColor( AAlpha : Byte; AColor : TColor ) : TAlphaColor; overload;
-  function  GPMakeColor( AColor : TColor ) : TAlphaColor; overload;
-  function  GPMakeColor( r, g, b : Byte ) : TAlphaColor; overload;
-  function  GPMakeColor( a, r, g, b : Byte ) : TAlphaColor; overload;
   function  GetAlpha( AColor : TAlphaColor ) : Byte;
   function  GetRed( AColor : TAlphaColor ) : Byte;
   function  GetGreen( AColor : TAlphaColor ) : Byte;
@@ -2227,7 +2224,7 @@ const
   function  RGBAColorToString( AValue : TAlphaColor ) : String;
   procedure GetStandardRGBAColorNames( ANames : TStrings ); overload;
   procedure GetStandardRGBAColorNames( AProc : TGetStrProc ); overload;
-  function  GPGetColor( AColor : TAlphaColor ) : TColor;
+  function  ARGBToColor( AColor : TAlphaColor ) : TColor;
   function  HexToUInt( const AValue : String ) : Cardinal;
 
 
@@ -16364,9 +16361,9 @@ begin
   Result := ( AColor and not AlphaMask ) or (DWORD(AAlpha) shl AlphaShift );
 end;
 
-function GPMakeGrayScaleColor( AAlpha : Byte; AColor : Byte ) : TAlphaColor;
+function MakeGrayScaleColor( AAlpha : Byte; AColor : Byte ) : TAlphaColor;
 begin
-  Result := GPMakeColor( AAlpha, AColor, AColor, AColor );
+  Result := MakeColor( AAlpha, AColor, AColor, AColor );
 end;
 
 function MakeColor( AColor : TColor ) : TAlphaColor;
@@ -16380,14 +16377,19 @@ begin
   Result := MakeColor( AAlpha, GetRValue( AColor ), GetGValue( AColor ), GetBValue( AColor ));
 end;
 
-function GPGetColor( AColor : TAlphaColor ) : TColor;
+function ARGBToColor( AColor : TAlphaColor ) : TColor;
 begin
   Result := RGB( GetRed( AColor ), GetGreen( AColor ), GetBlue( AColor ));
 end;
 
+function MakeColor( AGrayScale : Byte ) : TAlphaColor;
+begin
+  Result := MakeColor( 255, AGrayScale, AGrayScale, AGrayScale );
+end;
+
 function MakeColor( r, g, b : Byte ) : TAlphaColor;
 begin
-  Result := GPMakeColor( 255, r, g, b );
+  Result := MakeColor( 255, r, g, b );
 end;
 
 function MakeColor( a, r, g, b : Byte ) : TAlphaColor;
@@ -16396,30 +16398,6 @@ begin
              (DWORD(g) shl GreenShift ) or
              (DWORD(r) shl RedShift   ) or
              (DWORD(a) shl AlphaShift ));
-end;
-
-function GPMakeColor( AColor : TColor ) : TAlphaColor;
-begin
-  Result := GPMakeColor( 255, AColor );
-end;
-
-function GPMakeColor( AAlpha : Byte; AColor : TColor ) : TAlphaColor;
-begin
-  AColor := ColorToRGB( AColor );
-  Result := MakeColor( AAlpha, GetRValue( AColor ), GetGValue( AColor ), GetBValue( AColor ));
-end;
-
-function GPMakeColor( r, g, b : Byte ) : TAlphaColor;
-begin
-  Result := GPMakeColor( 255, r, g, b );
-end;
-
-function GPMakeColor( a, r, g, b : Byte ) : TAlphaColor;
-begin
-  Result := (( DWORD(b) shl BlueShift  ) or
-             ( DWORD(g) shl GreenShift ) or
-             ( DWORD(r) shl RedShift   ) or
-             ( DWORD(a) shl AlphaShift ));
 end;
 
 function GetAlpha( AColor : TAlphaColor ) : Byte;
@@ -16445,7 +16423,7 @@ end;
 {$IFDEF MSWINDOWS}
 function ColorRefToARGB( ARgb : COLORREF ) : TAlphaColor;
 begin
-  Result := GPMakeColor( 255, GetRValue( ARgb ), GetGValue( ARgb ), GetBValue( ARgb ));
+  Result := MakeColor( 255, GetRValue( ARgb ), GetGValue( ARgb ), GetBValue( ARgb ));
 end;
 
 function ARGBToColorRef( AColor : TAlphaColor ) : COLORREF;
@@ -16456,7 +16434,7 @@ end;
 
 function RGBToBGR( AColor : TAlphaColor ) : TAlphaColor;
 begin
-  Result := GPMakeColor( GetAlpha( AColor ), GetRValue( AColor ), GetGValue( AColor ), GetBValue( AColor ) );
+  Result := MakeColor( GetAlpha( AColor ), GetRValue( AColor ), GetGValue( AColor ), GetBValue( AColor ) );
 end;
 
 function RGBToBGR( AColor : TColor ) : TColor; overload;
