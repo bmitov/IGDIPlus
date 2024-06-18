@@ -1,6 +1,6 @@
 {******************************************************************************
 
-              Copyright (C) 2008-2023 by Boian Mitov
+              Copyright (C) 2008-2024 by Boian Mitov
               mitov@mitov.com
               www.mitov.com
               www.igdiplus.org
@@ -1789,10 +1789,12 @@ type
     function  HitTest( AX, AY : Integer ) : Boolean; overload;
     function  HitTest( const APoint : TPoint ) : Boolean; overload;
     function  HitTest( const APoint : TPointF ) : Boolean; overload;
-    function  Intersects( const ARect : TIGPRect ) : Boolean;
-    function  Contains( const ARect : TIGPRect ) : Boolean;
-    function  ContainedBy( const ARect : TRect ) : Boolean; overload;
+    function  Intersects( const ARect : TIGPRect ) : Boolean; overload;
+    function  Intersects( const ARect : TRect ) : Boolean; overload;
+    function  Contains( const ARect : TIGPRect ) : Boolean; overload;
+    function  Contains( const ARect : TRect ) : Boolean; overload;
     function  ContainedBy( const ARect : TIGPRect ) : Boolean; overload;
+    function  ContainedBy( const ARect : TRect ) : Boolean; overload;
     function  MultiplyBy( const AValue : Single ) : TIGPRect; inline;
     function  Inflate( CX, CY : Integer ) : TIGPRect; overload; inline;
     function  Inflate( AChange : Integer ) : TIGPRect; overload; inline;
@@ -1831,6 +1833,7 @@ type
     constructor Create( const ALocation : TPointF; const ASize : TIGPSizeF ); overload;
     constructor Create( const ASize : TIGPSizeF ); overload;
     constructor Create( const ARect : TRect ); overload;
+    constructor Create( const ARect : TRectF ); overload;
     constructor Create( const ARect : TIGPRect ); overload;
 
   public
@@ -1839,12 +1842,16 @@ type
     function  HitTest( AX, AY : Single ) : Boolean; overload;
     function  HitTest( const APoint : TPointF ) : Boolean; overload;
     function  HitTest( const APoint : TPoint ) : Boolean; overload;
-    function  Intersects( const ARect : TIGPRectF ) : Boolean;
+    function  Intersects( const ARect : TIGPRectF ) : Boolean; overload;
+    function  Intersects( const ARect : TRectF ) : Boolean; overload;
     function  Contains( const ARect : TIGPRect ) : Boolean; overload;
+    function  Contains( const ARect : TRect ) : Boolean; overload;
     function  Contains( const ARect : TIGPRectF ) : Boolean; overload;
-    function  ContainedBy( const ARect : TRect ) : Boolean; overload;
+    function  Contains( const ARect : TRectF ) : Boolean; overload;
     function  ContainedBy( const ARect : TIGPRect ) : Boolean; overload;
+    function  ContainedBy( const ARect : TRect ) : Boolean; overload;
     function  ContainedBy( const ARect : TIGPRectF ) : Boolean; overload;
+    function  ContainedBy( const ARect : TRectF ) : Boolean; overload;
     function  MultiplyBy( const AValue : Single ) : TIGPRectF; inline;
     function  Inflate( CX, CY : Single ) : TIGPRectF; overload; inline;
     function  Inflate( AChange : Single ) : TIGPRectF; overload; inline;
@@ -3037,9 +3044,6 @@ type
   TIGPRegion = class
   end;
 
-  TIGPImage = class
-  end;
-
   TIGPHatchBrush = class
   end;
 
@@ -3192,23 +3196,33 @@ type
     //              of data were written to the buffer.
     function GetData() : TBytes;
     function Intersect( const ARect : TIGPRect ) : IGPRegion; overload;
-    function IntersectF( const ARect : TIGPRectF ) : IGPRegion;
+    function Intersect( const ARect : TRect ) : IGPRegion; overload;
+    function IntersectF( const ARect : TIGPRectF ) : IGPRegion; overload;
+    function IntersectF( const ARect : TRectF ) : IGPRegion; overload;
     function Intersect( const APath : IGPGraphicsPath ) : IGPRegion; overload;
     function Intersect( const ARegion : IGPRegion ) : IGPRegion; overload;
     function Union( const ARect : TIGPRect ) : IGPRegion; overload;
-    function UnionF( const ARect : TIGPRectF ) : IGPRegion;
+    function Union( const ARect : TRect ) : IGPRegion; overload;
+    function UnionF( const ARect : TIGPRectF ) : IGPRegion; overload;
+    function UnionF( const ARect : TRectF ) : IGPRegion; overload;
     function Union( const APath : IGPGraphicsPath ) : IGPRegion; overload;
     function Union( const ARegion : IGPRegion ) : IGPRegion; overload;
     function XorRegion( const ARect : TIGPRect ) : IGPRegion; overload;
-    function XorRegionF( const ARect : TIGPRectF ) : IGPRegion;
+    function XorRegion( const ARect : TRect ) : IGPRegion; overload;
+    function XorRegionF( const ARect : TIGPRectF ) : IGPRegion; overload;
+    function XorRegionF( const ARect : TRectF ) : IGPRegion; overload;
     function XorRegion( const APath : IGPGraphicsPath ) : IGPRegion; overload;
     function XorRegion( const ARegion : IGPRegion ) : IGPRegion; overload;
     function Exclude( const ARect : TIGPRect ) : IGPRegion; overload;
-    function ExcludeF( const ARect : TIGPRectF ) : IGPRegion;
+    function Exclude( const ARect : TRect ) : IGPRegion; overload;
+    function ExcludeF( const ARect : TIGPRectF ) : IGPRegion; overload;
+    function ExcludeF( const ARect : TRectF ) : IGPRegion; overload;
     function Exclude( const APath : IGPGraphicsPath ) : IGPRegion; overload;
     function Exclude( const ARegion : IGPRegion ) : IGPRegion; overload;
     function Complement( const ARect : TIGPRect ) : IGPRegion; overload;
-    function ComplementF( const ARect : TIGPRectF ) : IGPRegion;
+    function Complement( const ARect : TRect ) : IGPRegion; overload;
+    function ComplementF( const ARect : TIGPRectF ) : IGPRegion; overload;
+    function ComplementF( const ARect : TRectF ) : IGPRegion; overload;
     function Complement( const APath : IGPGraphicsPath ) : IGPRegion; overload;
     function Complement( const ARegion : IGPRegion ) : IGPRegion; overload;
     function TranslateF( dx, dy : Single ) : IGPRegion;
@@ -3225,8 +3239,10 @@ type
     function IsVisibleF( const point : TPointF; const AGraphics : IGPGraphics = NIL ) : Boolean; overload;
     function IsVisible( x, y, AWidth, AHeight : Integer; const AGraphics : IGPGraphics ) : Boolean; overload;
     function IsVisible( const ARect : TIGPRect; const AGraphics : IGPGraphics = NIL ) : Boolean; overload;
+    function IsVisible( const ARect : TRect; const AGraphics : IGPGraphics = NIL ) : Boolean; overload;
     function IsVisibleF( x, y, AWidth, AHeight : Single; const AGraphics : IGPGraphics = NIL ) : Boolean; overload;
     function IsVisibleF( const ARect : TIGPRectF; const AGraphics : IGPGraphics = NIL ) : Boolean; overload;
+    function IsVisibleF( const ARect : TRectF; const AGraphics : IGPGraphics = NIL ) : Boolean; overload;
     function Equals( const ARegion : IGPRegion; const AGraphics : IGPGraphics ) : Boolean;
     function GetRegionScansCount( const AMatrix : IGPMatrix ) : Cardinal;
     function GetRegionScansF( const AMatrix : IGPMatrix ) : TArray<TIGPRectF>;
@@ -3247,7 +3263,9 @@ type
   public
     class function Create() : IGPRegion; overload;
     class function Create( const ARect : TIGPRectF ) : IGPRegion; overload;
+    class function Create( const ARect : TRectF ) : IGPRegion; overload;
     class function Create( const ARect : TIGPRect ) : IGPRegion; overload;
+    class function Create( const ARect : TRect ) : IGPRegion; overload;
     class function Create( const APath : IGPGraphicsPath ) : IGPRegion; overload;
     class function Create( const regionData : array of Byte ) : IGPRegion; overload;
     class function Create( hRgn : HRGN ) : IGPRegion; overload;
@@ -3255,7 +3273,9 @@ type
   public
     constructor CreateObject(); overload;
     constructor CreateObject( const ARect : TIGPRectF ); overload;
+    constructor CreateObject( const ARect : TRectF ); overload;
     constructor CreateObject( const ARect : TIGPRect ); overload;
+    constructor CreateObject( const ARect : TRect ); overload;
     constructor CreateObject( const APath : IGPGraphicsPath); overload;
     constructor CreateObject( const regionData : array of Byte ); overload;
     constructor CreateObject( hRgn : HRGN ); overload;
@@ -3275,23 +3295,33 @@ type
     //              of data were written to the buffer.
     function GetData() : TBytes;
     function Intersect( const ARect : TIGPRect ) : IGPRegion; overload;
-    function IntersectF( const ARect : TIGPRectF ) : IGPRegion;
+    function Intersect( const ARect : TRect ) : IGPRegion; overload;
+    function IntersectF( const ARect : TIGPRectF ) : IGPRegion; overload;
+    function IntersectF( const ARect : TRectF ) : IGPRegion; overload;
     function Intersect( const APath : IGPGraphicsPath ) : IGPRegion; overload;
     function Intersect( const ARegion : IGPRegion ) : IGPRegion; overload;
     function Union( const ARect : TIGPRect ) : IGPRegion; overload;
-    function UnionF( const ARect : TIGPRectF ) : IGPRegion;
+    function Union( const ARect : TRect ) : IGPRegion; overload;
+    function UnionF( const ARect : TIGPRectF ) : IGPRegion; overload;
+    function UnionF( const ARect : TRectF ) : IGPRegion; overload;
     function Union( const APath : IGPGraphicsPath ) : IGPRegion; overload;
     function Union( const ARegion : IGPRegion ) : IGPRegion; overload;
     function XorRegion( const ARect : TIGPRect ) : IGPRegion; overload;
-    function XorRegionF( const ARect : TIGPRectF ) : IGPRegion;
+    function XorRegion( const ARect : TRect ) : IGPRegion; overload;
+    function XorRegionF( const ARect : TIGPRectF ) : IGPRegion; overload;
+    function XorRegionF( const ARect : TRectF ) : IGPRegion; overload;
     function XorRegion( const APath : IGPGraphicsPath ) : IGPRegion; overload;
     function XorRegion( const ARegion : IGPRegion ) : IGPRegion; overload;
     function Exclude( const ARect : TIGPRect ) : IGPRegion; overload;
-    function ExcludeF( const ARect : TIGPRectF ) : IGPRegion;
+    function Exclude( const ARect : TRect ) : IGPRegion; overload;
+    function ExcludeF( const ARect : TIGPRectF ) : IGPRegion; overload;
+    function ExcludeF( const ARect : TRectF ) : IGPRegion; overload;
     function Exclude( const APath : IGPGraphicsPath ) : IGPRegion; overload;
     function Exclude( const ARegion : IGPRegion ) : IGPRegion; overload;
     function Complement( const ARect : TIGPRect ) : IGPRegion; overload;
-    function ComplementF( const ARect : TIGPRectF ) : IGPRegion;
+    function Complement( const ARect : TRect ) : IGPRegion; overload;
+    function ComplementF( const ARect : TIGPRectF ) : IGPRegion; overload;
+    function ComplementF( const ARect : TRectF ) : IGPRegion; overload;
     function Complement( const APath : IGPGraphicsPath ) : IGPRegion; overload;
     function Complement( const ARegion : IGPRegion ) : IGPRegion; overload;
     function TranslateF( dx, dy : Single ) : IGPRegion;
@@ -3308,8 +3338,10 @@ type
     function IsVisibleF( const APoint : TPointF; const AGraphics : IGPGraphics = NIL ) : Boolean; overload;
     function IsVisible( x, y, AWidth, AHeight : Integer; const AGraphics : IGPGraphics ) : Boolean; overload;
     function IsVisible( const ARect : TIGPRect; const AGraphics : IGPGraphics = NIL ) : Boolean; overload;
+    function IsVisible( const ARect : TRect; const AGraphics : IGPGraphics = NIL ) : Boolean; overload;
     function IsVisibleF( x, y, AWidth, AHeight : Single; const AGraphics : IGPGraphics = NIL ) : Boolean; overload;
     function IsVisibleF( const ARect : TIGPRectF; const AGraphics : IGPGraphics = NIL ) : Boolean; overload;
+    function IsVisibleF( const ARect : TRectF; const AGraphics : IGPGraphics = NIL ) : Boolean; overload;
     function EqualsRegion( const ARegion : IGPRegion; const AGraphics : IGPGraphics ) : Boolean;
     function GetRegionScansCount( const AMatrix : IGPMatrix ) : Cardinal;
     function GetRegionScansF( const AMatrix : IGPMatrix ) : TArray<TIGPRectF>;
@@ -3414,7 +3446,6 @@ type
 
   public
     constructor CreateObject();
-    destructor  Destroy(); override;
 
   end;
 {$ENDIF}
@@ -3530,8 +3561,9 @@ type
     function SaveAdd( const newImage : IGPImage; encoderParams : PGPEncoderParameters ) : IGPImage; overload;
     function GetType() : TIGPImageType;
     function GetPhysicalDimension() : TIGPSizeF;
-    function GetBounds( out sASrcRect : TIGPRectF; out ASrcUnit : TIGPUnit ) : IGPImage;
-    function AsBytes( const formatName : String = 'bmp' ) : TBytes; overload;
+    function GetBounds( out sASrcRect : TIGPRectF; out ASrcUnit : TIGPUnit ) : IGPImage; overload;
+    function GetBounds( out sASrcRect : TRectF; out ASrcUnit : TIGPUnit ) : IGPImage; overload;
+    function AsBytes( const AFormatName : String = 'bmp' ) : TBytes; overload;
     function AsBytes( clsidEncoder : TGUID; encoderParams : PGPEncoderParameters = NIL ) : TBytes; overload;
     function GetWidth() : Cardinal;
     function GetHeight() : Cardinal;
@@ -3544,7 +3576,7 @@ type
     function GetPaletteSize() : Integer;
     function GetPalette( APalette : PGPColorPalette; ASize : Integer ) : IGPImage;
     function SetPalette( APalette : PGPColorPalette ) : IGPImage;
-    function GetThumbnailImage( AThumbWidth, AThumbHeight : Cardinal; ACallback : TIGPGetThumbnailImageAbortProc = NIL ) : IGPImage;
+    function GetThumbnailImage( AThumbWidth, AThumbHeight : Cardinal; const ACallback : TIGPGetThumbnailImageAbortProc = NIL ) : IGPImage;
     function GetFrameDimensionsCount() : Cardinal;
     function GetFrameDimensionsList() : TArray<TGUID>;
     function GetFrameCount( const ADimensionID : TGUID ) : Cardinal;
@@ -3577,7 +3609,11 @@ type
     property PropertyCount        : Cardinal        read GetPropertyCount;
     property PropertyIdList       : TArray<TPropID> read GetPropertyIdList;
     property Graphics             : IGPGraphics     read GetGraphics;
+{$ELSE}
+    function GetGraphics() : IGPGraphics;
+    property Graphics             : IGPGraphics     read GetGraphics;
 {$ENDIF}
+
   end;
 
 {$IFDEF MSWINDOWS}
@@ -3624,8 +3660,9 @@ type
     function SaveAdd( const newImage : IGPImage; AEncoderParams : PGPEncoderParameters ) : IGPImage; overload;
     function GetType() : TIGPImageType;
     function GetPhysicalDimension() : TIGPSizeF;
-    function GetBounds( out ASrcRect : TIGPRectF; out ASrcUnit : TIGPUnit ) : IGPImage;
-    function AsBytes( const formatName : String = 'bmp' ) : TBytes; overload;
+    function GetBounds( out ASrcRect : TIGPRectF; out ASrcUnit : TIGPUnit ) : IGPImage; overload;
+    function GetBounds( out ASrcRect : TRectF; out ASrcUnit : TIGPUnit ) : IGPImage; overload;
+    function AsBytes( const AFormatName : String = 'bmp' ) : TBytes; overload;
     function AsBytes( clsidEncoder : TGUID; AEncoderParams : PGPEncoderParameters = NIL ) : TBytes; overload;
     function GetWidth() : Cardinal;
     function GetHeight() : Cardinal;
@@ -3638,7 +3675,7 @@ type
     function GetPaletteSize() : Integer;
     function GetPalette( palette : PGPColorPalette; ASize : Integer ) : IGPImage;
     function SetPalette( palette : PGPColorPalette ) : IGPImage;
-    function GetThumbnailImage( AThumbWidth, AThumbHeight : Cardinal; ACallback : TIGPGetThumbnailImageAbortProc = NIL ) : IGPImage;
+    function GetThumbnailImage( AThumbWidth, AThumbHeight : Cardinal; const ACallback : TIGPGetThumbnailImageAbortProc = NIL ) : IGPImage;
     function GetFrameDimensionsCount() : Cardinal;
     function GetFrameDimensionsList() : TArray<TGUID>;
     function GetFrameCount( const ADimensionID: TGUID) : Cardinal;
@@ -3658,6 +3695,13 @@ type
     function GetGraphics() : IGPGraphics;
 
   end;
+{$ELSE}
+  TIGPImage = class( TInterfacedObject, IGPImage )
+  public
+    function GetGraphics() : IGPGraphics;
+
+  end;
+
 {$ENDIF}
 
   IGPBitmapData = interface
@@ -3681,10 +3725,13 @@ type
     ['{A242C124-6A5D-4F1F-9AC4-50A93D12E15B}']
 {$IFDEF MSWINDOWS}
     function  Clone( const ARect : TIGPRect; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
+    function  Clone( const ARect : TRect; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
     function  Clone( x, y, AWidth, AHeight : Integer; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
     function  CloneF( const ARect : TIGPRectF; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
+    function  CloneF( const ARect : TRectF; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
     function  CloneF( x, y, AWidth, AHeight : Single; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
     function  LockBits( const ARect : TIGPRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData; overload;
+    function  LockBits( const ARect : TRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData; overload;
     function  LockBits( AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData; overload;
     function  GetPixel( x, y : Integer ) : TAlphaColor;
     function  SetPixel( x, y : Integer; AColor : TAlphaColor ) : IGPBitmap;
@@ -3743,16 +3790,19 @@ type
 
   public
     function  Clone( const ARect : TIGPRect; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
+    function  Clone( const ARect : TRect; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
     function  Clone( x, y, AWidth, AHeight : Integer; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
     function  CloneF( const ARect : TIGPRectF; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
+    function  CloneF( const ARect : TRectF; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
     function  CloneF( x, y, AWidth, AHeight : Single; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
     function  LockBits( const ARect : TIGPRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData; overload;
+    function  LockBits( const ARect : TRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData; overload;
     function  LockBits( AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData; overload;
-    function  GetPixel( x, y: Integer ) : TAlphaColor;
-    function  SetPixel( x, y: Integer; AColor : TAlphaColor ) : IGPBitmap;
-    procedure SetPixelProp( x, y: Integer; AColor : TAlphaColor );
-    function  SetResolution( xdpi, ydpi: Single ) : IGPBitmap;
-    function  GetHBITMAP( colorBackground: TAlphaColor ) : HBITMAP;
+    function  GetPixel( x, y : Integer ) : TAlphaColor;
+    function  SetPixel( x, y : Integer; AColor : TAlphaColor ) : IGPBitmap;
+    procedure SetPixelProp( x, y : Integer; AColor : TAlphaColor );
+    function  SetResolution( xdpi, ydpi : Single ) : IGPBitmap;
+    function  GetHBITMAP( colorBackground : TAlphaColor ) : HBITMAP;
     function  GetHICON() : HICON;
 
   public
@@ -3766,7 +3816,7 @@ type
 
   end;
 {$ELSE}
-  TIGPBitmap = class( TInterfacedObject, IGPBitmap )
+  TIGPBitmap = class( TIGPImage, IGPBitmap )
   public
     class function Create( AWidth, AHeight : Integer; AFormat : TIGPPixelFormat = GPPixelFormat32bppARGB ) : IGPBitmap;  overload;
 
@@ -4068,8 +4118,10 @@ type
     // Default class function is set to identity matrix.
     class function Create() : IGPMatrix; overload;
     class function Create( m11, m12, m21, m22, dx, dy : Single ) : IGPMatrix; overload;
-    class function Create( const ARect : TIGPRectF; const dstplg : TPointF ) : IGPMatrix; overload;
-    class function Create( const ARect : TIGPRect; const dstplg : TPoint ) : IGPMatrix; overload;
+    class function Create( const ARect : TIGPRectF; const ADstplg : TPointF ) : IGPMatrix; overload;
+    class function Create( const ARect : TRectF; const ADstplg : TPointF ) : IGPMatrix; overload;
+    class function Create( const ARect : TIGPRect; const ADstplg : TPoint ) : IGPMatrix; overload;
+    class function Create( const ARect : TRect; const ADstplg : TPoint ) : IGPMatrix; overload;
 
   protected
     constructor CreateGdiPlusObject( ANativeMatrix : GpMatrix; ADummy : Boolean );
@@ -4078,8 +4130,10 @@ type
     // Default constructor is set to identity matrix.
     constructor CreateObject(); overload;
     constructor CreateObject( m11, m12, m21, m22, dx, dy : Single ); overload;
-    constructor CreateObject( const ARect : TIGPRectF; const dstplg : TPointF ); overload;
-    constructor CreateObject( const ARect : TIGPRect; const dstplg : TPoint ); overload;
+    constructor CreateObject( const ARect : TIGPRectF; const ADstplg : TPointF ); overload;
+    constructor CreateObject( const ARect : TRectF; const ADstplg : TPointF ); overload;
+    constructor CreateObject( const ARect : TIGPRect; const ADstplg : TPoint ); overload;
+    constructor CreateObject( const ARect : TRect; const ADstplg : TPoint ); overload;
     destructor  Destroy(); override;
 
   public
@@ -4303,9 +4357,13 @@ type
   public
     class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode = TIGPWrapMode.Tile ) : IGPTextureBrush; overload;
     class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRectF ) : IGPTextureBrush; overload;
+    class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRectF ) : IGPTextureBrush; overload;
     class function Create( const AImage : IGPImage; const ADstRect : TIGPRectF; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload;
+    class function Create( const AImage : IGPImage; const ADstRect : TRectF; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload;
     class function Create( const AImage : IGPImage; const ADstRect : TIGPRect; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload;
+    class function Create( const AImage : IGPImage; const ADstRect : TRect; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload;
     class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRect ) : IGPTextureBrush; overload;
+    class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRect ) : IGPTextureBrush; overload;
     class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; ADstX, ADstY, ADstWidth, ADstHeight : Single ) : IGPTextureBrush; overload;
     class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; ADstX, ADstY, ADstWidth, ADstHeight : Integer ) : IGPTextureBrush; overload;
     class function Create() : IGPTextureBrush; overload;
@@ -4313,9 +4371,13 @@ type
   public
     constructor CreateObject( const AImage : IGPImage; AWrapMode : TIGPWrapMode = TIGPWrapMode.Tile ); overload;
     constructor CreateObject( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRectF ); overload;
+    constructor CreateObject( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRectF ); overload;
     constructor CreateObject( const AImage : IGPImage; const ADstRect : TIGPRectF; const AImageAttributes : IGPImageAttributes = NIL ); overload;
+    constructor CreateObject( const AImage : IGPImage; const ADstRect : TRectF; const AImageAttributes : IGPImageAttributes = NIL ); overload;
     constructor CreateObject( const AImage : IGPImage; const ADstRect : TIGPRect; const AImageAttributes : IGPImageAttributes = NIL ); overload;
+    constructor CreateObject( const AImage : IGPImage; const ADstRect : TRect; const AImageAttributes : IGPImageAttributes = NIL ); overload;
     constructor CreateObject( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRect ); overload;
+    constructor CreateObject( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRect ); overload;
     constructor CreateObject( const AImage : IGPImage; AWrapMode : TIGPWrapMode; ADstX, ADstY, ADstWidth, ADstHeight : Single ); overload;
     constructor CreateObject( const AImage : IGPImage; AWrapMode : TIGPWrapMode; ADstX, ADstY, ADstWidth, ADstHeight : Integer ); overload;
     constructor CreateObject(); overload;
@@ -4390,24 +4452,32 @@ type
   end;
 
 {$IFDEF MSWINDOWS}
-  TIGPLinearGradientBrush = class(TIGPBrush, IGPLinearGradientBrush, IGPTransformable )
+  TIGPLinearGradientBrush = class( TIGPBrush, IGPLinearGradientBrush, IGPTransformable )
   public
     class function Create() : IGPLinearGradientBrush; overload;
     class function Create( const APoint1, APoint2 : TPointF; AColor1, AColor2 : TAlphaColor ) : IGPLinearGradientBrush; overload;
     class function Create( const APoint1, APoint2 : TPoint; AColor1, AColor2 : TAlphaColor ) : IGPLinearGradientBrush; overload;
     class function Create( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload;
+    class function Create( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload;
     class function Create( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload;
+    class function Create( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload;
     class function Create( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload;
+    class function Create( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload;
     class function Create( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload;
+    class function Create( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload;
 
   public
     constructor CreateObject(); overload;
     constructor CreateObject( const APoint1, APoint2 : TPointF; AColor1, AColor2 : TAlphaColor ); overload;
     constructor CreateObject( const APoint1, APoint2 : TPoint; AColor1, AColor2 : TAlphaColor ); overload;
     constructor CreateObject( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ); overload;
+    constructor CreateObject( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ); overload;
     constructor CreateObject( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ); overload;
+    constructor CreateObject( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ); overload;
     constructor CreateObject( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ); overload;
+    constructor CreateObject( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ); overload;
     constructor CreateObject( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ); overload;
+    constructor CreateObject( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ); overload;
 
   public
     function  SetLinearColors( AColor1, AColor2 : TAlphaColor ) : IGPLinearGradientBrush;
@@ -4926,8 +4996,10 @@ type
     function  AddLines( const APoints : array of TPoint ) : IGPGraphicsPath; overload;
 
     function  AddArcF( const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
+    function  AddArcF( const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
     function  AddArcF( x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
     function  AddArc( const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
+    function  AddArc( const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
     function  AddArc( x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
 
     function  AddBezierF( const pt1, pt2, pt3, pt4: TPointF ) : IGPGraphicsPath; overload;
@@ -4950,24 +5022,34 @@ type
     function  AddClosedCurve( const APoints : array of TPoint; ATension : Single ) : IGPGraphicsPath; overload;
 
     function  AddRectangleF( const ARect : TIGPRectF ) : IGPGraphicsPath; overload;
+    function  AddRectangleF( const ARect : TRectF ) : IGPGraphicsPath; overload;
     function  AddRectangleF( x, y, AWidth, AHeight : Single ) : IGPGraphicsPath; overload;
     function  AddRectangle( const ARect : TIGPRect ) : IGPGraphicsPath; overload;
+    function  AddRectangle( const ARect : TRect ) : IGPGraphicsPath; overload;
     function  AddRectangle( x, y, AWidth, AHeight : Integer ) : IGPGraphicsPath; overload;
 
-    function  AddRoundRectangleF( const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphicsPath;
-    function  AddRoundRectangle( const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphicsPath;
+    function  AddRoundRectangleF( const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphicsPath; overload;
+    function  AddRoundRectangleF( const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphicsPath; overload;
+    function  AddRoundRectangle( const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphicsPath; overload;
+    function  AddRoundRectangle( const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphicsPath; overload;
 
-    function  AddRectanglesF( const ARects : array of TIGPRectF ) : IGPGraphicsPath;
-    function  AddRectangles( const ARects : array of TIGPRect ) : IGPGraphicsPath;
-    
+    function  AddRectanglesF( const ARects : array of TIGPRectF ) : IGPGraphicsPath; overload;
+    function  AddRectanglesF( const ARects : array of TRectF ) : IGPGraphicsPath; overload;
+    function  AddRectangles( const ARects : array of TIGPRect ) : IGPGraphicsPath; overload;
+    function  AddRectangles( const ARects : array of TRect ) : IGPGraphicsPath; overload;
+
     function  AddEllipseF( const ARect : TIGPRectF ) : IGPGraphicsPath; overload;
+    function  AddEllipseF( const ARect : TRectF ) : IGPGraphicsPath; overload;
     function  AddEllipseF( x, y, AWidth, AHeight : Single ) : IGPGraphicsPath; overload;
     function  AddEllipse( const ARect : TIGPRect ) : IGPGraphicsPath; overload;
+    function  AddEllipse( const ARect : TRect ) : IGPGraphicsPath; overload;
     function  AddEllipse( x, y, AWidth, AHeight : Integer ) : IGPGraphicsPath; overload;
 
     function  AddPieF( const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
+    function  AddPieF( const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
     function  AddPieF( x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
     function  AddPie( const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
+    function  AddPie( const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
     function  AddPie( x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
 
     function  AddPolygonF( const APoints : array of TPointF ) : IGPGraphicsPath;
@@ -4977,13 +5059,17 @@ type
 
     function  AddStringF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
     function  AddStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
+    function  AddStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
     function  AddString( const AString : WideString; const AFont : IGPFont; const AOrigin : TPoint; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
     function  AddString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRect; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
+    function  AddString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRect; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
 
     function  AddStringF( const AString : WideString; const AFamily : IGPFontFamily; AStyle : TFontStyles; emSize : Single; const AOrigin : TPointF; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
     function  AddStringF( const AString : WideString; const AFamily : IGPFontFamily; AStyle : TFontStyles; emSize : Single; const ALayoutRect : TIGPRectF; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
+    function  AddStringF( const AString : WideString; const AFamily : IGPFontFamily; AStyle : TFontStyles; emSize : Single; const ALayoutRect : TRectF; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
     function  AddString( const AString : WideString; const AFamily : IGPFontFamily; AStyle : TFontStyles; emSize : Single; const AOrigin : TPoint; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
     function  AddString( const AString : WideString; const AFamily : IGPFontFamily; AStyle : TFontStyles; emSize : Single; const ALayoutRect : TIGPRect; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
+    function  AddString( const AString : WideString; const AFamily : IGPFontFamily; AStyle : TFontStyles; emSize : Single; const ALayoutRect : TRect; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
 
     function  Transform( const AMatrix : IGPMatrix ) : IGPGraphicsPath;
 
@@ -5000,7 +5086,8 @@ type
     // Once this is called, the resultant path is made of line segments and
     // the original path information is lost.  When matrix is NULL, the
     // identity matrix is assumed.
-    function  Warp( const ADestPoints : array of TPointF; const ASrcRect : TIGPRectF; const AMatrix : IGPMatrix = NIL; AWarpMode : TIGPWarpMode = TIGPWarpMode.Perspective; AFlatness : Single = FlatnessDefault ) : IGPGraphicsPath;
+    function  Warp( const ADestPoints : array of TPointF; const ASrcRect : TIGPRectF; const AMatrix : IGPMatrix = NIL; AWarpMode : TIGPWarpMode = TIGPWarpMode.Perspective; AFlatness : Single = FlatnessDefault ) : IGPGraphicsPath; overload;
+    function  Warp( const ADestPoints : array of TPointF; const ASrcRect : TRectF; const AMatrix : IGPMatrix = NIL; AWarpMode : TIGPWarpMode = TIGPWarpMode.Perspective; AFlatness : Single = FlatnessDefault ) : IGPGraphicsPath; overload;
     function  GetPointCount() : Integer;
     function  GetPathTypes( ATypes : PBYTE; ACount : Integer ) : IGPGraphicsPath;
     function  GetPathPointsF() : TArray<TPointF>;
@@ -5074,8 +5161,10 @@ type
     function  AddLines( const APoints : array of TPoint ) : IGPGraphicsPath;
 
     function  AddArcF( const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
+    function  AddArcF( const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
     function  AddArcF( x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
     function  AddArc( const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
+    function  AddArc( const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
     function  AddArc( x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
 
     function  AddBezierF( const pt1, pt2, pt3, pt4: TPointF ) : IGPGraphicsPath; overload;
@@ -5098,24 +5187,34 @@ type
     function  AddClosedCurve( const APoints : array of TPoint; ATension : Single ) : IGPGraphicsPath; overload;
 
     function  AddRectangleF( const ARect : TIGPRectF ) : IGPGraphicsPath; overload;
+    function  AddRectangleF( const ARect : TRectF ) : IGPGraphicsPath; overload;
     function  AddRectangleF( x, y, AWidth, AHeight : Single ) : IGPGraphicsPath; overload;
     function  AddRectangle( const ARect : TIGPRect ) : IGPGraphicsPath; overload;
+    function  AddRectangle( const ARect : TRect ) : IGPGraphicsPath; overload;
     function  AddRectangle( x, y, AWidth, AHeight : Integer ) : IGPGraphicsPath; overload;
 
-    function  AddRoundRectangleF( const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphicsPath;
-    function  AddRoundRectangle( const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphicsPath;
+    function  AddRoundRectangleF( const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphicsPath; overload;
+    function  AddRoundRectangleF( const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphicsPath; overload;
+    function  AddRoundRectangle( const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphicsPath; overload;
+    function  AddRoundRectangle( const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphicsPath; overload;
 
-    function  AddRectanglesF( const ARects : array of TIGPRectF ) : IGPGraphicsPath;
-    function  AddRectangles( const ARects : array of TIGPRect ) : IGPGraphicsPath;
-    
+    function  AddRectanglesF( const ARects : array of TIGPRectF ) : IGPGraphicsPath; overload;
+    function  AddRectanglesF( const ARects : array of TRectF ) : IGPGraphicsPath; overload;
+    function  AddRectangles( const ARects : array of TIGPRect ) : IGPGraphicsPath; overload;
+    function  AddRectangles( const ARects : array of TRect ) : IGPGraphicsPath; overload;
+
     function  AddEllipseF( const ARect : TIGPRectF ) : IGPGraphicsPath; overload;
+    function  AddEllipseF( const ARect : TRectF ) : IGPGraphicsPath; overload;
     function  AddEllipseF( x, y, AWidth, AHeight : Single ) : IGPGraphicsPath; overload;
     function  AddEllipse( const ARect : TIGPRect ) : IGPGraphicsPath; overload;
+    function  AddEllipse( const ARect : TRect ) : IGPGraphicsPath; overload;
     function  AddEllipse( x, y, AWidth, AHeight : Integer ) : IGPGraphicsPath; overload;
 
     function  AddPieF( const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
+    function  AddPieF( const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
     function  AddPieF( x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
     function  AddPie( const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
+    function  AddPie( const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
     function  AddPie( x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath; overload;
 
     function  AddPolygonF( const APoints : array of TPointF ) : IGPGraphicsPath;
@@ -5125,13 +5224,17 @@ type
 
     function  AddStringF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
     function  AddStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
+    function  AddStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
     function  AddString( const AString : WideString; const AFont : IGPFont; const AOrigin : TPoint; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
     function  AddString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRect; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
-      
+    function  AddString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRect; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
+
     function  AddStringF( const AString : WideString; const AFamily : IGPFontFamily; AStyle : TFontStyles; emSize : Single; const AOrigin : TPointF; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
     function  AddStringF( const AString : WideString; const AFamily : IGPFontFamily; AStyle : TFontStyles; emSize : Single; const ALayoutRect : TIGPRectF; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
+    function  AddStringF( const AString : WideString; const AFamily : IGPFontFamily; AStyle : TFontStyles; emSize : Single; const ALayoutRect : TRectF; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
     function  AddString( const AString : WideString; const AFamily : IGPFontFamily; AStyle : TFontStyles; emSize : Single; const AOrigin : TPoint; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
     function  AddString( const AString : WideString; const AFamily : IGPFontFamily; AStyle : TFontStyles; emSize : Single; const ALayoutRect : TIGPRect; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
+    function  AddString( const AString : WideString; const AFamily : IGPFontFamily; AStyle : TFontStyles; emSize : Single; const ALayoutRect : TRect; const AFormat : IGPStringFormat ) : IGPGraphicsPath; overload;
 
     function  Transform( const AMatrix : IGPMatrix ) : IGPGraphicsPath;
 
@@ -5148,7 +5251,8 @@ type
     // Once this is called, the resultant path is made of line segments and
     // the original path information is lost.  When matrix is NULL, the
     // identity matrix is assumed.
-    function  Warp( const ADestPoints : array of TPointF; const ASrcRect : TIGPRectF; const AMatrix : IGPMatrix = NIL; AWarpMode : TIGPWarpMode = TIGPWarpMode.Perspective; AFlatness : Single = FlatnessDefault ) : IGPGraphicsPath;
+    function  Warp( const ADestPoints : array of TPointF; const ASrcRect : TIGPRectF; const AMatrix : IGPMatrix = NIL; AWarpMode : TIGPWarpMode = TIGPWarpMode.Perspective; AFlatness : Single = FlatnessDefault ) : IGPGraphicsPath; overload;
+    function  Warp( const ADestPoints : array of TPointF; const ASrcRect : TRectF; const AMatrix : IGPMatrix = NIL; AWarpMode : TIGPWarpMode = TIGPWarpMode.Perspective; AFlatness : Single = FlatnessDefault ) : IGPGraphicsPath; overload;
     function  GetPointCount() : Integer;
     function  GetPathTypes( ATypes : PBYTE; ACount : Integer ) : IGPGraphicsPath;
     function  GetPathPointsF() : TArray<TPointF>;
@@ -5451,63 +5555,89 @@ type
     // DrawArc
     function  DrawArcF( const APen : IGPPen; x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawArcF( const APen : IGPPen; const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  DrawArcF( const APen : IGPPen; const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawArc( const APen : IGPPen; x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawArc( const APen : IGPPen; const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  DrawArc( const APen : IGPPen; const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
 
     // DrawBezier( s)
-    function  DrawBezierF( const APen : IGPPen; x1, y1, x2, y2, x3, y3, x4, y4: Single ) : IGPGraphics; overload;
-    function  DrawBezierF( const APen : IGPPen; const pt1, pt2, pt3, pt4: TPointF ) : IGPGraphics; overload;
+    function  DrawBezierF( const APen : IGPPen; x1, y1, x2, y2, x3, y3, x4, y4 : Single ) : IGPGraphics; overload;
+    function  DrawBezierF( const APen : IGPPen; const pt1, pt2, pt3, pt4 : TPointF ) : IGPGraphics; overload;
     function  DrawBeziersF( const APen : IGPPen; const APoints : array of TPointF ) : IGPGraphics;
-    function  DrawBezier( const APen : IGPPen; x1, y1, x2, y2, x3, y3, x4, y4: Integer ) : IGPGraphics; overload;
-    function  DrawBezier( const APen : IGPPen; const pt1, pt2, pt3, pt4: TPoint ) : IGPGraphics; overload;
+    function  DrawBezier( const APen : IGPPen; x1, y1, x2, y2, x3, y3, x4, y4 : Integer ) : IGPGraphics; overload;
+    function  DrawBezier( const APen : IGPPen; const pt1, pt2, pt3, pt4 : TPoint ) : IGPGraphics; overload;
     function  DrawBeziers( const APen : IGPPen; const APoints : array of TPoint ) : IGPGraphics;
 
     // DrawRectangle( s)
     function  DrawRectangleF( const APen : IGPPen; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  DrawRectangleF( const APen : IGPPen; const ARect : TRectF ) : IGPGraphics; overload;
     function  DrawRectangleF( const APen : IGPPen; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
     function  DrawRectanglesF( const APen : IGPPen; const ARects : array of TIGPRectF ) : IGPGraphics; overload;
+    function  DrawRectanglesF( const APen : IGPPen; const ARects : array of TRectF ) : IGPGraphics; overload;
     function  DrawRectangle( const APen : IGPPen; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  DrawRectangle( const APen : IGPPen; const ARect : TRect ) : IGPGraphics; overload;
     function  DrawRectangle( const APen : IGPPen; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
     function  DrawRectangles( const APen : IGPPen; const ARects : array of TIGPRect ) : IGPGraphics; overload;
+    function  DrawRectangles( const APen : IGPPen; const ARects : array of TRect ) : IGPGraphics; overload;
 
     function  DrawRectangleF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  DrawRectangleF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRectF ) : IGPGraphics; overload;
     function  DrawRectangleF( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
     function  DrawRectanglesF( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TIGPRectF ) : IGPGraphics; overload;
+    function  DrawRectanglesF( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TRectF ) : IGPGraphics; overload;
     function  DrawRectangle( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  DrawRectangle( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRect ) : IGPGraphics; overload;
     function  DrawRectangle( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
     function  DrawRectangles( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TIGPRect ) : IGPGraphics; overload;
+    function  DrawRectangles( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TRect ) : IGPGraphics; overload;
 
     // DrawRoundRectangle
     function  DrawRoundRectangleF( const APen : IGPPen; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics; overload;
+    function  DrawRoundRectangleF( const APen : IGPPen; const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics; overload;
     function  DrawRoundRectangle( const APen : IGPPen; const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphics; overload;
+    function  DrawRoundRectangle( const APen : IGPPen; const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphics; overload;
 
     function  DrawRoundRectangleF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics; overload;
+    function  DrawRoundRectangleF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics; overload;
     function  DrawRoundRectangle( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphics; overload;
+    function  DrawRoundRectangle( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphics; overload;
 
     // DrawEllipse
     function  DrawEllipseF( const APen : IGPPen; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  DrawEllipseF( const APen : IGPPen; const ARect : TRectF ) : IGPGraphics; overload;
     function  DrawEllipseF( const APen : IGPPen; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
     function  DrawEllipsesF( const APen : IGPPen; const ARects : array of TIGPRectF ) : IGPGraphics; overload;
+    function  DrawEllipsesF( const APen : IGPPen; const ARects : array of TRectF ) : IGPGraphics; overload;
     function  DrawEllipse( const APen : IGPPen; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  DrawEllipse( const APen : IGPPen; const ARect : TRect ) : IGPGraphics; overload;
     function  DrawEllipse( const APen : IGPPen; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
     function  DrawEllipses( const APen : IGPPen; const ARects : array of TIGPRect ) : IGPGraphics; overload;
+    function  DrawEllipses( const APen : IGPPen; const ARects : array of TRect ) : IGPGraphics; overload;
 
     function  DrawEllipseF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  DrawEllipseF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRectF ) : IGPGraphics; overload;
     function  DrawEllipseF( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
     function  DrawEllipsesF( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TIGPRectF ) : IGPGraphics; overload;
+    function  DrawEllipsesF( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TRectF ) : IGPGraphics; overload;
     function  DrawEllipse( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  DrawEllipse( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRect ) : IGPGraphics; overload;
     function  DrawEllipse( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
     function  DrawEllipses( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TIGPRect ) : IGPGraphics; overload;
-    
+    function  DrawEllipses( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TRect ) : IGPGraphics; overload;
+
     // DrawPie
     function  DrawPieF( const APen : IGPPen; const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  DrawPieF( const APen : IGPPen; const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawPieF( const APen : IGPPen; x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawPie( const APen : IGPPen; const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  DrawPie( const APen : IGPPen; const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawPie( const APen : IGPPen; x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
 
     function  DrawPieF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  DrawPieF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawPieF( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawPie( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  DrawPie( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawPie( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     
     // DrawPolygon
@@ -5549,16 +5679,22 @@ type
 
     // FillRectangle( s)
     function  FillRectangleF( const ABrush : IGPBrush; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  FillRectangleF( const ABrush : IGPBrush; const ARect : TRectF ) : IGPGraphics; overload;
     function  FillRectangleF( const ABrush : IGPBrush; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
-    function  FillRectanglesF( const ABrush : IGPBrush; const ARects : array of TIGPRectF ) : IGPGraphics;
+    function  FillRectanglesF( const ABrush : IGPBrush; const ARects : array of TIGPRectF ) : IGPGraphics; overload;
+    function  FillRectanglesF( const ABrush : IGPBrush; const ARects : array of TRectF ) : IGPGraphics; overload;
 
     function  FillRectangle( const ABrush : IGPBrush; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  FillRectangle( const ABrush : IGPBrush; const ARect : TRect ) : IGPGraphics; overload;
     function  FillRectangle( const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
-    function  FillRectangles( const ABrush : IGPBrush; const ARects : array of TIGPRect ) : IGPGraphics;
+    function  FillRectangles( const ABrush : IGPBrush; const ARects : array of TIGPRect ) : IGPGraphics; overload;
+    function  FillRectangles( const ABrush : IGPBrush; const ARects : array of TRect ) : IGPGraphics; overload;
 
     // FillRoundRectangle
-    function  FillRoundRectangleF( const ABrush : IGPBrush; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
-    function  FillRoundRectangle( const ABrush : IGPBrush; const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphics;
+    function  FillRoundRectangleF( const ABrush : IGPBrush; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics; overload;
+    function  FillRoundRectangleF( const ABrush : IGPBrush; const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics; overload;
+    function  FillRoundRectangle( const ABrush : IGPBrush; const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphics; overload;
+    function  FillRoundRectangle( const ABrush : IGPBrush; const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphics; overload;
 
     // FillPolygon
     function  FillPolygonF( const ABrush : IGPBrush; const APoints : array of TPointF ) : IGPGraphics; overload;
@@ -5569,18 +5705,24 @@ type
 
     // FillEllipse
     function  FillEllipseF( const ABrush : IGPBrush; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  FillEllipseF( const ABrush : IGPBrush; const ARect : TRectF ) : IGPGraphics; overload;
     function  FillEllipseF( const ABrush : IGPBrush; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
-    function  FillEllipsesF( const ABrush : IGPBrush; const ARects : array of TIGPRectF ) : IGPGraphics;
+    function  FillEllipsesF( const ABrush : IGPBrush; const ARects : array of TIGPRectF ) : IGPGraphics; overload;
+    function  FillEllipsesF( const ABrush : IGPBrush; const ARects : array of TRectF ) : IGPGraphics; overload;
 
     function  FillEllipse( const ABrush : IGPBrush; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  FillEllipse( const ABrush : IGPBrush; const ARect : TRect ) : IGPGraphics; overload;
     function  FillEllipse( const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
-    function  FillEllipses( const ABrush : IGPBrush; const ARects : array of TIGPRect ) : IGPGraphics;
+    function  FillEllipses( const ABrush : IGPBrush; const ARects : array of TIGPRect ) : IGPGraphics; overload;
+    function  FillEllipses( const ABrush : IGPBrush; const ARects : array of TRect ) : IGPGraphics; overload;
 
     // FillPie
     function  FillPieF( const ABrush : IGPBrush; const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  FillPieF( const ABrush : IGPBrush; const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  FillPieF( const ABrush : IGPBrush; x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
 
     function  FillPie( const ABrush : IGPBrush; const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  FillPie( const ABrush : IGPBrush; const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  FillPie( const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
 
     // FillPath
@@ -5598,14 +5740,18 @@ type
 
     // DrawString
     function  DrawStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
+    function  DrawStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const ABrush : IGPBrush ) : IGPGraphics; overload;
+    function  DrawStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawStringF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawStringF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawStringF( const AString : WideString; const AFont : IGPFont; x, y : Single; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawStringF( const AString : WideString; const AFont : IGPFont; x, y : Single; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
 
     function  DrawString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRect; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
+    function  DrawString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRect; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRect; const ABrush : IGPBrush ) : IGPGraphics; overload;
+    function  DrawString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRect; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawString( const AString : WideString; const AFont : IGPFont; const AOrigin : TPoint; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawString( const AString : WideString; const AFont : IGPFont; const AOrigin : TPoint; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawString( const AString : WideString; const AFont : IGPFont; x, y : Integer; const ABrush : IGPBrush ) : IGPGraphics; overload;
@@ -5616,7 +5762,9 @@ type
     function  GetStringSizeF( const AString : WideString; const AFont : IGPFont; const layoutRectSize : TIGPSizeF; const AStringFormat : IGPStringFormat = NIL; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPSizeF; overload;
 
     function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const AStringFormat : IGPStringFormat; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPRectF; overload;
+    function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AStringFormat : IGPStringFormat; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPRectF; overload;
     function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF ) : TIGPRectF; overload;
+    function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF ) : TIGPRectF; overload;
     function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const AStringFormat : IGPStringFormat ) : TIGPRectF; overload;
     function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF ) : TIGPRectF; overload;
     function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; x, y : Single; const AStringFormat : IGPStringFormat ) : TIGPRectF; overload;
@@ -5625,7 +5773,9 @@ type
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const AStringFormat : IGPStringFormat = NIL ) : TIGPSizeF; overload;
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const layoutRectSize : TIGPSizeF; const AStringFormat : IGPStringFormat = NIL; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPSizeF; overload;
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const AStringFormat : IGPStringFormat; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPRectF; overload;
+    function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AStringFormat : IGPStringFormat; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPRectF; overload;
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF ) : TIGPRectF; overload;
+    function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF ) : TIGPRectF; overload;
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const AStringFormat : IGPStringFormat ) : TIGPRectF; overload;
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF ) : TIGPRectF; overload;
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; x, y : Single; const AStringFormat : IGPStringFormat ) : TIGPRectF; overload;
@@ -5633,8 +5783,10 @@ type
 
     // MeasureCharacterRangesF
     function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
+    function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
     function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
     function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const ARanges : array of TIGPCharacterRange; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
+    function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const ARanges : array of TIGPCharacterRange; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
     function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const ARanges : array of TIGPCharacterRange; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
     function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
     function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const ARanges : array of TIGPCharacterRange; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
@@ -5656,22 +5808,26 @@ type
     function  DrawImageF( const AImage : IGPImage; const APoint : TPointF; const ASize : TIGPSizeF ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; x, y : Single ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  DrawImageF( const AImage : IGPImage; const ARect : TRectF ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const APoint : TPoint ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const APoint : TPoint; const ASize : TIGPSize ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; x, y : Integer ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  DrawImage( const AImage : IGPImage; const ARect : TRect ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
 
     function  DrawImageF( const AImage : IGPImage; const APoint : TPointF; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; const APoint : TPointF; const ASize : TIGPSizeF; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; x, y : Single; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; const ARect : TIGPRectF; AOpacity : Single ) : IGPGraphics; overload;
+    function  DrawImageF( const AImage : IGPImage; const ARect : TRectF; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; x, y, AWidth, AHeight : Single; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const APoint : TPoint; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const APoint : TPoint; const ASize : TIGPSize; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; x, y : Integer; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const ARect : TIGPRect; AOpacity : Single ) : IGPGraphics; overload;
+    function  DrawImage( const AImage : IGPImage; const ARect : TRect; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; x, y, AWidth, AHeight : Integer; AOpacity : Single ) : IGPGraphics; overload;
 
     // Affine Draw Image
@@ -5684,34 +5840,46 @@ type
     function  DrawImageF( const AImage : IGPImage; const ADestPoints : array of TPointF ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const ADestPoints : array of TPoint ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; x, y, ASrcx, ASrcy, Arcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit ) : IGPGraphics; overload;
-    function  DrawImageF( const AImage : IGPImage; const ADestRect : TIGPRectF; ASrcx, ASrcy, Arcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
-    function  DrawImageF( const AImage : IGPImage; const ADestPoints : array of TPointF; ASrcx, ASrcy, Arcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
+    function  DrawImageF( const AImage : IGPImage; const ADestRect : TIGPRectF; ASrcx, ASrcy, Arcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
+    function  DrawImageF( const AImage : IGPImage; const ADestRect : TRectF; ASrcx, ASrcy, Arcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
+    function  DrawImageF( const AImage : IGPImage; const ADestPoints : array of TPointF; ASrcx, ASrcy, Arcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; x, y, ASrcx, ASrcy, Arcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit ) : IGPGraphics; overload;
-    function  DrawImage( const AImage : IGPImage; const ADestRect : TIGPRect; ASrcx, ASrcy, Arcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
-    function  DrawImage( const AImage : IGPImage; const ADestPoints : array of TPoint; ASrcx, ASrcy, Arcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
+    function  DrawImage( const AImage : IGPImage; const ADestRect : TIGPRect; ASrcx, ASrcy, Arcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
+    function  DrawImage( const AImage : IGPImage; const ADestRect : TRect; ASrcx, ASrcy, Arcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
+    function  DrawImage( const AImage : IGPImage; const ADestPoints : array of TPoint; ASrcx, ASrcy, Arcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
 
     // The following methods are for playing an EMF+ to a graphics
     // via the enumeration interface.  Each record of the EMF+ is
     // sent to the callback ( along with the callbackData).  Then
     // the callback can invoke the Metafile ::PlayRecord method
     // to play the particular record.
-    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TIGPRectF; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect : TIGPRect; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; const ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TIGPRectF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect, ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; const ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TIGPRectF; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TRectF; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect : TIGPRect; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect : TRect; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; const ASrcRect : TRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; const ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; const ASrcRect : TRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TIGPRectF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TRectF; const ASrcRect : TRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect, ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect, ASrcRect : TRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; const ASrcRect : TRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; const ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; const ASrcRect : TRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
 
     // SetClip
     function  SetClip( const AGraphics : IGPGraphics; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
-    function  SetClipF( const ARect : TIGPRectF; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics;
+    function  SetClipF( const ARect : TIGPRectF; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
+    function  SetClipF( const ARect : TRectF; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
     function  SetClip( const ARect : TIGPRect; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
+    function  SetClip( const ARect : TRect; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
     function  SetClip( const APath : IGPGraphicsPath; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
     function  SetClip( const ARegion : IGPRegion; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
     // This is different than the other SetClip methods because it assumes
@@ -5722,13 +5890,17 @@ type
     procedure SetClipProp( const ARegion : IGPRegion );
 
     // IntersectClip
-    function  IntersectClipF( const ARect : TIGPRectF ) : IGPGraphics;
+    function  IntersectClipF( const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  IntersectClipF( const ARect : TRectF ) : IGPGraphics; overload;
     function  IntersectClip( const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  IntersectClip( const ARect : TRect ) : IGPGraphics; overload;
     function  IntersectClip( const ARegion : IGPRegion ) : IGPGraphics; overload;
     
     // ExcludeClip
-    function  ExcludeClipF( const ARect : TIGPRectF ) : IGPGraphics;
+    function  ExcludeClipF( const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  ExcludeClipF( const ARect : TRectF ) : IGPGraphics; overload;
     function  ExcludeClip( const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  ExcludeClip( const ARect : TRect ) : IGPGraphics; overload;
     function  ExcludeClip( const ARegion : IGPRegion ) : IGPGraphics; overload;
 
     function  ResetClip() : IGPGraphics;
@@ -5752,16 +5924,20 @@ type
     function  IsVisible( const APoint : TPoint ) : Boolean; overload;
     function  IsVisible( x, y, AWidth, AHeight : Integer ) : Boolean; overload;
     function  IsVisible( const ARect : TIGPRect ) : Boolean; overload;
+    function  IsVisible( const ARect : TRect ) : Boolean; overload;
     function  IsVisibleF( x, y : Single ) : Boolean; overload;
     function  IsVisibleF( const APoint : TPointF ) : Boolean; overload;
     function  IsVisibleF( x, y, AWidth, AHeight : Single ) : Boolean; overload;
     function  IsVisibleF( const ARect : TIGPRectF ) : Boolean; overload;
+    function  IsVisibleF( const ARect : TRectF ) : Boolean; overload;
 
     function  Save() : TIGPGraphicsState;
     function  Restore( gstate : TIGPGraphicsState ) : IGPGraphics;
 
-    function  BeginContainerF( const ADstRect,ASrcRect : TIGPRectF; AUnit : TIGPUnit ) : TIGPGraphicsContainer; overload;
+    function  BeginContainerF( const ADstRect, ASrcRect : TIGPRectF; AUnit : TIGPUnit ) : TIGPGraphicsContainer; overload;
+    function  BeginContainerF( const ADstRect, ASrcRect : TRectF; AUnit : TIGPUnit ) : TIGPGraphicsContainer; overload;
     function  BeginContainer( const ADstRect, ASrcRect : TIGPRect; AUnit : TIGPUnit ) : TIGPGraphicsContainer; overload;
+    function  BeginContainer( const ADstRect, ASrcRect : TRect; AUnit : TIGPUnit ) : TIGPGraphicsContainer; overload;
     function  BeginContainer() : TIGPGraphicsContainer; overload;
     function  EndContainer( state : TIGPGraphicsContainer ) : IGPGraphics;
 
@@ -5899,8 +6075,10 @@ type
     // DrawArc
     function  DrawArcF( const APen : IGPPen; x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawArcF( const APen : IGPPen; const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  DrawArcF( const APen : IGPPen; const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawArc( const APen : IGPPen; x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawArc( const APen : IGPPen; const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  DrawArc( const APen : IGPPen; const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
 
     // DrawBezier( s)
     function  DrawBezierF( const APen : IGPPen; x1, y1, x2, y2, x3, y3, x4, y4: Single ) : IGPGraphics; overload;
@@ -5912,50 +6090,74 @@ type
 
     // DrawRectangle( s)
     function  DrawRectangleF( const APen : IGPPen; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  DrawRectangleF( const APen : IGPPen; const ARect : TRectF ) : IGPGraphics; overload;
     function  DrawRectangleF( const APen : IGPPen; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
     function  DrawRectanglesF( const APen : IGPPen; const ARects : array of TIGPRectF ) : IGPGraphics; overload;
+    function  DrawRectanglesF( const APen : IGPPen; const ARects : array of TRectF ) : IGPGraphics; overload;
     function  DrawRectangle( const APen : IGPPen; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  DrawRectangle( const APen : IGPPen; const ARect : TRect ) : IGPGraphics; overload;
     function  DrawRectangle( const APen : IGPPen; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
     function  DrawRectangles( const APen : IGPPen; const ARects : array of TIGPRect ) : IGPGraphics; overload;
+    function  DrawRectangles( const APen : IGPPen; const ARects : array of TRect ) : IGPGraphics; overload;
 
     function  DrawRectangleF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  DrawRectangleF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRectF ) : IGPGraphics; overload;
     function  DrawRectangleF( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
     function  DrawRectanglesF( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TIGPRectF ) : IGPGraphics; overload;
+    function  DrawRectanglesF( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TRectF ) : IGPGraphics; overload;
     function  DrawRectangle( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  DrawRectangle( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRect ) : IGPGraphics; overload;
     function  DrawRectangle( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
     function  DrawRectangles( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TIGPRect ) : IGPGraphics; overload;
+    function  DrawRectangles( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TRect ) : IGPGraphics; overload;
 
     // DrawRoundRectangle
     function  DrawRoundRectangleF( const APen : IGPPen; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics; overload;
+    function  DrawRoundRectangleF( const APen : IGPPen; const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics; overload;
     function  DrawRoundRectangle( const APen : IGPPen; const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphics; overload;
+    function  DrawRoundRectangle( const APen : IGPPen; const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphics; overload;
 
     function  DrawRoundRectangleF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics; overload;
+    function  DrawRoundRectangleF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics; overload;
     function  DrawRoundRectangle( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphics; overload;
+    function  DrawRoundRectangle( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphics; overload;
 
     // DrawEllipse
     function  DrawEllipseF( const APen : IGPPen; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  DrawEllipseF( const APen : IGPPen; const ARect : TRectF ) : IGPGraphics; overload;
     function  DrawEllipseF( const APen : IGPPen; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
     function  DrawEllipsesF( const APen : IGPPen; const ARects : array of TIGPRectF ) : IGPGraphics; overload;
+    function  DrawEllipsesF( const APen : IGPPen; const ARects : array of TRectF ) : IGPGraphics; overload;
     function  DrawEllipse( const APen : IGPPen; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  DrawEllipse( const APen : IGPPen; const ARect : TRect ) : IGPGraphics; overload;
     function  DrawEllipse( const APen : IGPPen; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
     function  DrawEllipses( const APen : IGPPen; const ARects : array of TIGPRect ) : IGPGraphics; overload;
+    function  DrawEllipses( const APen : IGPPen; const ARects : array of TRect ) : IGPGraphics; overload;
 
     function  DrawEllipseF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  DrawEllipseF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRectF ) : IGPGraphics; overload;
     function  DrawEllipseF( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
     function  DrawEllipsesF( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TIGPRectF ) : IGPGraphics; overload;
+    function  DrawEllipsesF( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TRectF ) : IGPGraphics; overload;
     function  DrawEllipse( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  DrawEllipse( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRect ) : IGPGraphics; overload;
     function  DrawEllipse( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
     function  DrawEllipses( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TIGPRect ) : IGPGraphics; overload;
+    function  DrawEllipses( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TRect ) : IGPGraphics; overload;
 
     // DrawPie
     function  DrawPieF( const APen : IGPPen; const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  DrawPieF( const APen : IGPPen; const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawPieF( const APen : IGPPen; x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawPie( const APen : IGPPen; const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  DrawPie( const APen : IGPPen; const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawPie( const APen : IGPPen; x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
 
     function  DrawPieF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  DrawPieF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawPieF( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawPie( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  DrawPie( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  DrawPie( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
 
     // DrawPolygon
@@ -5997,15 +6199,21 @@ type
 
     // FillRectangle( s)
     function  FillRectangleF( const ABrush : IGPBrush; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  FillRectangleF( const ABrush : IGPBrush; const ARect : TRectF ) : IGPGraphics; overload;
     function  FillRectangleF( const ABrush : IGPBrush; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
-    function  FillRectanglesF( const ABrush : IGPBrush; const ARects : array of TIGPRectF ) : IGPGraphics;
+    function  FillRectanglesF( const ABrush : IGPBrush; const ARects : array of TIGPRectF ) : IGPGraphics; overload;
+    function  FillRectanglesF( const ABrush : IGPBrush; const ARects : array of TRectF ) : IGPGraphics; overload;
     function  FillRectangle( const ABrush : IGPBrush; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  FillRectangle( const ABrush : IGPBrush; const ARect : TRect ) : IGPGraphics; overload;
     function  FillRectangle( const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
-    function  FillRectangles( const ABrush : IGPBrush; const ARects : array of TIGPRect ) : IGPGraphics;
+    function  FillRectangles( const ABrush : IGPBrush; const ARects : array of TIGPRect ) : IGPGraphics; overload;
+    function  FillRectangles( const ABrush : IGPBrush; const ARects : array of TRect ) : IGPGraphics; overload;
 
     // FillRoundRectangle
-    function  FillRoundRectangleF( const ABrush : IGPBrush; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
-    function  FillRoundRectangle( const ABrush : IGPBrush; const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphics;
+    function  FillRoundRectangleF( const ABrush : IGPBrush; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics; overload;
+    function  FillRoundRectangleF( const ABrush : IGPBrush; const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics; overload;
+    function  FillRoundRectangle( const ABrush : IGPBrush; const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphics; overload;
+    function  FillRoundRectangle( const ABrush : IGPBrush; const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphics; overload;
 
     // FillPolygon
     function  FillPolygonF( const ABrush : IGPBrush; const APoints : array of TPointF ) : IGPGraphics; overload;
@@ -6015,16 +6223,22 @@ type
 
     // FillEllipse
     function  FillEllipseF( const ABrush : IGPBrush; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  FillEllipseF( const ABrush : IGPBrush; const ARect : TRectF ) : IGPGraphics; overload;
     function  FillEllipseF( const ABrush : IGPBrush; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
-    function  FillEllipsesF( const ABrush : IGPBrush; const ARects : array of TIGPRectF ) : IGPGraphics;
+    function  FillEllipsesF( const ABrush : IGPBrush; const ARects : array of TIGPRectF ) : IGPGraphics; overload;
+    function  FillEllipsesF( const ABrush : IGPBrush; const ARects : array of TRectF ) : IGPGraphics; overload;
     function  FillEllipse( const ABrush : IGPBrush; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  FillEllipse( const ABrush : IGPBrush; const ARect : TRect ) : IGPGraphics; overload;
     function  FillEllipse( const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
-    function  FillEllipses( const ABrush : IGPBrush; const ARects : array of TIGPRect ) : IGPGraphics;
+    function  FillEllipses( const ABrush : IGPBrush; const ARects : array of TIGPRect ) : IGPGraphics; overload;
+    function  FillEllipses( const ABrush : IGPBrush; const ARects : array of TRect ) : IGPGraphics; overload;
 
     // FillPie
     function  FillPieF( const ABrush : IGPBrush; const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  FillPieF( const ABrush : IGPBrush; const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  FillPieF( const ABrush : IGPBrush; x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  FillPie( const ABrush : IGPBrush; const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
+    function  FillPie( const ABrush : IGPBrush; const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
     function  FillPie( const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphics; overload;
 
     // FillPath
@@ -6043,14 +6257,18 @@ type
 
     // DrawString
     function  DrawStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
+    function  DrawStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const ABrush : IGPBrush ) : IGPGraphics; overload;
+    function  DrawStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawStringF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawStringF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawStringF( const AString : WideString; const AFont : IGPFont; x, y : Single; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawStringF( const AString : WideString; const AFont : IGPFont; x, y : Single; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
 
     function  DrawString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRect; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
+    function  DrawString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRect; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRect; const ABrush : IGPBrush ) : IGPGraphics; overload;
+    function  DrawString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRect; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawString( const AString : WideString; const AFont : IGPFont; const AOrigin : TPoint; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawString( const AString : WideString; const AFont : IGPFont; const AOrigin : TPoint; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics; overload;
     function  DrawString( const AString : WideString; const AFont : IGPFont; x, y : Integer; const ABrush : IGPBrush ) : IGPGraphics; overload;
@@ -6069,7 +6287,9 @@ type
     function  GetStringSizeF( const AString : WideString; const AFont : IGPFont; const layoutRectSize : TIGPSizeF; const AStringFormat : IGPStringFormat = NIL; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPSizeF; overload;
 
     function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const AStringFormat : IGPStringFormat; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPRectF; overload;
+    function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AStringFormat : IGPStringFormat; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPRectF; overload;
     function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF ) : TIGPRectF; overload;
+    function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF ) : TIGPRectF; overload;
     function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const AStringFormat : IGPStringFormat ) : TIGPRectF; overload;
     function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF ) : TIGPRectF; overload;
     function  GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; x, y : Single; const AStringFormat : IGPStringFormat ) : TIGPRectF; overload;
@@ -6078,7 +6298,9 @@ type
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const AStringFormat : IGPStringFormat = NIL ) : TIGPSizeF; overload;
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const layoutRectSize : TIGPSizeF; const AStringFormat : IGPStringFormat = NIL; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPSizeF; overload;
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const AStringFormat : IGPStringFormat; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPRectF; overload;
+    function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AStringFormat : IGPStringFormat; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPRectF; overload;
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF ) : TIGPRectF; overload;
+    function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF ) : TIGPRectF; overload;
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const AStringFormat : IGPStringFormat ) : TIGPRectF; overload;
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF ) : TIGPRectF; overload;
     function  MeasureStringF( const AString : WideString; const AFont : IGPFont; x, y : Single; const AStringFormat : IGPStringFormat ) : TIGPRectF; overload;
@@ -6086,8 +6308,10 @@ type
 
     // MeasureCharacterRangesF
     function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
+    function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
     function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
     function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const ARanges : array of TIGPCharacterRange; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
+    function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const ARanges : array of TIGPCharacterRange; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
     function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const ARanges : array of TIGPCharacterRange; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
     function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
     function  MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const ARanges : array of TIGPCharacterRange; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>; overload;
@@ -6109,22 +6333,26 @@ type
     function  DrawImageF( const AImage : IGPImage; const APoint : TPointF; const ASize : TIGPSizeF ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; x, y : Single ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  DrawImageF( const AImage : IGPImage; const ARect : TRectF ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; x, y, AWidth, AHeight : Single ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const APoint : TPoint ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const APoint : TPoint; const ASize : TIGPSize ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; x, y : Integer ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  DrawImage( const AImage : IGPImage; const ARect : TRect ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; x, y, AWidth, AHeight : Integer ) : IGPGraphics; overload;
 
     function  DrawImageF( const AImage : IGPImage; const APoint : TPointF; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; const APoint : TPointF; const ASize : TIGPSizeF; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; x, y : Single; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; const ARect : TIGPRectF; AOpacity : Single ) : IGPGraphics; overload;
+    function  DrawImageF( const AImage : IGPImage; const ARect : TRectF; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; x, y, AWidth, AHeight : Single; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const APoint : TPoint; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const APoint : TPoint; const ASize : TIGPSize; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; x, y : Integer; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const ARect : TIGPRect; AOpacity : Single ) : IGPGraphics; overload;
+    function  DrawImage( const AImage : IGPImage; const ARect : TRect; AOpacity : Single ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; x, y, AWidth, AHeight : Integer; AOpacity : Single ) : IGPGraphics; overload;
 
     // Affine Draw Image
@@ -6137,34 +6365,46 @@ type
     function  DrawImageF( const AImage : IGPImage; const ADestPoints : array of TPointF ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; const ADestPoints : array of TPoint ) : IGPGraphics; overload;
     function  DrawImageF( const AImage : IGPImage; x, y, ASrcx, ASrcy, ASrcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit ) : IGPGraphics; overload;
-    function  DrawImageF( const AImage : IGPImage; const ADestRect : TIGPRectF; ASrcx, ASrcy, ASrcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
-    function  DrawImageF( const AImage : IGPImage; const ADestPoints : array of TPointF; ASrcx, ASrcy, ASrcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
+    function  DrawImageF( const AImage : IGPImage; const ADestRect : TIGPRectF; ASrcx, ASrcy, ASrcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
+    function  DrawImageF( const AImage : IGPImage; const ADestRect : TRectF; ASrcx, ASrcy, ASrcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
+    function  DrawImageF( const AImage : IGPImage; const ADestPoints : array of TPointF; ASrcx, ASrcy, ASrcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
     function  DrawImage( const AImage : IGPImage; x, y, ASrcx, ASrcy, ASrcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit ) : IGPGraphics; overload;
-    function  DrawImage( const AImage : IGPImage; const ADestRect : TIGPRect; ASrcx, ASrcy, ASrcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
-    function  DrawImage( const AImage : IGPImage; const ADestPoints : array of TPoint; ASrcx, ASrcy, ASrcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
+    function  DrawImage( const AImage : IGPImage; const ADestRect : TIGPRect; ASrcx, ASrcy, ASrcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
+    function  DrawImage( const AImage : IGPImage; const ADestRect : TRect; ASrcx, ASrcy, ASrcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
+    function  DrawImage( const AImage : IGPImage; const ADestPoints : array of TPoint; ASrcx, ASrcy, ASrcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics; overload;
 
     // The following methods are for playing an EMF+ to a graphics
     // via the enumeration interface.  Each record of the EMF+ is
     // sent to the callback ( along with the callbackData).  Then
     // the callback can invoke the Metafile ::PlayRecord method
     // to play the particular record.
-    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TIGPRectF; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect : TIGPRect; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; const ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TIGPRectF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect, ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
-    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; const ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TIGPRectF; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TRectF; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect : TIGPRect; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect : TRect; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; const ASrcRect : TRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; const ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; const ASrcRect : TRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TIGPRectF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TRectF; const ASrcRect : TRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect, ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect, ASrcRect : TRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; const ASrcRect : TRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; const ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
+    function  EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; const ASrcRect : TRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics; overload;
 
     // SetClip
     function  SetClip( const AGraphics : IGPGraphics; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
-    function  SetClipF( const ARect : TIGPRectF; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics;
+    function  SetClipF( const ARect : TIGPRectF; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
+    function  SetClipF( const ARect : TRectF; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
     function  SetClip( const ARect : TIGPRect; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
+    function  SetClip( const ARect : TRect; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
     function  SetClip( const APath : IGPGraphicsPath; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
     function  SetClip( const ARegion : IGPRegion; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics; overload;
     // This is different than the other SetClip methods because it assumes
@@ -6175,12 +6415,16 @@ type
     procedure SetClipProp( const ARegion : IGPRegion );
 
     // IntersectClip
-    function  IntersectClipF( const ARect : TIGPRectF ) : IGPGraphics;
+    function  IntersectClipF( const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  IntersectClipF( const ARect : TRectF ) : IGPGraphics; overload;
     function  IntersectClip( const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  IntersectClip( const ARect : TRect ) : IGPGraphics; overload;
     function  IntersectClip( const ARegion : IGPRegion ) : IGPGraphics; overload;
     // ExcludeClip
-    function  ExcludeClipF( const ARect : TIGPRectF ) : IGPGraphics;
+    function  ExcludeClipF( const ARect : TIGPRectF ) : IGPGraphics; overload;
+    function  ExcludeClipF( const ARect : TRectF ) : IGPGraphics; overload;
     function  ExcludeClip( const ARect : TIGPRect ) : IGPGraphics; overload;
+    function  ExcludeClip( const ARect : TRect ) : IGPGraphics; overload;
     function  ExcludeClip( const ARegion : IGPRegion ) : IGPGraphics; overload;
 
     function  ResetClip() : IGPGraphics;
@@ -6204,16 +6448,20 @@ type
     function  IsVisible( const APoint : TPoint ) : Boolean; overload;
     function  IsVisible( x, y, AWidth, AHeight : Integer ) : Boolean; overload;
     function  IsVisible( const ARect : TIGPRect ) : Boolean; overload;
+    function  IsVisible( const ARect : TRect ) : Boolean; overload;
     function  IsVisibleF( x, y : Single ) : Boolean; overload;
     function  IsVisibleF( const APoint : TPointF ) : Boolean; overload;
     function  IsVisibleF( x, y, AWidth, AHeight : Single ) : Boolean; overload;
     function  IsVisibleF( const ARect : TIGPRectF ) : Boolean; overload;
+    function  IsVisibleF( const ARect : TRectF ) : Boolean; overload;
 
     function  Save() : TIGPGraphicsState;
     function  Restore( gstate : TIGPGraphicsState ) : IGPGraphics;
 
-    function  BeginContainerF( const ADstRect,ASrcRect : TIGPRectF; AUnit : TIGPUnit ) : TIGPGraphicsContainer; overload;
+    function  BeginContainerF( const ADstRect, ASrcRect : TIGPRectF; AUnit : TIGPUnit ) : TIGPGraphicsContainer; overload;
+    function  BeginContainerF( const ADstRect, ASrcRect : TRectF; AUnit : TIGPUnit ) : TIGPGraphicsContainer; overload;
     function  BeginContainer( const ADstRect, ASrcRect : TIGPRect; AUnit : TIGPUnit ) : TIGPGraphicsContainer; overload;
+    function  BeginContainer( const ADstRect, ASrcRect : TRect; AUnit : TIGPUnit ) : TIGPGraphicsContainer; overload;
     function  BeginContainer() : TIGPGraphicsContainer; overload;
     function  EndContainer( state : TIGPGraphicsContainer ) : IGPGraphics;
 
@@ -6242,6 +6490,9 @@ type
   end;
 {$ELSE}
   TIGPGraphics = class( TInterfacedObject, IGPGraphics )
+  public
+    constructor CreateObject(); overload;
+
   end;
 {$ENDIF}
 
@@ -6349,14 +6600,20 @@ type
     class function Create( referenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
     // Record a metafile to memory.
     class function Create( referenceHdc : HDC; const frameRect : TIGPRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
+    class function Create( referenceHdc : HDC; const frameRect : TRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
     // Record a metafile to memory.
     class function Create( referenceHdc : HDC; const frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
+    class function Create( referenceHdc : HDC; const frameRect : TRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
     class function Create( const AFileName : WideString; referenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
     class function Create( const AFileName : WideString; referenceHdc : HDC; const frameRect : TIGPRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
-    class function Create( const AFileName : WideString; referenceHdc : HDC; frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
+    class function Create( const AFileName : WideString; referenceHdc : HDC; const frameRect : TRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
+    class function Create( const AFileName : WideString; referenceHdc : HDC; const frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
+    class function Create( const AFileName : WideString; referenceHdc : HDC; const frameRect : TRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
     class function Create( const AStream : IStream; referenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
     class function Create( const AStream : IStream; referenceHdc : HDC; const frameRect : TIGPRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
-    class function Create( const AStream : IStream; referenceHdc : HDC; frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
+    class function Create( const AStream : IStream; referenceHdc : HDC; const frameRect : TRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
+    class function Create( const AStream : IStream; referenceHdc : HDC; const frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
+    class function Create( const AStream : IStream; referenceHdc : HDC; const frameRect : TRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile; overload;
     class function Create() : IGPMetafile; overload;
 
   public
@@ -6376,14 +6633,20 @@ type
     constructor CreateObject( referenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
     // Record a metafile to memory.
     constructor CreateObject( referenceHdc : HDC; const frameRect : TIGPRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
+    constructor CreateObject( referenceHdc : HDC; const frameRect : TRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
     // Record a metafile to memory.
     constructor CreateObject( referenceHdc : HDC; const frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
+    constructor CreateObject( referenceHdc : HDC; const frameRect : TRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
     constructor CreateObject( const AFileName : WideString; referenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
     constructor CreateObject( const AFileName : WideString; referenceHdc : HDC; const frameRect : TIGPRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
-    constructor CreateObject( const AFileName : WideString; referenceHdc : HDC; frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
+    constructor CreateObject( const AFileName : WideString; referenceHdc : HDC; const frameRect : TRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
+    constructor CreateObject( const AFileName : WideString; referenceHdc : HDC; const frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
+    constructor CreateObject( const AFileName : WideString; referenceHdc : HDC; const frameRect : TRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
     constructor CreateObject( const AStream : IStream; referenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
     constructor CreateObject( const AStream : IStream; referenceHdc : HDC; const frameRect : TIGPRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
-    constructor CreateObject( const AStream : IStream; referenceHdc : HDC; frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
+    constructor CreateObject( const AStream : IStream; referenceHdc : HDC; const frameRect : TRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
+    constructor CreateObject( const AStream : IStream; referenceHdc : HDC; const frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
+    constructor CreateObject( const AStream : IStream; referenceHdc : HDC; const frameRect : TRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ); overload;
     constructor CreateObject(); overload;
 
   public
@@ -6817,18 +7080,28 @@ begin
   SetNativeMatrix( AMatrix );
 end;
 
-constructor TIGPMatrix.CreateObject( const ARect : TIGPRectF; const dstplg : TPointF );
+constructor TIGPMatrix.CreateObject( const ARect : TIGPRectF; const ADstplg : TPointF );
 begin
   var AMatrix : GpMatrix := NIL;
-  ErrorCheck( GdipCreateMatrix3(@ARect, @dstplg, AMatrix ));
+  ErrorCheck( GdipCreateMatrix3(@ARect, @ADstplg, AMatrix ));
   SetNativeMatrix( AMatrix );
 end;
 
-constructor TIGPMatrix.CreateObject( const ARect : TIGPRect; const dstplg : TPoint );
+constructor TIGPMatrix.CreateObject( const ARect : TRectF; const ADstplg : TPointF );
+begin
+  CreateObject( TIGPRectF.Create( ARect ), ADstplg );
+end;
+
+constructor TIGPMatrix.CreateObject( const ARect : TIGPRect; const ADstplg : TPoint );
 begin
   var AMatrix : GpMatrix := NIL;
-  ErrorCheck( GdipCreateMatrix3I(@ARect, @dstplg, AMatrix ));
+  ErrorCheck( GdipCreateMatrix3I(@ARect, @ADstplg, AMatrix ));
   SetNativeMatrix( AMatrix );
+end;
+
+constructor TIGPMatrix.CreateObject( const ARect : TRect; const ADstplg : TPoint );
+begin
+  CreateObject( TIGPRect.Create( ARect ), ADstplg );
 end;
 
 destructor TIGPMatrix.Destroy();
@@ -7034,14 +7307,24 @@ begin
   Result := CreateObject( m11, m12, m21, m22, dx, dy );
 end;
 
-class function TIGPMatrix.Create( const ARect : TIGPRectF; const dstplg : TPointF ) : IGPMatrix;
+class function TIGPMatrix.Create( const ARect : TIGPRectF; const ADstplg : TPointF ) : IGPMatrix;
 begin
-  Result := CreateObject( ARect, dstplg );
+  Result := CreateObject( ARect, ADstplg );
 end;
 
-class function TIGPMatrix.Create( const ARect : TIGPRect; const dstplg : TPoint ) : IGPMatrix;
+class function TIGPMatrix.Create( const ARect : TRectF; const ADstplg : TPointF ) : IGPMatrix;
 begin
-  Result := CreateObject( ARect, dstplg );
+  Result := CreateObject( ARect, ADstplg );
+end;
+
+class function TIGPMatrix.Create( const ARect : TIGPRect; const ADstplg : TPoint ) : IGPMatrix;
+begin
+  Result := CreateObject( ARect, ADstplg );
+end;
+
+class function TIGPMatrix.Create( const ARect : TRect; const ADstplg : TPoint ) : IGPMatrix;
+begin
+  Result := CreateObject( ARect, ADstplg );
 end;
 
 procedure TIGPMatrix.SetNativeMatrix( ANativeMatrix : GpMatrix );
@@ -7473,9 +7756,14 @@ begin
   SetNativeImage( metafile );
 end;
 
+constructor TIGPMetafile.CreateObject( referenceHdc : HDC; const frameRect : TRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
+begin
+  CreateObject( referenceHdc, TIGPRectF.Create( frameRect ), frameUnit, AType, description );
+end;
+
   // Record a metafile to memory.
 
-constructor TIGPMetafile.CreateObject( referenceHdc: HDC; const frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
+constructor TIGPMetafile.CreateObject( referenceHdc : HDC; const frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
 begin
   var metafile : GpMetafile := NIL;
   ErrorCheck( GdipRecordMetafileI( referenceHdc, AType, @frameRect, frameUnit,
@@ -7483,46 +7771,71 @@ begin
   SetNativeImage( metafile );
 end;
 
-constructor TIGPMetafile.CreateObject( const AFileName : WideString; referenceHdc: HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
+constructor TIGPMetafile.CreateObject( referenceHdc : HDC; const frameRect : TRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
+begin
+  CreateObject( referenceHdc, TIGPRect.Create( frameRect ), frameUnit, AType, description );
+end;
+
+constructor TIGPMetafile.CreateObject( const AFileName : WideString; referenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
 begin
   var metafile : GpMetafile := NIL;
   ErrorCheck( GdipRecordMetafileFileName(PWideChar( AFileName ), referenceHdc, AType, NIL, TIGPMetafileFrameUnit.Gdi, description, metafile ));
   SetNativeImage( metafile );
 end;
 
-constructor TIGPMetafile.CreateObject( const AFileName : WideString; referenceHdc: HDC; const frameRect : TIGPRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
+constructor TIGPMetafile.CreateObject( const AFileName : WideString; referenceHdc : HDC; const frameRect : TIGPRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
 begin
   var metafile : GpMetafile := NIL;
   ErrorCheck( GdipRecordMetafileFileName(PWideChar( AFileName ), referenceHdc, AType, @frameRect, frameUnit, description, metafile ));
   SetNativeImage( metafile );
 end;
 
-constructor TIGPMetafile.CreateObject( const AFileName : WideString; referenceHdc: HDC; frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
+constructor TIGPMetafile.CreateObject( const AFileName : WideString; referenceHdc : HDC; const frameRect : TRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
+begin
+  CreateObject( AFileName, referenceHdc, TIGPRectF.Create( frameRect ), frameUnit, AType, description );
+end;
+
+constructor TIGPMetafile.CreateObject( const AFileName : WideString; referenceHdc : HDC; const frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
 begin
   var metafile : GpMetafile := NIL;
   ErrorCheck( GdipRecordMetafileFileNameI(PWideChar( AFileName ), referenceHdc, AType, @frameRect, frameUnit, description, metafile ));
   SetNativeImage( metafile );
 end;
 
-constructor TIGPMetafile.CreateObject( const AStream : IStream; referenceHdc: HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
+constructor TIGPMetafile.CreateObject( const AFileName : WideString; referenceHdc : HDC; const frameRect : TRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
+begin
+  CreateObject( AFileName, referenceHdc, TIGPRect.Create( frameRect ), frameUnit, AType, description );
+end;
+
+constructor TIGPMetafile.CreateObject( const AStream : IStream; referenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
 begin
   var metafile : GpMetafile := NIL;
   ErrorCheck( GdipRecordMetafileStream( AStream, referenceHdc, AType, NIL, TIGPMetafileFrameUnit.Gdi, description, metafile ));
   SetNativeImage( metafile );
 end;
 
-constructor TIGPMetafile.CreateObject( const AStream : IStream; referenceHdc: HDC; const frameRect : TIGPRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
+constructor TIGPMetafile.CreateObject( const AStream : IStream; referenceHdc : HDC; const frameRect : TIGPRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
 begin
   var metafile : GpMetafile := NIL;
   ErrorCheck( GdipRecordMetafileStream( AStream, referenceHdc, AType, @frameRect, frameUnit, description, metafile ));
   SetNativeImage( metafile );
 end;
 
-constructor TIGPMetafile.CreateObject( const AStream : IStream; referenceHdc : HDC; frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
+constructor TIGPMetafile.CreateObject( const AStream : IStream; referenceHdc : HDC; const frameRect : TRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
+begin
+  CreateObject( AStream, referenceHdc, TIGPRectF.Create( frameRect ), frameUnit, AType, description );
+end;
+
+constructor TIGPMetafile.CreateObject( const AStream : IStream; referenceHdc : HDC; const frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
 begin
   var metafile : GpMetafile := NIL;
   ErrorCheck( GdipRecordMetafileStreamI( AStream, referenceHdc, AType, @frameRect, frameUnit, description, metafile ));
   SetNativeImage( metafile );
+end;
+
+constructor TIGPMetafile.CreateObject( const AStream : IStream; referenceHdc : HDC; const frameRect : TRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL );
+begin
+  CreateObject( AStream, referenceHdc, TIGPRect.Create( frameRect ), frameUnit, AType, description );
 end;
 
 class function TIGPMetafile.GetMetafileHeader( hWmf: HMETAFILE; var wmfPlaceableFileHeader : TIGPWmfPlaceableFileHeader ) : IGPMetafileHeader;
@@ -7648,7 +7961,17 @@ begin
   Result := CreateObject( referenceHdc, frameRect, frameUnit, AType, description );
 end;
 
+class function TIGPMetafile.Create( referenceHdc : HDC; const frameRect : TRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile;
+begin
+  Result := CreateObject( referenceHdc, frameRect, frameUnit, AType, description );
+end;
+
 class function TIGPMetafile.Create( referenceHdc : HDC; const frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile;
+begin
+  Result := CreateObject( referenceHdc, frameRect, frameUnit, AType, description );
+end;
+
+class function TIGPMetafile.Create( referenceHdc : HDC; const frameRect : TRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile;
 begin
   Result := CreateObject( referenceHdc, frameRect, frameUnit, AType, description );
 end;
@@ -7663,7 +7986,17 @@ begin
   Result := CreateObject( AFileName, referenceHdc, frameRect, frameUnit, AType, description );
 end;
 
-class function TIGPMetafile.Create( const AFileName : WideString; referenceHdc : HDC; frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile;
+class function TIGPMetafile.Create( const AFileName : WideString; referenceHdc : HDC; const frameRect : TRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName, referenceHdc, frameRect, frameUnit, AType, description );
+end;
+
+class function TIGPMetafile.Create( const AFileName : WideString; referenceHdc : HDC; const frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName, referenceHdc, frameRect, frameUnit, AType, description );
+end;
+
+class function TIGPMetafile.Create( const AFileName : WideString; referenceHdc : HDC; const frameRect : TRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile;
 begin
   Result := CreateObject( AFileName, referenceHdc, frameRect, frameUnit, AType, description );
 end;
@@ -7678,7 +8011,17 @@ begin
   Result := CreateObject( AStream, referenceHdc, frameRect, frameUnit, AType, description );
 end;
 
-class function TIGPMetafile.Create( const AStream : IStream; referenceHdc : HDC; frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile;
+class function TIGPMetafile.Create( const AStream : IStream; referenceHdc : HDC; const frameRect : TRectF; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile;
+begin
+  Result := CreateObject( AStream, referenceHdc, frameRect, frameUnit, AType, description );
+end;
+
+class function TIGPMetafile.Create( const AStream : IStream; referenceHdc : HDC; const frameRect : TIGPRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile;
+begin
+  Result := CreateObject( AStream, referenceHdc, frameRect, frameUnit, AType, description );
+end;
+
+class function TIGPMetafile.Create( const AStream : IStream; referenceHdc : HDC; const frameRect : TRect; frameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual; description : PWCHAR = NIL ) : IGPMetafile;
 begin
   Result := CreateObject( AStream, referenceHdc, frameRect, frameUnit, AType, description );
 end;
@@ -7800,11 +8143,21 @@ begin
   SetNativeRegion( ARegion );
 end;
 
+constructor TIGPRegion.CreateObject( const ARect : TRectF );
+begin
+  CreateObject( TIGPRectF.Create( ARect ) );
+end;
+
 constructor TIGPRegion.CreateObject( const ARect : TIGPRect );
 begin
   var ARegion : GpRegion := NIL;
   ErrorCheck( GdipCreateRegionRectI(@ARect, ARegion ));
   SetNativeRegion( ARegion );
+end;
+
+constructor TIGPRegion.CreateObject( const ARect : TRect );
+begin
+  CreateObject( TIGPRect.Create( ARect ) );
 end;
 
 constructor TIGPRegion.CreateObject( const APath : IGPGraphicsPath );
@@ -7833,7 +8186,7 @@ begin
   var ARegion : GpRegion := NIL;
   ErrorCheck( GdipCreateRegionHrgn( hRgn, ARegion ));
   Result := TIGPRegion.CreateGdiPlus( ARegion, False );
-  if (Result = NIL ) then
+  if( Result = NIL ) then
     GdipDeleteRegion( ARegion );
 
 end;
@@ -7853,7 +8206,17 @@ begin
   Result := CreateObject( ARect );
 end;
 
+class function TIGPRegion.Create( const ARect : TRectF ) : IGPRegion;
+begin
+  Result := CreateObject( ARect );
+end;
+
 class function TIGPRegion.Create( const ARect : TIGPRect ) : IGPRegion;
+begin
+  Result := CreateObject( ARect );
+end;
+
+class function TIGPRegion.Create( const ARect : TRect ) : IGPRegion;
 begin
   Result := CreateObject( ARect );
 end;
@@ -7920,10 +8283,22 @@ begin
   ErrorCheck( GdipCombineRegionRectI( FNativeRegion, @ARect, TIGPCombineMode.Intersect ));
 end;
 
+function TIGPRegion.Intersect( const ARect : TRect ) : IGPRegion;
+begin
+  Result := Self; // Keep alive!
+  Intersect( TIGPRect.Create( ARect ) );
+end;
+
 function TIGPRegion.IntersectF( const ARect : TIGPRectF ) : IGPRegion;
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipCombineRegionRect( FNativeRegion, @ARect, TIGPCombineMode.Intersect ));
+end;
+
+function TIGPRegion.IntersectF( const ARect : TRectF ) : IGPRegion;
+begin
+  Result := Self; // Keep alive!
+  IntersectF( TIGPRectF.Create( ARect ) );
 end;
 
 function TIGPRegion.Intersect( const APath : IGPGraphicsPath ) : IGPRegion;
@@ -7944,10 +8319,22 @@ begin
   ErrorCheck( GdipCombineRegionRectI( FNativeRegion, @ARect, TIGPCombineMode.Union ));
 end;
 
+function TIGPRegion.Union( const ARect : TRect ) : IGPRegion;
+begin
+  Result := Self; // Keep alive!
+  Union( TIGPRect.Create( ARect ) );
+end;
+
 function TIGPRegion.UnionF( const ARect : TIGPRectF ) : IGPRegion;
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipCombineRegionRect( FNativeRegion, @ARect, TIGPCombineMode.Union ));
+end;
+
+function TIGPRegion.UnionF( const ARect : TRectF ) : IGPRegion;
+begin
+  Result := Self; // Keep alive!
+  UnionF( TIGPRectF.Create( ARect ) );
 end;
 
 function TIGPRegion.Union( const APath : IGPGraphicsPath ) : IGPRegion;
@@ -7968,10 +8355,22 @@ begin
   ErrorCheck( GdipCombineRegionRectI( FNativeRegion, @ARect, TIGPCombineMode.Xored ));
 end;
 
+function TIGPRegion.XorRegion( const ARect : TRect ) : IGPRegion;
+begin
+  Result := Self; // Keep alive!
+  XorRegion( TIGPRect.Create( ARect ) );
+end;
+
 function TIGPRegion.XorRegionF( const ARect : TIGPRectF ) : IGPRegion;
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipCombineRegionRect( FNativeRegion, @ARect, TIGPCombineMode.Xored ));
+end;
+
+function TIGPRegion.XorRegionF( const ARect : TRectF ) : IGPRegion;
+begin
+  Result := Self; // Keep alive!
+  XorRegionF( TIGPRectF.Create( ARect ) );
 end;
 
 function TIGPRegion.XorRegion( const APath : IGPGraphicsPath ) : IGPRegion;
@@ -7992,10 +8391,22 @@ begin
   ErrorCheck( GdipCombineRegionRectI( FNativeRegion, @ARect, TIGPCombineMode.Exclude ));
 end;
 
+function TIGPRegion.Exclude( const ARect : TRect ) : IGPRegion;
+begin
+  Result := Self; // Keep alive!
+  Exclude( TIGPRect.Create( ARect ) );
+end;
+
 function TIGPRegion.ExcludeF( const ARect : TIGPRectF ) : IGPRegion;
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipCombineRegionRect( FNativeRegion, @ARect, TIGPCombineMode.Exclude ));
+end;
+
+function TIGPRegion.ExcludeF( const ARect : TRectF ) : IGPRegion;
+begin
+  Result := Self; // Keep alive!
+  ExcludeF( TIGPRectF.Create( ARect ) );
 end;
 
 function TIGPRegion.Exclude( const APath : IGPGraphicsPath ) : IGPRegion;
@@ -8016,10 +8427,22 @@ begin
   ErrorCheck( GdipCombineRegionRectI( FNativeRegion, @ARect, TIGPCombineMode.Complement ));
 end;
 
+function TIGPRegion.Complement( const ARect : TRect ) : IGPRegion;
+begin
+  Result := Self; // Keep alive!
+  Complement( TIGPRect.Create( ARect ) );
+end;
+
 function TIGPRegion.ComplementF( const ARect : TIGPRectF ) : IGPRegion;
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipCombineRegionRect( FNativeRegion, @ARect, TIGPCombineMode.Complement ));
+end;
+
+function TIGPRegion.ComplementF( const ARect : TRectF ) : IGPRegion;
+begin
+  Result := Self; // Keep alive!
+  ComplementF( TIGPRectF.Create( ARect ) );
 end;
 
 function TIGPRegion.Complement( const APath : IGPGraphicsPath ) : IGPRegion;
@@ -8183,6 +8606,11 @@ begin
   Result := AWinBoolean;
 end;
 
+function TIGPRegion.IsVisible( const ARect : TRect; const AGraphics : IGPGraphics = NIL ) : Boolean;
+begin
+  Result := IsVisible( TIGPRect.Create( ARect ), AGraphics );
+end;
+
 function TIGPRegion.IsVisibleF( x, y, AWidth, AHeight : Single; const AGraphics : IGPGraphics = NIL ) : Boolean;
 var
   gpx : GpGraphics;
@@ -8210,9 +8638,14 @@ begin
 
   else
     gpx := NIL;
-      
+
   ErrorCheck( GdipIsVisibleRegionRect( FNativeRegion, ARect.X, ARect.Y, ARect.Width, ARect.Height, gpx, AWinBoolean ));
   Result := AWinBoolean;
+end;
+
+function TIGPRegion.IsVisibleF( const ARect : TRectF; const AGraphics : IGPGraphics = NIL ) : Boolean;
+begin
+  Result := IsVisibleF( TIGPRectF.Create( ARect ), AGraphics );
 end;
 
 function TIGPRegion.EqualsRegion( const ARegion : IGPRegion; const AGraphics : IGPGraphics) : Boolean;
@@ -8310,7 +8743,7 @@ begin
   ErrorCheck( GdipCloneCustomLineCap( FNativeCap, newNativeLineCap ));
 
   Result := TIGPCustomLineCap.CreateGdiPlusObject( newNativeLineCap, False );
-  if (Result = NIL ) then
+  if( Result = NIL ) then
     ErrorCheck( GdipDeleteCustomLineCap( newNativeLineCap ));
        
 end;
@@ -8976,7 +9409,7 @@ begin
   var brush : GpBrush := NIL;
   ErrorCheck( GdipCloneBrush( FNativeBrush, brush ));
   var newBrush := TIGPBrush.CreateObject( brush );
-  if ( newBrush = NIL ) then
+  if( newBrush = NIL ) then
     GdipDeleteBrush( brush );
 
   Result := newBrush;
@@ -9092,6 +9525,11 @@ begin
   SetNativeBrush( ATexture );
 end;
 
+constructor TIGPTextureBrush.CreateObject( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRectF );
+begin
+  CreateObject( AImage, AWrapMode, TIGPRectF.Create( ADstRect ) );
+end;
+
 constructor TIGPTextureBrush.CreateObject( const AImage : IGPImage; const ADstRect : TIGPRectF; const AImageAttributes : IGPImageAttributes = NIL );
 var
   AImgAtt : GpImageAttributes;
@@ -9108,6 +9546,11 @@ begin
 
   ErrorCheck( GdipCreateTextureIA( AImage.GetNativeImage(), AImgAtt, ADstRect.X, ADstRect.Y, ADstRect.Width, ADstRect.Height, ATexture ));
   SetNativeBrush( ATexture );
+end;
+
+constructor TIGPTextureBrush.CreateObject( const AImage : IGPImage; const ADstRect : TRectF; const AImageAttributes : IGPImageAttributes = NIL );
+begin
+  CreateObject( AImage, TIGPRectF.Create( ADstRect ), AImageAttributes );
 end;
 
 constructor TIGPTextureBrush.CreateObject( const AImage : IGPImage; const ADstRect : TIGPRect; const AImageAttributes : IGPImageAttributes = NIL );
@@ -9128,12 +9571,22 @@ begin
    SetNativeBrush( ATexture );
 end;
 
+constructor TIGPTextureBrush.CreateObject( const AImage : IGPImage; const ADstRect : TRect; const AImageAttributes : IGPImageAttributes = NIL );
+begin
+  CreateObject( AImage, TIGPRect.Create( ADstRect ), AImageAttributes );
+end;
+
 constructor TIGPTextureBrush.CreateObject( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRect );
 begin
   var ATexture : GpTexture := NIL;
   ErrorCheck( GdipCreateTexture2I( AImage.GetNativeImage(), AWrapMode, ADstRect.X,
                   ADstRect.Y, ADstRect.Width, ADstRect.Height, ATexture ));
   SetNativeBrush( ATexture );
+end;
+
+constructor TIGPTextureBrush.CreateObject( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRect );
+begin
+  CreateObject( AImage, AWrapMode, TIGPRect.Create( ADstRect ) );
 end;
 
 constructor TIGPTextureBrush.CreateObject( const AImage : IGPImage; AWrapMode : TIGPWrapMode; ADstX, ADstY, ADstWidth, ADstHeight : Single );
@@ -9309,7 +9762,17 @@ begin
   Result := CreateObject( AImage, AWrapMode, ADstRect );
 end;
 
+class function TIGPTextureBrush.Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRectF ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, AWrapMode, ADstRect );
+end;
+
 class function TIGPTextureBrush.Create( const AImage : IGPImage; const ADstRect : TIGPRectF; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, ADstRect, AImageAttributes );
+end;
+
+class function TIGPTextureBrush.Create( const AImage : IGPImage; const ADstRect : TRectF; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush;
 begin
   Result := CreateObject( AImage, ADstRect, AImageAttributes );
 end;
@@ -9319,7 +9782,17 @@ begin
   Result := CreateObject( AImage, ADstRect, AImageAttributes );
 end;
 
+class function TIGPTextureBrush.Create( const AImage : IGPImage; const ADstRect : TRect; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, ADstRect, AImageAttributes );
+end;
+
 class function TIGPTextureBrush.Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRect ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, AWrapMode, ADstRect );
+end;
+
+class function TIGPTextureBrush.Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRect ) : IGPTextureBrush;
 begin
   Result := CreateObject( AImage, AWrapMode, ADstRect );
 end;
@@ -9368,12 +9841,17 @@ end;
 constructor TIGPLinearGradientBrush.CreateObject( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode );
 begin
   var ABrush : GpLineGradient := NIL;
-  var rectX := ARect;
-  if(( rectX.Width = 0 ) and ( rectX.Height = 0 )) then
-    rectX.Width := 1;
+  var ARectX := ARect;
+  if(( ARectX.Width = 0 ) and ( ARectX.Height = 0 )) then
+    ARectX.Width := 1;
 
-  ErrorCheck( GdipCreateLineBrushFromRect(@rectX, AColor1, AColor2, AMode, TIGPWrapMode.Tile, ABrush ));
+  ErrorCheck( GdipCreateLineBrushFromRect( @ARectX, AColor1, AColor2, AMode, TIGPWrapMode.Tile, ABrush ));
   SetNativeBrush( ABrush );
+end;
+
+constructor TIGPLinearGradientBrush.CreateObject( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode );
+begin
+  CreateObject( TIGPRectF.Create( ARect ), AColor1, AColor2, AMode );
 end;
 
 constructor TIGPLinearGradientBrush.CreateObject( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode );
@@ -9383,6 +9861,11 @@ begin
   SetNativeBrush( ABrush );
 end;
 
+constructor TIGPLinearGradientBrush.CreateObject( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode );
+begin
+  CreateObject( TIGPRect.Create( ARect ), AColor1, AColor2, AMode );
+end;
+
 constructor TIGPLinearGradientBrush.CreateObject( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False );
 begin
   var ABrush : GpLineGradient := NIL;
@@ -9390,11 +9873,21 @@ begin
   SetNativeBrush( ABrush );
 end;
 
+constructor TIGPLinearGradientBrush.CreateObject( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False );
+begin
+  CreateObject( TIGPRectF.Create( ARect ), AColor1, AColor2, AAngle,  AIsAngleScalable );
+end;
+
 constructor TIGPLinearGradientBrush.CreateObject( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False );
 begin
   var ABrush : GpLineGradient := NIL;
   ErrorCheck( GdipCreateLineBrushFromRectWithAngleI(@ARect, AColor1, AColor2, AAngle, AIsAngleScalable, TIGPWrapMode.Tile, ABrush ));
   SetNativeBrush( ABrush );
+end;
+
+constructor TIGPLinearGradientBrush.CreateObject( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False );
+begin
+  CreateObject( TIGPRect.Create( ARect ), AColor1, AColor2, AAngle,  AIsAngleScalable );
 end;
 
 function TIGPLinearGradientBrush.SetLinearColors( AColor1, AColor2 : TAlphaColor ) : IGPLinearGradientBrush;
@@ -9711,7 +10204,17 @@ begin
   Result := CreateObject( ARect, AColor1, AColor2, AMode );
 end;
 
+class function TIGPLinearGradientBrush.Create( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( ARect, AColor1, AColor2, AMode );
+end;
+
 class function TIGPLinearGradientBrush.Create( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( ARect, AColor1, AColor2, AMode );
+end;
+
+class function TIGPLinearGradientBrush.Create( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush;
 begin
   Result := CreateObject( ARect, AColor1, AColor2, AMode );
 end;
@@ -9721,7 +10224,17 @@ begin
   Result := CreateObject( ARect, AColor1, AColor2, AAngle, AIsAngleScalable );
 end;
 
+class function TIGPLinearGradientBrush.Create( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( ARect, AColor1, AColor2, AAngle, AIsAngleScalable );
+end;
+
 class function TIGPLinearGradientBrush.Create( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( ARect, AColor1, AColor2, AAngle, AIsAngleScalable );
+end;
+
+class function TIGPLinearGradientBrush.Create( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush;
 begin
   Result := CreateObject( ARect, AColor1, AColor2, AAngle, AIsAngleScalable );
 end;
@@ -9980,7 +10493,7 @@ end;
 function TIGPImage.SaveAdd( const newImage : IGPImage; AEncoderParams : PGPEncoderParameters ) : IGPImage;
 begin
   Result := Self; // Keep alive!
-  if ( newImage = NIL ) then
+  if( newImage = NIL ) then
     ErrorCheck( TIGPStatus.InvalidParameter );
 
   ErrorCheck( GdipSaveAddImage( FNativeImage, newImage.GetNativeImage(), AEncoderParams));
@@ -10002,11 +10515,19 @@ begin
   ErrorCheck( GdipGetImageBounds( FNativeImage, @ASrcRect, ASrcUnit ));
 end;
 
-function TIGPImage.AsBytes( const formatName : String = 'bmp' ) : TBytes;
+function TIGPImage.GetBounds( out ASrcRect : TRectF; out ASrcUnit : TIGPUnit ) : IGPImage;
+begin
+  Result := Self; // Keep alive!
+  var ALocalRect : TIGPRectF;
+  ErrorCheck( GdipGetImageBounds( FNativeImage, @ALocalRect, ASrcUnit ));
+  ASrcRect := ALocalRect.AsRect();
+end;
+
+function TIGPImage.AsBytes( const AFormatName : String = 'bmp' ) : TBytes;
 begin
   var AStream := TMemoryStream.Create();
   try
-    Save( AStream, formatName );
+    Save( AStream, AFormatName );
     AStream.Position := 0;
     SetLength( Result, AStream.Size );
     AStream.Read( Result, 0, AStream.Size );
@@ -10153,8 +10674,7 @@ begin
   Result := False;
 end;
   
-function TIGPImage.GetThumbnailImage( AThumbWidth, AThumbHeight : Cardinal;
-              ACallback : TIGPGetThumbnailImageAbortProc = NIL ) : IGPImage;
+function TIGPImage.GetThumbnailImage( AThumbWidth, AThumbHeight : Cardinal; const ACallback : TIGPGetThumbnailImageAbortProc = NIL ) : IGPImage;
 begin
   var thumbimage : GpImage := NIL;
   var ADispatcher := TIGPIntAbortDispatcher.Create();
@@ -10165,7 +10685,7 @@ begin
                                               GLGPAbortCallback, ADispatcher ));
 
   var newImage := TIGPImage.CreateGdiPlusObject( thumbimage, False );
-  if ( newImage = NIL ) then
+  if( newImage = NIL ) then
       GdipDisposeImage( thumbimage );
 
   Result := newImage;
@@ -10407,6 +10927,11 @@ begin
   ErrorCheck( GdipCreateBitmapFromScan0( AWidth, AHeight, AStride, AFormat, AScan0, bitmap ));
   SetNativeImage( bitmap );
 end;
+{$ELSE}
+function TIGPImage.GetGraphics() : IGPGraphics;
+begin
+  Result := NIL;
+end;
 {$ENDIF}
 
 constructor TIGPBitmap.CreateObject( AWidth, AHeight : Integer; AFormat : TIGPPixelFormat = GPPixelFormat32bppARGB );
@@ -10481,6 +11006,11 @@ begin
   Result := Clone( ARect.X, ARect.Y, ARect.Width, ARect.Height, AFormat );
 end;
 
+function TIGPBitmap.Clone( const ARect : TRect; AFormat : TIGPPixelFormat ) : IGPBitmap;
+begin
+  Result := Clone( ARect.Left, ARect.Top, ARect.Width, ARect.Height, AFormat );
+end;
+
 function TIGPBitmap.Clone( x, y, AWidth, AHeight : Integer; AFormat : TIGPPixelFormat ) : IGPBitmap;
 begin
   var gpdstBitmap : GpBitmap := NIL;
@@ -10498,13 +11028,18 @@ begin
   Result := CloneF( ARect.X, ARect.Y, ARect.Width, ARect.Height, AFormat );
 end;
 
+function TIGPBitmap.CloneF( const ARect : TRectF; AFormat : TIGPPixelFormat ) : IGPBitmap;
+begin
+  Result := CloneF( ARect.left, ARect.Top, ARect.Width, ARect.Height, AFormat );
+end;
+
 function TIGPBitmap.CloneF( x, y, AWidth, AHeight : Single; AFormat : TIGPPixelFormat ) : IGPBitmap;
 begin
   var gpdstBitmap : GpBitmap := NIL;
   ErrorCheck( GdipCloneBitmapArea( x, y, AWidth, AHeight, AFormat, GpBitmap( FNativeImage ), gpdstBitmap ));
 
   Result := TIGPBitmap.CreateGdiPlusObject( gpdstBitmap, False );
-  if (Result = NIL ) then
+  if( Result = NIL ) then
     GdipDisposeImage( gpdstBitmap );
      
 end;
@@ -10529,6 +11064,11 @@ begin
 
   LockBitsInternal( ARect, CFlags, AFormat, ABitmapData.FData );
   Result := ABitmapData;
+end;
+
+function TIGPBitmap.LockBits( const ARect : TRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData;
+begin
+  Result := LockBits( ARect, AFlags, AFormat );
 end;
 
 function TIGPBitmap.LockBits( AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData;
@@ -10594,36 +11134,39 @@ begin
   SetNativeImage( ABitmap );
 end;
 
-constructor TIGPBitmap.CreateResObject( AHInstance : HMODULE; const ABitmapName : WideString );
+constructor TIGPBitmap.CreateResObject( AHInstance : HMODULE; const ABitmapName : WideString ); // AResType : LPCWSTR = RT_BITMAP );
 begin
   var hResource : HRSRC := FindResource( AHInstance, PChar( ABitmapName ), RT_BITMAP );
-  var AByteData : PByte := LockResource( LoadResource( AHInstance, hResource ));
-  var AHeader := PBitmapInfoHeader( AByteData );
-  var APtrIn := PCardinal( AByteData + SizeOf( TBitmapInfoHeader ) );
-  if( AHeader.biBitCount = 32 ) then
+  if( hResource <> 0 ) then
     begin
-    var AIsAlpha := False;
-    for var I : Integer := 0 to AHeader.biWidth * AHeader.biHeight - 1 do
-      if( ( APtrIn[ I ] and $FF000000 ) <> 0 ) then
-        begin
-        AIsAlpha := True;
-        Break;
-        end;
-
-    if( AIsAlpha ) then
+    var AByteData : PByte := LockResource( LoadResource( AHInstance, hResource ));
+    var AHeader := PBitmapInfoHeader( AByteData );
+    var APtrIn := PCardinal( AByteData + SizeOf( TBitmapInfoHeader ) );
+    if( AHeader.biBitCount = 32 ) then
       begin
-      CreateObject( AHeader.biWidth, AHeader.biHeight, GPPixelFormat32bppARGB );
-      var ADataOut := LockBits( TIGPRect.Create( AHeader.biWidth, AHeader.biHeight ), [ TIGPImageLockMode.Write ], GPPixelFormat32bppARGB );
-      var APtrOut : PCardinal := ADataOut.Scan0;
-      Inc( APtrOut, AHeader.biWidth * ( AHeader.biHeight - 1 ));
-      for var I : Integer := 0 to AHeader.biHeight - 1 do
-        begin
-        Move( APtrIn^, APtrOut^, AHeader.biWidth * 4 );
-        Inc( APtrIn, AHeader.biWidth );
-        Dec( APtrOut, AHeader.biWidth );
-        end;
+      var AIsAlpha := False;
+      for var I : Integer := 0 to AHeader.biWidth * AHeader.biHeight - 1 do
+        if( ( APtrIn[ I ] and $FF000000 ) <> 0 ) then
+          begin
+          AIsAlpha := True;
+          Break;
+          end;
 
-      Exit;
+      if( AIsAlpha ) then
+        begin
+        CreateObject( AHeader.biWidth, AHeader.biHeight, GPPixelFormat32bppARGB );
+        var ADataOut := LockBits( TIGPRect.Create( AHeader.biWidth, AHeader.biHeight ), [ TIGPImageLockMode.Write ], GPPixelFormat32bppARGB );
+        var APtrOut : PCardinal := ADataOut.Scan0;
+        Inc( APtrOut, AHeader.biWidth * ( AHeader.biHeight - 1 ));
+        for var I : Integer := 0 to AHeader.biHeight - 1 do
+          begin
+          Move( APtrIn^, APtrOut^, AHeader.biWidth * 4 );
+          Inc( APtrIn, AHeader.biWidth );
+          Dec( APtrOut, AHeader.biWidth );
+          end;
+
+        Exit;
+        end;
       end;
     end;
 
@@ -10728,7 +11271,7 @@ end;
 constructor TIGPGraphics.CreateObject( const AImage : IGPImage );
 begin
   var AGraphics : GpGraphics := NIL;
-  if ( AImage <> NIL ) then
+  if( AImage <> NIL ) then
     ErrorCheck( GdipGetImageGraphicsContext( AImage.GetNativeImage(), AGraphics));
       
   SetNativeGraphics( AGraphics);
@@ -11010,7 +11553,8 @@ end;
 
 function TIGPGraphics.ScaleTransformXYT( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
 begin
-  Result := ScaleTransformT( s, s, AOrder );
+  Result := Self; // Keep alive!
+  ScaleTransformT( s, s, AOrder );
 end;
 
 function TIGPGraphics.RotateTransformT( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
@@ -11094,7 +11638,8 @@ end;
 
 function TIGPGraphics.DrawLineF( const APen : IGPPen; const pt1, pt2 : TPointF ) : IGPGraphics;
 begin
-  Result := DrawLineF( APen, pt1.X, pt1.Y, pt2.X, pt2.Y);
+  Result := Self; // Keep alive!
+  DrawLineF( APen, pt1.X, pt1.Y, pt2.X, pt2.Y);
 end;
 
 function TIGPGraphics.DrawLinesF( const APen : IGPPen; const APoints : array of TPointF ) : IGPGraphics;
@@ -11117,7 +11662,8 @@ end;
 
 function TIGPGraphics.DrawLine( const APen : IGPPen; const pt1, pt2 : TPoint ) : IGPGraphics;
 begin
-  Result := DrawLine( APen, pt1.X, pt1.Y, pt2.X, pt2.Y );
+  Result := Self; // Keep alive!
+  DrawLine( APen, pt1.X, pt1.Y, pt2.X, pt2.Y );
 end;
 
 function TIGPGraphics.DrawLines( const APen : IGPPen; const APoints : array of TPoint ) : IGPGraphics;
@@ -11140,7 +11686,14 @@ end;
 
 function TIGPGraphics.DrawArcF( const APen : IGPPen; const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
 begin
-  Result := DrawArcF( APen, ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+  Result := Self; // Keep alive!
+  DrawArcF( APen, ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+end;
+
+function TIGPGraphics.DrawArcF( const APen : IGPPen; const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  DrawArcF( APen, ARect.left, ARect.Top, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
 end;
 
 function TIGPGraphics.DrawArc( const APen : IGPPen; x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
@@ -11155,7 +11708,14 @@ end;
 
 function TIGPGraphics.DrawArc( const APen : IGPPen; const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
 begin
-  Result := DrawArc( APen, ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+  Result := Self; // Keep alive!
+  DrawArc( APen, ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+end;
+
+function TIGPGraphics.DrawArc( const APen : IGPPen; const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  DrawArc( APen, ARect.Left, ARect.Top, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
 end;
 
 function TIGPGraphics.DrawBezierF( const APen : IGPPen; x1, y1, x2, y2, x3, y3, x4, y4: Single ) : IGPGraphics;
@@ -11210,20 +11770,42 @@ begin
   if( APen = NIL ) then
     ErrorCheck( TIGPStatus.InvalidParameter );
 
-  var rectX := ARect;
-  if( rectX.Width < 0 ) then
+  var ARectX := ARect;
+  if( ARectX.Width < 0 ) then
     begin
-    rectX.Width := -rectX.Width;
-    rectX.X := rectX.X - rectX.Width;
+    ARectX.Width := -ARectX.Width;
+    ARectX.X := ARectX.X - ARectX.Width;
     end;
 
-  if( rectX.Height < 0 ) then
+  if( ARectX.Height < 0 ) then
     begin
-    rectX.Height := -rectX.Height;
-    rectX.Y := rectX.Y - rectX.Height;
+    ARectX.Height := -ARectX.Height;
+    ARectX.Y := ARectX.Y - ARectX.Height;
     end;
 
-  DrawRectangleF( APen, rectX.X, rectX.Y, rectX.Width, rectX.Height );
+  DrawRectangleF( APen, ARectX.X, ARectX.Y, ARectX.Width, ARectX.Height );
+end;
+
+function TIGPGraphics.DrawRectangleF( const APen : IGPPen; const ARect : TRectF ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  if( APen = NIL ) then
+    ErrorCheck( TIGPStatus.InvalidParameter );
+
+  var ARectX := ARect;
+  if( ARectX.Width < 0 ) then
+    begin
+    ARectX.Width := -ARectX.Width;
+    ARectX.Left := ARectX.Left - ARectX.Width;
+    end;
+
+  if( ARectX.Height < 0 ) then
+    begin
+    ARectX.Height := -ARectX.Height;
+    ARectX.Top := ARectX.Top - ARectX.Height;
+    end;
+
+  DrawRectangleF( APen, ARectX.Left, ARectX.Top, ARectX.Width, ARectX.Height );
 end;
 
 function TIGPGraphics.DrawRectangleF( const APen : IGPPen; x, y, AWidth, AHeight : Single ) : IGPGraphics;
@@ -11256,27 +11838,78 @@ begin
   ErrorCheck( GdipDrawRectangles( FNativeGraphics, APen.GetNativePen(), @ARects[ 0 ], Length( ARects )));
 end;
 
+function TIGPGraphics.DrawRectanglesF( const APen : IGPPen; const ARects : array of TRectF ) : IGPGraphics;
+var
+  ALocalRects : array of TIGPRectF;
+
+begin
+  Result := Self; // Keep alive!
+
+  SetLength( ALocalRects, Length( ARects ));
+  for var I := 0 to Length( ARects ) - 1 do
+    ALocalRects[ I ] := TIGPRectF.Create( ARects[ I ] );
+
+  DrawRectanglesF( APen, ALocalRects );
+end;
+
 function TIGPGraphics.DrawRectangle( const APen : IGPPen; const ARect : TIGPRect ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
   if( APen = NIL ) then
     ErrorCheck( TIGPStatus.InvalidParameter );
 
-  var rectX := ARect;
+  var ARectX := ARect;
 
-  if( rectX.Width < 0 ) then
+  if( ARectX.Width < 0 ) then
     begin
-    rectX.Width := -rectX.Width;
-    Dec( rectX.X, rectX.Width );
+    ARectX.Width := -ARectX.Width;
+    Dec( ARectX.X, ARectX.Width );
     end;
 
-  if( rectX.Height < 0 ) then
+  if( ARectX.Height < 0 ) then
     begin
-    rectX.Height := -rectX.Height;
-    Dec( rectX.Y, rectX.Height );
+    ARectX.Height := -ARectX.Height;
+    Dec( ARectX.Y, ARectX.Height );
     end;
 
-  DrawRectangle( APen, rectX.X, rectX.Y, rectX.Width, rectX.Height );
+  DrawRectangle( APen, ARectX.X, ARectX.Y, ARectX.Width, ARectX.Height );
+end;
+
+function TIGPGraphics.DrawRectangle( const APen : IGPPen; const ARect : TRect ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  if( APen = NIL ) then
+    ErrorCheck( TIGPStatus.InvalidParameter );
+
+  var ARectX := ARect;
+
+  if( ARectX.Width < 0 ) then
+    begin
+    ARectX.Width := -ARectX.Width;
+    Dec( ARectX.Left, ARectX.Width );
+    end;
+
+  if( ARectX.Height < 0 ) then
+    begin
+    ARectX.Height := -ARectX.Height;
+    Dec( ARectX.Top, ARectX.Height );
+    end;
+
+  DrawRectangle( APen, ARectX.Left, ARectX.Top, ARectX.Width, ARectX.Height );
+end;
+
+function TIGPGraphics.DrawRectangles( const APen : IGPPen; const ARects : array of TRect ) : IGPGraphics;
+var
+  ALocalRects : array of TIGPRect;
+
+begin
+  Result := Self; // Keep alive!
+
+  SetLength( ALocalRects, Length( ARects ));
+  for var I := 0 to Length( ARects ) - 1 do
+    ALocalRects[ I ] := TIGPRect.Create( ARects[ I ] );
+
+  DrawRectangles( APen, ALocalRects );
 end;
 
 function TIGPGraphics.DrawRectangle( const APen : IGPPen; x, y, AWidth, AHeight : Integer ) : IGPGraphics;
@@ -11318,21 +11951,47 @@ begin
   if( ABrush = NIL ) then
     ErrorCheck( TIGPStatus.InvalidParameter );
 
-  var rectX := ARect;
-  if( rectX.Width < 0 ) then
+  var ARectX := ARect;
+  if( ARectX.Width < 0 ) then
     begin
-    rectX.Width := -rectX.Width;
-    rectX.X := rectX.X - rectX.Width;
+    ARectX.Width := -ARectX.Width;
+    ARectX.X := ARectX.X - ARectX.Width;
     end;
 
-  if( rectX.Height < 0 ) then
+  if( ARectX.Height < 0 ) then
     begin
-    rectX.Height := -rectX.Height;
-    rectX.Y := rectX.Y - rectX.Height;
+    ARectX.Height := -ARectX.Height;
+    ARectX.Y := ARectX.Y - ARectX.Height;
     end;
 
-  FillRectangleF( ABrush, rectX );
-  DrawRectangleF( APen, rectX );
+  FillRectangleF( ABrush, ARectX );
+  DrawRectangleF( APen, ARectX );
+end;
+
+function TIGPGraphics.DrawRectangleF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRectF ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  if( APen = NIL ) then
+    ErrorCheck( TIGPStatus.InvalidParameter );
+
+  if( ABrush = NIL ) then
+    ErrorCheck( TIGPStatus.InvalidParameter );
+
+  var ARectX := ARect;
+  if( ARectX.Width < 0 ) then
+    begin
+    ARectX.Width := -ARectX.Width;
+    ARectX.Left := ARectX.Left - ARectX.Width;
+    end;
+
+  if( ARectX.Height < 0 ) then
+    begin
+    ARectX.Height := -ARectX.Height;
+    ARectX.Top := ARectX.Top - ARectX.Height;
+    end;
+
+  FillRectangleF( ABrush, ARectX );
+  DrawRectangleF( APen, ARectX );
 end;
 
 function TIGPGraphics.DrawRectangleF( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight : Single ) : IGPGraphics;
@@ -11371,6 +12030,17 @@ begin
 
 end;
 
+function TIGPGraphics.DrawRectanglesF( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TRectF ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  for var ARect in ARects do
+    begin
+    FillRectangleF( ABrush, ARect );
+    DrawRectangleF( APen, ARect );
+    end;
+
+end;
+
 function TIGPGraphics.DrawRectangle( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRect ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
@@ -11380,21 +12050,47 @@ begin
   if( ABrush = NIL ) then
     ErrorCheck( TIGPStatus.InvalidParameter );
 
-  var rectX := ARect;
-  if( rectX.Width < 0 ) then
+  var ARectX := ARect;
+  if( ARectX.Width < 0 ) then
     begin
-    rectX.Width := -rectX.Width;
-    Dec( rectX.X, rectX.Width );
+    ARectX.Width := -ARectX.Width;
+    Dec( ARectX.X, ARectX.Width );
     end;
 
-  if( rectX.Height < 0 ) then
+  if( ARectX.Height < 0 ) then
     begin
-    rectX.Height := -rectX.Height;
-    Dec( rectX.Y, rectX.Height );
+    ARectX.Height := -ARectX.Height;
+    Dec( ARectX.Y, ARectX.Height );
     end;
 
-  FillRectangle( ABrush, rectX );
-  DrawRectangle( APen, rectX );
+  FillRectangle( ABrush, ARectX );
+  DrawRectangle( APen, ARectX );
+end;
+
+function TIGPGraphics.DrawRectangle( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRect ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  if( APen = NIL ) then
+    ErrorCheck( TIGPStatus.InvalidParameter );
+
+  if( ABrush = NIL ) then
+    ErrorCheck( TIGPStatus.InvalidParameter );
+
+  var ARectX := ARect;
+  if( ARectX.Width < 0 ) then
+    begin
+    ARectX.Width := -ARectX.Width;
+    Dec( ARectX.Left, ARectX.Width );
+    end;
+
+  if( ARectX.Height < 0 ) then
+    begin
+    ARectX.Height := -ARectX.Height;
+    Dec( ARectX.Top, ARectX.Height );
+    end;
+
+  FillRectangle( ABrush, ARectX );
+  DrawRectangle( APen, ARectX );
 end;
 
 function TIGPGraphics.DrawRectangle( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer ) : IGPGraphics;
@@ -11433,7 +12129,23 @@ begin
 
 end;
 
+function TIGPGraphics.DrawRectangles( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TRect ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  for var ARect in ARects do
+    begin
+    FillRectangle( ABrush, ARect );
+    DrawRectangle( APen, ARect );
+    end;
+
+end;
+
 function TIGPGraphics.DrawRoundRectangleF( const APen : IGPPen; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
+begin
+  Result := DrawPath( APen, TIGPGraphicsPath.Create().AddRoundRectangleF( ARect, ACornerSize ));
+end;
+
+function TIGPGraphics.DrawRoundRectangleF( const APen : IGPPen; const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
 begin
   Result := DrawPath( APen, TIGPGraphicsPath.Create().AddRoundRectangleF( ARect, ACornerSize ));
 end;
@@ -11443,7 +12155,17 @@ begin
   Result := DrawPath( APen, TIGPGraphicsPath.Create().AddRoundRectangle( ARect, ACornerSize ));
 end;
 
+function TIGPGraphics.DrawRoundRectangle( const APen : IGPPen; const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphics;
+begin
+  Result := DrawPath( APen, TIGPGraphicsPath.Create().AddRoundRectangle( ARect, ACornerSize ));
+end;
+
 function TIGPGraphics.DrawRoundRectangleF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
+begin
+  Result := DrawPath( APen, ABrush, TIGPGraphicsPath.Create().AddRoundRectangleF( ARect, ACornerSize ));
+end;
+
+function TIGPGraphics.DrawRoundRectangleF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
 begin
   Result := DrawPath( APen, ABrush, TIGPGraphicsPath.Create().AddRoundRectangleF( ARect, ACornerSize ));
 end;
@@ -11453,9 +12175,19 @@ begin
   Result := DrawPath( APen, ABrush, TIGPGraphicsPath.Create().AddRoundRectangle( ARect, ACornerSize ));
 end;
 
+function TIGPGraphics.DrawRoundRectangle( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphics;
+begin
+  Result := DrawPath( APen, ABrush, TIGPGraphicsPath.Create().AddRoundRectangle( ARect, ACornerSize ));
+end;
+
 function TIGPGraphics.DrawEllipseF( const APen : IGPPen; const ARect : TIGPRectF ) : IGPGraphics;
 begin
   Result := DrawEllipseF( APen, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+end;
+
+function TIGPGraphics.DrawEllipseF( const APen : IGPPen; const ARect : TRectF ) : IGPGraphics;
+begin
+  Result := DrawEllipseF( APen, ARect.Left, ARect.Top, ARect.Width, ARect.Height );
 end;
 
 function TIGPGraphics.DrawEllipseF( const APen : IGPPen; x, y, AWidth, AHeight : Single ) : IGPGraphics;
@@ -11475,9 +12207,22 @@ begin
 
 end;
 
+function TIGPGraphics.DrawEllipsesF( const APen : IGPPen; const ARects : array of TRectF ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  for var ARect in ARects do
+    DrawEllipseF( APen, ARect );
+
+end;
+
 function TIGPGraphics.DrawEllipse( const APen : IGPPen; const ARect : TIGPRect ) : IGPGraphics;
 begin
   Result := DrawEllipse( APen, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+end;
+
+function TIGPGraphics.DrawEllipse( const APen : IGPPen; const ARect : TRect ) : IGPGraphics;
+begin
+  Result := DrawEllipse( APen, ARect.Left, ARect.Top, ARect.Width, ARect.Height );
 end;
 
 function TIGPGraphics.DrawEllipse( const APen : IGPPen; x, y, AWidth, AHeight : Integer ) : IGPGraphics;
@@ -11497,7 +12242,22 @@ begin
 
 end;
 
+function TIGPGraphics.DrawEllipses( const APen : IGPPen; const ARects : array of TRect ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  for var ARect in ARects do
+    DrawEllipse( APen, ARect );
+
+end;
+
 function TIGPGraphics.DrawEllipseF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRectF ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  FillEllipseF( ABrush, ARect );
+  DrawEllipseF( APen, ARect );
+end;
+
+function TIGPGraphics.DrawEllipseF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRectF ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
   FillEllipseF( ABrush, ARect );
@@ -11521,14 +12281,32 @@ begin
     end;
 
 end;
-  
+
+function TIGPGraphics.DrawEllipsesF( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TRectF ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  for var ARect in ARects do
+    begin
+    FillEllipseF( ABrush, ARect );
+    DrawEllipseF( APen, ARect );
+    end;
+
+end;
+
 function TIGPGraphics.DrawEllipse( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRect ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
   FillEllipse( ABrush, ARect );
   DrawEllipse( APen, ARect );
 end;
-  
+
+function TIGPGraphics.DrawEllipse( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRect ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  FillEllipse( ABrush, ARect );
+  DrawEllipse( APen, ARect );
+end;
+
 function TIGPGraphics.DrawEllipse( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
@@ -11547,9 +12325,25 @@ begin
 
 end;
 
+function TIGPGraphics.DrawEllipses( const APen : IGPPen; const ABrush : IGPBrush; const ARects : array of TRect ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  for var ARect in ARects do
+    begin
+    FillEllipse( ABrush, ARect );
+    DrawEllipse( APen, ARect );
+    end;
+
+end;
+
 function TIGPGraphics.DrawPieF( const APen : IGPPen; const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
 begin
   Result := DrawPieF( APen, ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+end;
+
+function TIGPGraphics.DrawPieF( const APen : IGPPen; const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
+begin
+  Result := DrawPieF( APen, ARect.Left, ARect.Top, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
 end;
 
 function TIGPGraphics.DrawPieF( const APen : IGPPen; x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphics;
@@ -11564,6 +12358,11 @@ end;
 function TIGPGraphics.DrawPie( const APen : IGPPen; const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
 begin
   Result := DrawPie( APen, ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+end;
+
+function TIGPGraphics.DrawPie( const APen : IGPPen; const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
+begin
+  Result := DrawPie( APen, ARect.Left, ARect.Top, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
 end;
 
 function TIGPGraphics.DrawPie( const APen : IGPPen; x, y, AWidth, AHeight : Integer;
@@ -11583,6 +12382,13 @@ begin
   DrawPieF( APen, ARect, AStartAngle, ASweepAngle );
 end;
 
+function TIGPGraphics.DrawPieF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  FillPieF( ABrush, ARect, AStartAngle, ASweepAngle );
+  DrawPieF( APen, ARect, AStartAngle, ASweepAngle );
+end;
+
 function TIGPGraphics.DrawPieF( const APen : IGPPen; const ABrush : IGPBrush; x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
@@ -11591,6 +12397,13 @@ begin
 end;
 
 function TIGPGraphics.DrawPie( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  FillPie( ABrush, ARect, AStartAngle, ASweepAngle );
+  DrawPie( APen, ARect, AStartAngle, ASweepAngle );
+end;
+
+function TIGPGraphics.DrawPie( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
   FillPie( ABrush, ARect, AStartAngle, ASweepAngle );
@@ -11807,7 +12620,14 @@ end;
 
 function TIGPGraphics.FillRectangleF( const ABrush : IGPBrush; const ARect : TIGPRectF ) : IGPGraphics;
 begin
-  Result := FillRectangleF( ABrush, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+  Result := Self; // Keep alive!
+  FillRectangleF( ABrush, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+end;
+
+function TIGPGraphics.FillRectangleF( const ABrush : IGPBrush; const ARect : TRectF ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  FillRectangleF( ABrush, ARect.Left, ARect.Top, ARect.Width, ARect.Height );
 end;
 
 function TIGPGraphics.FillRectangleF( const ABrush : IGPBrush; x, y, AWidth, AHeight : Single ) : IGPGraphics;
@@ -11828,9 +12648,30 @@ begin
   ErrorCheck( GdipFillRectangles( FNativeGraphics, ABrush.GetNativeBrush(), @ARects[ 0 ], Length( ARects )));
 end;
 
+function TIGPGraphics.FillRectanglesF( const ABrush : IGPBrush; const ARects : array of TRectF ) : IGPGraphics;
+var
+  ALocalRects : array of TIGPRectF;
+
+begin
+  Result := Self; // Keep alive!
+
+  SetLength( ALocalRects, Length( ARects ));
+  for var I := 0 to Length( ARects ) - 1 do
+    ALocalRects[ I ] := TIGPRectF.Create( ARects[ I ] );
+
+  FillRectanglesF( ABrush, ALocalRects );
+end;
+
 function TIGPGraphics.FillRectangle( const ABrush : IGPBrush; const ARect : TIGPRect ) : IGPGraphics;
 begin
-  Result := FillRectangle( ABrush, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+  Result := Self; // Keep alive!
+  FillRectangle( ABrush, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+end;
+
+function TIGPGraphics.FillRectangle( const ABrush : IGPBrush; const ARect : TRect ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  FillRectangle( ABrush, ARect.Left, ARect.Top, ARect.Width, ARect.Height );
 end;
 
 function TIGPGraphics.FillRectangle( const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer ) : IGPGraphics;
@@ -11851,19 +12692,48 @@ begin
   ErrorCheck( GdipFillRectanglesI( FNativeGraphics, ABrush.GetNativeBrush(), @ARects[ 0 ], Length( ARects )));
 end;
 
+function TIGPGraphics.FillRectangles( const ABrush : IGPBrush; const ARects : array of TRect ) : IGPGraphics;
+var
+  ALocalRects : array of TIGPRect;
+
+begin
+  Result := Self; // Keep alive!
+
+  SetLength( ALocalRects, Length( ARects ));
+  for var I := 0 to Length( ARects ) - 1 do
+    ALocalRects[ I ] := TIGPRect.Create( ARects[ I ] );
+
+  FillRectangles( ABrush, ALocalRects );
+end;
+
 function TIGPGraphics.FillRoundRectangleF( const ABrush : IGPBrush; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
 begin
-  Result := FillPath( ABrush, TIGPGraphicsPath.Create().AddRoundRectangleF( ARect, ACornerSize ));
+  Result := Self; // Keep alive!
+  FillPath( ABrush, TIGPGraphicsPath.Create().AddRoundRectangleF( ARect, ACornerSize ));
+end;
+
+function TIGPGraphics.FillRoundRectangleF( const ABrush : IGPBrush; const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  FillPath( ABrush, TIGPGraphicsPath.Create().AddRoundRectangleF( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.FillRoundRectangle( const ABrush : IGPBrush; const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphics;
 begin
-  Result := FillPath( ABrush, TIGPGraphicsPath.Create().AddRoundRectangle( ARect, ACornerSize ));
+  Result := Self; // Keep alive!
+  FillPath( ABrush, TIGPGraphicsPath.Create().AddRoundRectangle( ARect, ACornerSize ));
+end;
+
+function TIGPGraphics.FillRoundRectangle( const ABrush : IGPBrush; const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  FillPath( ABrush, TIGPGraphicsPath.Create().AddRoundRectangle( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.FillPolygonF( const ABrush : IGPBrush; const APoints : array of TPointF ) : IGPGraphics;
 begin
-  Result := FillPolygonF( ABrush, APoints, TIGPFillMode.Alternate );
+  Result := Self; // Keep alive!
+  FillPolygonF( ABrush, APoints, TIGPFillMode.Alternate );
 end;
 
 function TIGPGraphics.FillPolygonF( const ABrush : IGPBrush; const APoints : array of TPointF; AFillMode : TIGPFillMode ) : IGPGraphics;
@@ -11891,7 +12761,14 @@ end;
 
 function TIGPGraphics.FillEllipseF( const ABrush : IGPBrush; const ARect : TIGPRectF ) : IGPGraphics;
 begin
-  Result := FillEllipseF( ABrush, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+  Result := Self; // Keep alive!
+  FillEllipseF( ABrush, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+end;
+
+function TIGPGraphics.FillEllipseF( const ABrush : IGPBrush; const ARect : TRectF ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  FillEllipseF( ABrush, ARect.Left, ARect.Top, ARect.Width, ARect.Height );
 end;
 
 function TIGPGraphics.FillEllipseF( const ABrush : IGPBrush; x, y, AWidth, AHeight : Single ) : IGPGraphics;
@@ -11911,9 +12788,24 @@ begin
 
 end;
 
+function TIGPGraphics.FillEllipsesF( const ABrush : IGPBrush; const ARects : array of TRectF ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  for var ARect in ARects do
+    FillEllipseF( ABrush, ARect );
+
+end;
+
 function TIGPGraphics.FillEllipse( const ABrush : IGPBrush; const ARect : TIGPRect ) : IGPGraphics;
 begin
-  Result := FillEllipse( ABrush, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+  Result := Self; // Keep alive!
+  FillEllipse( ABrush, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+end;
+
+function TIGPGraphics.FillEllipse( const ABrush : IGPBrush; const ARect : TRect ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  FillEllipse( ABrush, ARect.Left, ARect.Top, ARect.Width, ARect.Height );
 end;
 
 function TIGPGraphics.FillEllipse( const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer ) : IGPGraphics;
@@ -11933,9 +12825,24 @@ begin
 
 end;
 
+function TIGPGraphics.FillEllipses( const ABrush : IGPBrush; const ARects : array of TRect ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  for var ARect in ARects do
+    FillEllipse( ABrush, ARect );
+
+end;
+
 function TIGPGraphics.FillPieF( const ABrush : IGPBrush; const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
 begin
-  Result := FillPieF( ABrush, ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+  Result := Self; // Keep alive!
+  FillPieF( ABrush, ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+end;
+
+function TIGPGraphics.FillPieF( const ABrush : IGPBrush; const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  FillPieF( ABrush, ARect.Left, ARect.Top, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
 end;
 
 function TIGPGraphics.FillPieF( const ABrush : IGPBrush; x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphics;
@@ -11953,7 +12860,14 @@ end;
 
 function TIGPGraphics.FillPie( const ABrush : IGPBrush; const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
 begin
-  Result := FillPie( ABrush, ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+  Result := Self; // Keep alive!
+  FillPie( ABrush, ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+end;
+
+function TIGPGraphics.FillPie( const ABrush : IGPBrush; const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  FillPie( ABrush, ARect.Left, ARect.Top, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
 end;
 
 function TIGPGraphics.FillPie( const ABrush : IGPBrush; x, y, AWidth, AHeight : Integer; AStartAngle,
@@ -12051,6 +12965,12 @@ begin
   ErrorCheck( GdipDrawString( FNativeGraphics, PWideChar( AString), Length( AString ), nfont, @ALayoutRect, nstringFormat, nbrush ));
 end;
 
+function TIGPGraphics.DrawStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  DrawStringF( AString, AFont, TIGPRectF.Create( ALayoutRect ), AStringFormat, ABrush );
+end;
+
 function TIGPGraphics.DrawStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const ABrush : IGPBrush ) : IGPGraphics;
 var
   nFont   : GpFont;
@@ -12079,6 +12999,12 @@ begin
       NIL,
       nbrush ));
 
+end;
+
+function TIGPGraphics.DrawStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const ABrush : IGPBrush ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  DrawStringF( AString, AFont, TIGPRectF.Create( ALayoutRect ), ABrush );
 end;
 
 function TIGPGraphics.DrawStringF( const AString : WideString; const AFont : IGPFont;
@@ -12199,45 +13125,68 @@ begin
 
   else
     nfont := NIL;
-      
+
   if( AStringFormat <> NIL ) then
     nstringFormat := AStringFormat.GetNativeFormat()
 
   else
     nstringFormat := NIL;
-      
+
   ErrorCheck( GdipMeasureString( FNativeGraphics, PWideChar( AString), Length( AString ), nfont, @ALayoutRect, nstringFormat, @Result, ACodepointsFitted, linesFilled ));
+end;
+
+function TIGPGraphics.GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AStringFormat : IGPStringFormat; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPRectF;
+begin
+  Result := GetStringBoundingBoxF( AString, AFont, TIGPRectF.Create( ALayoutRect ), AStringFormat, ACodepointsFitted, linesFilled );
 end;
 
 
 function TIGPGraphics.DrawString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRect; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics;
 begin
-  Result := DrawStringF( AString, AFont, TIGPRectF.Create( ALayoutRect ), AStringFormat, ABrush );
+  Result := Self; // Keep alive!
+  DrawStringF( AString, AFont, TIGPRectF.Create( ALayoutRect ), AStringFormat, ABrush );
+end;
+
+function TIGPGraphics.DrawString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRect; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  DrawStringF( AString, AFont, TIGPRectF.Create( ALayoutRect ), AStringFormat, ABrush );
 end;
 
 function TIGPGraphics.DrawString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRect; const ABrush : IGPBrush ) : IGPGraphics;
 begin
-  Result := DrawStringF( AString, AFont, TIGPRectF.Create( ALayoutRect ), ABrush );
+  Result := Self; // Keep alive!
+  DrawStringF( AString, AFont, TIGPRectF.Create( ALayoutRect ), ABrush );
+end;
+
+function TIGPGraphics.DrawString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRect; const ABrush : IGPBrush ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  DrawStringF( AString, AFont, TIGPRectF.Create( ALayoutRect ), ABrush );
 end;
 
 function TIGPGraphics.DrawString( const AString : WideString; const AFont : IGPFont; const AOrigin : TPoint; const ABrush : IGPBrush ) : IGPGraphics;
 begin
-  Result := DrawStringF( AString, AFont, TPointF.Create( AOrigin ), ABrush );
+  Result := Self; // Keep alive!
+  DrawStringF( AString, AFont, TPointF.Create( AOrigin ), ABrush );
 end;
 
 function TIGPGraphics.DrawString( const AString : WideString; const AFont : IGPFont; const AOrigin : TPoint; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics;
 begin
-  Result := DrawStringF( AString, AFont, TPointF.Create( AOrigin ), AStringFormat, ABrush );
+  Result := Self; // Keep alive!
+  DrawStringF( AString, AFont, TPointF.Create( AOrigin ), AStringFormat, ABrush );
 end;
 
 function TIGPGraphics.DrawString( const AString : WideString; const AFont : IGPFont; x, y : Integer; const ABrush : IGPBrush ) : IGPGraphics;
 begin
-  Result := DrawStringF( AString, AFont, TPointF.Create( x, y ), ABrush );
+  Result := Self; // Keep alive!
+  DrawStringF( AString, AFont, TPointF.Create( x, y ), ABrush );
 end;
 
 function TIGPGraphics.DrawString( const AString : WideString; const AFont : IGPFont; x, y : Integer; const AStringFormat : IGPStringFormat; const ABrush : IGPBrush ) : IGPGraphics;
 begin
-  Result := DrawStringF( AString, AFont, TPointF.Create( x, y ), AStringFormat, ABrush );
+  Result := Self; // Keep alive!
+  DrawStringF( AString, AFont, TPointF.Create( x, y ), AStringFormat, ABrush );
 end;
 
 function TIGPGraphics.GetStringSizeF( const AString : WideString; const AFont : IGPFont; const AStringFormat : IGPStringFormat = NIL ) : TIGPSizeF;
@@ -12323,25 +13272,25 @@ begin
   ErrorCheck( GdipMeasureString( FNativeGraphics, PWideChar( AString), Length( AString ), nfont, @ARect, nstringFormat, @Result, NIL, NIL ));
 end;
 
-//  procedure TIGPGraphics.MeasureString( const AString : WideString; ALength : Integer; const AFont : IGPFont;
-//       const ALayoutRect : TIGPRectF; out ABoundingBox : TIGPRectF );
 function TIGPGraphics.GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF ) : TIGPRectF;
 var
   nFont : GpFont;
-    
+
 begin
   if( AFont <> NIL ) then
     nfont := AFont.GetNativeFont()
 
   else
     nfont := NIL;
-      
+
   ErrorCheck( GdipMeasureString( FNativeGraphics, PWideChar( AString), Length( AString ), nfont, @ALayoutRect, NIL, @Result, NIL, NIL ));
 end;
 
-    
-//  procedure TIGPGraphics.MeasureString( const AString : WideString; ALength : Integer; const AFont : IGPFont;
-//       const AOrigin : TPointF; out ABoundingBox : TIGPRectF );
+function TIGPGraphics.GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF ) : TIGPRectF;
+begin
+  Result := GetStringBoundingBoxF( AString, AFont, TIGPRectF.Create( ALayoutRect ));
+end;
+
 function TIGPGraphics.GetStringBoundingBoxF( const AString : WideString; const AFont : IGPFont;
     const AOrigin : TPointF ) : TIGPRectF;
 var
@@ -12388,6 +13337,11 @@ begin
   Result := GetStringBoundingBoxF( AString, AFont, ALayoutRect, AStringFormat, ACodepointsFitted, linesFilled );
 end;
 
+function TIGPGraphics.MeasureStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AStringFormat : IGPStringFormat; ACodepointsFitted : PInteger = NIL; linesFilled: PInteger = NIL ) : TIGPRectF;
+begin
+  Result := MeasureStringF( AString, AFont, TIGPRectF.Create( ALayoutRect ), AStringFormat, ACodepointsFitted, linesFilled );
+end;
+
 function TIGPGraphics.MeasureStringF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const AStringFormat : IGPStringFormat ) : TIGPRectF;
 begin
   Result := GetStringBoundingBoxF( AString, AFont, AOrigin, AStringFormat );
@@ -12401,6 +13355,11 @@ end;
 function TIGPGraphics.MeasureStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF ) : TIGPRectF;
 begin
   Result := GetStringBoundingBoxF( AString, AFont, ALayoutRect );
+end;
+
+function TIGPGraphics.MeasureStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF ) : TIGPRectF;
+begin
+  Result := GetStringBoundingBoxF( AString, AFont, TIGPRectF( ALayoutRect ));
 end;
 
 function TIGPGraphics.MeasureStringF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF ) : TIGPRectF;
@@ -12478,6 +13437,11 @@ begin
   FreeMem( nativeRegions, SizeOf( GpRegion ) * regionCount );
 end;
 
+function TIGPGraphics.MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AStringFormat : IGPStringFormat ) : TArray<IGPRegion>;
+begin
+  Result := MeasureCharacterRangesF( AString, AFont, TIGPRectF.Create( ALayoutRect ), AStringFormat );
+end;
+
 function TIGPGraphics.MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>;
 begin
   Result := MeasureCharacterRangesF( AString, AFont, GetStringBoundingBoxF( AString, AFont, AOrigin, AStringFormat ), AStringFormat );
@@ -12546,6 +13510,11 @@ begin
 
   ErrorCheck( GdipMeasureCharacterRanges( FNativeGraphics, PWideChar( AString), Length( AString ), nFont, @ALayoutRect, nstringFormat, regionCount, nativeRegions ));
   FreeMem( nativeRegions, SizeOf(GpRegion )* regionCount );
+end;
+
+function TIGPGraphics.MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const ARanges : array of TIGPCharacterRange; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>;
+begin
+  Result := MeasureCharacterRangesF( AString, AFont, TIGPRectF.Create( ALayoutRect ), ARanges, AStringFormat )
 end;
 
 function TIGPGraphics.MeasureCharacterRangesF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const ARanges : array of TIGPCharacterRange; const AStringFormat : IGPStringFormat = NIL ) : TArray<IGPRegion>;
@@ -12628,12 +13597,14 @@ end;
 
 function TIGPGraphics.DrawImageF( const AImage : IGPImage; const APoint : TPointF ) : IGPGraphics;
 begin
-  Result := DrawImageF( AImage, APoint.X, APoint.Y );
+  Result := Self; // Keep alive!
+  DrawImageF( AImage, APoint.X, APoint.Y );
 end;
 
 function TIGPGraphics.DrawImageF( const AImage : IGPImage; const APoint : TPointF; const ASize : TIGPSizeF ) : IGPGraphics;
 begin
-  Result := DrawImageF( AImage, APoint.X, APoint.Y, ASize.Width, ASize.Height );
+  Result := Self; // Keep alive!
+  DrawImageF( AImage, APoint.X, APoint.Y, ASize.Width, ASize.Height );
 end;
 
 function TIGPGraphics.DrawImageF( const AImage : IGPImage; x, y : Single ) : IGPGraphics;
@@ -12653,7 +13624,14 @@ end;
 
 function TIGPGraphics.DrawImageF( const AImage : IGPImage; const ARect : TIGPRectF ) : IGPGraphics;
 begin
-  Result := DrawImageF( AImage, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+  Result := Self; // Keep alive!
+  DrawImageF( AImage, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+end;
+
+function TIGPGraphics.DrawImageF( const AImage : IGPImage; const ARect : TRectF ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  DrawImageF( AImage, ARect.Left, ARect.Top, ARect.Width, ARect.Height );
 end;
 
 function TIGPGraphics.DrawImageF( const AImage : IGPImage; x, y, AWidth, AHeight : Single ) : IGPGraphics;
@@ -12673,12 +13651,14 @@ end;
 
 function TIGPGraphics.DrawImage( const AImage : IGPImage; const APoint : TPoint ) : IGPGraphics;
 begin
-  Result := DrawImage( AImage, APoint.X, APoint.Y);
+  Result := Self; // Keep alive!
+  DrawImage( AImage, APoint.X, APoint.Y);
 end;
 
 function TIGPGraphics.DrawImage( const AImage : IGPImage; const APoint : TPoint; const ASize : TIGPSize ) : IGPGraphics;
 begin
-  Result := DrawImage( AImage, APoint.X, APoint.Y, ASize.Width, ASize.Height );
+  Result := Self; // Keep alive!
+  DrawImage( AImage, APoint.X, APoint.Y, ASize.Width, ASize.Height );
 end;
 
 function TIGPGraphics.DrawImage( const AImage : IGPImage; x, y : Integer ) : IGPGraphics;
@@ -12698,7 +13678,14 @@ end;
 
 function TIGPGraphics.DrawImage( const AImage : IGPImage; const ARect : TIGPRect ) : IGPGraphics;
 begin
-  Result := DrawImage( AImage, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+  Result := Self; // Keep alive!
+  DrawImage( AImage, ARect.X, ARect.Y, ARect.Width, ARect.Height );
+end;
+
+function TIGPGraphics.DrawImage( const AImage : IGPImage; const ARect : TRect ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  DrawImage( AImage, ARect.Left, ARect.Top, ARect.Width, ARect.Height );
 end;
 
 function TIGPGraphics.DrawImage( const AImage : IGPImage; x, y, AWidth, AHeight : Integer ) : IGPGraphics;
@@ -12760,6 +13747,17 @@ begin
   DrawImageF( AImage, TIGPRectF.Create( ARect.X, ARect.Y, ARect.Width, ARect.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
 end;
 
+function TIGPGraphics.DrawImageF( const AImage : IGPImage; const ARect : TRectF; AOpacity : Single ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  if( AOpacity = 1.0 ) then
+    Exit( DrawImageF( AImage, ARect ));
+
+  var AAlphaMatrix := StandardAlphaMatrix;
+  AAlphaMatrix[ 3, 3 ] := AOpacity;
+  DrawImageF( AImage, TIGPRectF.Create( ARect.Left, ARect.Top, ARect.Width, ARect.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+end;
+
 function TIGPGraphics.DrawImageF( const AImage : IGPImage; x, y, AWidth, AHeight : Single; AOpacity : Single ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
@@ -12818,6 +13816,20 @@ begin
   DrawImage( AImage, TIGPRect.Create( ARect.X, ARect.Y, ARect.Width, ARect.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
 end;
 
+function TIGPGraphics.DrawImage( const AImage : IGPImage; const ARect : TRect; AOpacity : Single ) : IGPGraphics;
+var
+  AAlphaMatrix : TIGPColorMatrix;
+
+begin
+  Result := Self; // Keep alive!
+  if( AOpacity = 1.0 ) then
+    Exit( DrawImage( AImage, ARect ));
+
+  AAlphaMatrix := StandardAlphaMatrix;
+  AAlphaMatrix[ 3, 3 ] := AOpacity;
+  DrawImage( AImage, TIGPRect.Create( ARect.Left, ARect.Top, ARect.Width, ARect.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+end;
+
 function TIGPGraphics.DrawImage( const AImage : IGPImage; x, y, AWidth, AHeight : Integer; AOpacity : Single ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
@@ -12844,7 +13856,7 @@ var
 begin
   Result := Self; // Keep alive!
   var ACount := Length( ADestPoints );
-  if (( ACount <> 3) and ( ACount <> 4)) then
+  if(( ACount <> 3) and ( ACount <> 4)) then
     ErrorCheck( TIGPStatus.InvalidParameter );
 
   if( AImage <> NIL ) then
@@ -12863,7 +13875,7 @@ var
 begin
   Result := Self; // Keep alive!
   var ACount := Length( ADestPoints );
-  if (( ACount <> 3) and ( ACount <> 4)) then
+  if(( ACount <> 3) and ( ACount <> 4)) then
     ErrorCheck( TIGPStatus.InvalidParameter );
 
   if( AImage <> NIL ) then
@@ -12890,7 +13902,7 @@ begin
   ErrorCheck( GdipDrawImagePointRect( FNativeGraphics, nimage, x, y, ASrcx, ASrcy, ASrcwidth, ASrcheight, ASrcUnit ));
 end;
 
-function TIGPGraphics.DrawImageF( const AImage : IGPImage; const ADestRect : TIGPRectF; ASrcx, ASrcy, ASrcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics;
+function TIGPGraphics.DrawImageF( const AImage : IGPImage; const ADestRect : TIGPRectF; ASrcx, ASrcy, ASrcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics;
 var
   nImage            : GpImage;
   nimageAttributes  : GpimageAttributes;
@@ -12914,7 +13926,31 @@ begin
   ErrorCheck( GdipDrawImageRectRect( FNativeGraphics, nimage, ADestRect.X, ADestRect.Y, ADestRect.Width, ADestRect.Height, ASrcx, ASrcy, ASrcwidth, ASrcheight, ASrcUnit, nimageAttributes, GLGPAbortCallback, ADispatcher ));
 end;
 
-function TIGPGraphics.DrawImageF( const AImage : IGPImage; const ADestPoints : array of TPointF; ASrcx, ASrcy, ASrcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics;
+function TIGPGraphics.DrawImageF( const AImage : IGPImage; const ADestRect : TRectF; ASrcx, ASrcy, ASrcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics;
+var
+  nImage            : GpImage;
+  nimageAttributes  : GpimageAttributes;
+
+begin
+  Result := Self; // Keep alive!
+  if( AImage <> NIL ) then
+    nImage := AImage.GetNativeImage()
+
+  else
+    nImage := NIL;
+
+  if( AImageAttributes <> NIL ) then
+    nimageAttributes := AImageAttributes.GetNativeImageAttr()
+
+  else
+    nimageAttributes := NIL;
+
+  var ADispatcher := TIGPIntAbortDispatcher.Create();
+  var ADispatcherIntf : IGPIntAbortDispatcher := ADispatcher;
+  ErrorCheck( GdipDrawImageRectRect( FNativeGraphics, nimage, ADestRect.Left, ADestRect.Top, ADestRect.Width, ADestRect.Height, ASrcx, ASrcy, ASrcwidth, ASrcheight, ASrcUnit, nimageAttributes, GLGPAbortCallback, ADispatcher ));
+end;
+
+function TIGPGraphics.DrawImageF( const AImage : IGPImage; const ADestPoints : array of TPointF; ASrcx, ASrcy, ASrcwidth, ASrcheight : Single; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics;
 var
   nImage            : GpImage;
   nimageAttributes  : GpimageAttributes;
@@ -12953,7 +13989,7 @@ begin
   ErrorCheck( GdipDrawImagePointRectI( FNativeGraphics, nimage, x, y, ASrcx, ASrcy, ASrcwidth, ASrcheight, ASrcUnit ));
 end;
 
-function TIGPGraphics.DrawImage( const AImage : IGPImage; const ADestRect : TIGPRect; ASrcx, ASrcy, ASrcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics;
+function TIGPGraphics.DrawImage( const AImage : IGPImage; const ADestRect : TIGPRect; ASrcx, ASrcy, ASrcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics;
 var
   nImage            : GpImage;
   nimageAttributes  : GpimageAttributes;
@@ -12977,7 +14013,31 @@ begin
   ErrorCheck( GdipDrawImageRectRectI( FNativeGraphics, nimage, ADestRect.X, ADestRect.Y, ADestRect.Width, ADestRect.Height, ASrcx, ASrcy, ASrcwidth, ASrcheight, ASrcUnit, nimageAttributes, GLGPAbortCallback, ADispatcher ));
 end;
 
-function TIGPGraphics.DrawImage( const AImage : IGPImage; const ADestPoints : array of TPoint; ASrcx, ASrcy, ASrcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics;
+function TIGPGraphics.DrawImage( const AImage : IGPImage; const ADestRect : TRect; ASrcx, ASrcy, ASrcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics;
+var
+  nImage            : GpImage;
+  nimageAttributes  : GpimageAttributes;
+
+begin
+  Result := Self; // Keep alive!
+  if( AImage <> NIL ) then
+    nImage := AImage.GetNativeImage()
+
+  else
+    nImage := NIL;
+
+  if( AImageAttributes <> NIL ) then
+    nimageAttributes := AImageAttributes.GetNativeImageAttr()
+
+  else
+    nimageAttributes := NIL;
+
+  var ADispatcher := TIGPIntAbortDispatcher.Create();
+  var ADispatcherIntf : IGPIntAbortDispatcher := ADispatcher;
+  ErrorCheck( GdipDrawImageRectRectI( FNativeGraphics, nimage, ADestRect.Left, ADestRect.Top, ADestRect.Width, ADestRect.Height, ASrcx, ASrcy, ASrcwidth, ASrcheight, ASrcUnit, nimageAttributes, GLGPAbortCallback, ADispatcher ));
+end;
+
+function TIGPGraphics.DrawImage( const AImage : IGPImage; const ADestPoints : array of TPoint; ASrcx, ASrcy, ASrcwidth, ASrcheight : Integer; ASrcUnit : TIGPUnit; const AImageAttributes : IGPImageAttributes = NIL; const ACallback : TIGPDrawImageAbortProc = NIL ) : IGPGraphics;
 var
   nImage            : GpImage;
   nimageAttributes  : GpimageAttributes;
@@ -13013,7 +14073,15 @@ type
   public
     function GPCallback( ARecordType : TIGPEmfPlusRecordType; AFlags : UINT; ADataSize : UINT; AData: PBYTE ) : BOOL;
 
+  public
+    constructor Create( const AOnCallback : TIGPEnumerateMetafileProc );
+
   end;
+
+constructor TIGPIntDispatcher.Create( const AOnCallback : TIGPEnumerateMetafileProc );
+begin
+  OnCallback := AOnCallback;
+end;
 
 function TIGPIntDispatcher.GPCallback( ARecordType : TIGPEmfPlusRecordType; AFlags : UINT; ADataSize : UINT; AData: PBYTE ) : BOOL;
 begin
@@ -13025,7 +14093,7 @@ end;
   
 function GLGPCallback( ARecordType : TIGPEmfPlusRecordType; AFlags : UINT; ADataSize : UINT; AData: PBYTE; ACallbackData: Pointer ) : BOOL; stdcall;
 begin
-  if( ACallbackData <> NIL ) then 
+  if( ACallbackData <> NIL ) then
     Exit( TIGPIntDispatcher( ACallbackData ).GPCallback( ARecordType, AFlags, ADataSize, AData ));
 
   Result := False;
@@ -13038,7 +14106,7 @@ end;
   // to play the particular record.
 
     
-function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
 var
   nMetafile         : GpMetafile;
   nimageAttributes  : GpimageAttributes;
@@ -13057,14 +14125,13 @@ begin
   else
     nimageAttributes := NIL;
 
-  var ADispatcher := TIGPIntDispatcher.Create();
+  var ADispatcher := TIGPIntDispatcher.Create( ACallback );
   var ADispatcherIntf : IGPIntDispatcher := ADispatcher;
-  ErrorCheck( GdipEnumerateMetafileDestPoint( FNativeGraphics, nmetafile, @ADestPoint, GLGPCallback, ADispatcher, nimageAttributes));
+  ErrorCheck( GdipEnumerateMetafileDestPoint( FNativeGraphics, nmetafile, @ADestPoint, GLGPCallback, ADispatcher, nimageAttributes ));
 end;
 
 
-function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint;
-     ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
 var
   nMetafile         : GpMetafile;
   nimageAttributes  : GpimageAttributes;
@@ -13083,12 +14150,12 @@ begin
   else
     nimageAttributes := NIL;
 
-  var ADispatcher := TIGPIntDispatcher.Create();
+  var ADispatcher := TIGPIntDispatcher.Create( ACallback );
   var ADispatcherIntf : IGPIntDispatcher := ADispatcher;
   ErrorCheck( GdipEnumerateMetafileDestPointI( FNativeGraphics, nmetafile, @ADestPoint, GLGPCallback, ADispatcher, nimageAttributes ));
 end;
 
-function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TIGPRectF; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TIGPRectF; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
 var
   nMetafile         : GpMetafile;
   nimageAttributes  : GpimageAttributes;
@@ -13107,13 +14174,18 @@ begin
   else
     nimageAttributes := NIL;
 
-  var ADispatcher := TIGPIntDispatcher.Create();
+  var ADispatcher := TIGPIntDispatcher.Create( ACallback );
   var ADispatcherIntf : IGPIntDispatcher := ADispatcher;
   ErrorCheck( GdipEnumerateMetafileDestRect( FNativeGraphics, nmetafile, @ADestRect, GLGPCallback, ADispatcher, nimageAttributes));
 end;
 
+function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TRectF; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  EnumerateMetafileF( AMetafile, TIGPRectF.Create( ADestRect ), ACallback, AImageAttributes );
+end;
 
-function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect : TIGPRect; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect : TIGPRect; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
 var
   nMetafile         : GpMetafile;
   nimageAttributes  : GpimageAttributes;
@@ -13132,13 +14204,18 @@ begin
   else
     nimageAttributes := NIL;
 
-  var ADispatcher := TIGPIntDispatcher.Create();
+  var ADispatcher := TIGPIntDispatcher.Create( ACallback );
   var ADispatcherIntf : IGPIntDispatcher := ADispatcher;
   ErrorCheck( GdipEnumerateMetafileDestRectI( FNativeGraphics, nmetafile, @ADestRect, GLGPCallback, ADispatcher, nimageAttributes ));
 end;
 
+function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect : TRect; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  EnumerateMetafile( AMetafile, TIGPRect.Create( ADestRect ), ACallback, AImageAttributes );
+end;
 
-function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
 var
   nMetafile         : GpMetafile;
   nimageAttributes  : GpimageAttributes;
@@ -13157,13 +14234,13 @@ begin
   else
     nimageAttributes := NIL;
 
-  var ADispatcher := TIGPIntDispatcher.Create();
+  var ADispatcher := TIGPIntDispatcher.Create( ACallback );
   var ADispatcherIntf : IGPIntDispatcher := ADispatcher;
   ErrorCheck( GdipEnumerateMetafileDestPoints( FNativeGraphics, nmetafile, @ADestPoints[ 0 ], Length( ADestPoints ), GLGPCallback, ADispatcher, nimageAttributes));
 end;
 
 
-function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
 var
   nMetafile         : GpMetafile;
   nimageAttributes  : GpimageAttributes;
@@ -13182,13 +14259,12 @@ begin
   else
     nimageAttributes := NIL;
 
-  var ADispatcher := TIGPIntDispatcher.Create();
+  var ADispatcher := TIGPIntDispatcher.Create( ACallback );
   var ADispatcherIntf : IGPIntDispatcher := ADispatcher;
   ErrorCheck( GdipEnumerateMetafileDestPointsI( FNativeGraphics, nmetafile, @ADestPoints[ 0 ], Length( ADestPoints ), GLGPCallback, ADispatcher, nimageAttributes));
 end;
 
-
-function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
 var
   nMetafile         : GpMetafile;
   nimageAttributes  : GpimageAttributes;
@@ -13207,13 +14283,18 @@ begin
   else
     nimageAttributes := NIL;
 
-  var ADispatcher := TIGPIntDispatcher.Create();
+  var ADispatcher := TIGPIntDispatcher.Create( ACallback );
   var ADispatcherIntf : IGPIntDispatcher := ADispatcher;
   ErrorCheck( GdipEnumerateMetafileSrcRectDestPoint( FNativeGraphics, nmetafile, @ADestPoint, @ASrcRect, ASrcUnit, GLGPCallback, ADispatcher, nimageAttributes));
 end;
 
+function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoint : TPointF; const ASrcRect : TRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  EnumerateMetafileF( AMetafile, ADestPoint, TIGPRectF.Create( ASrcRect ), ASrcUnit, ACallback, AImageAttributes );
+end;
 
-function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; const ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; const ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
 var
   nMetafile         : GpMetafile;
   nimageAttributes  : GpimageAttributes;
@@ -13232,13 +14313,18 @@ begin
   else
     nimageAttributes := NIL;
 
-  var ADispatcher := TIGPIntDispatcher.Create();
+  var ADispatcher := TIGPIntDispatcher.Create( ACallback );
   var ADispatcherIntf : IGPIntDispatcher := ADispatcher;
   ErrorCheck( GdipEnumerateMetafileSrcRectDestPointI( FNativeGraphics, nmetafile, @ADestPoint, @ASrcRect, ASrcUnit, GLGPCallback, ADispatcher, nimageAttributes));
 end;
 
+function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoint : TPoint; const ASrcRect : TRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  EnumerateMetafile( AMetafile, ADestPoint, TIGPRect.Create( ASrcRect ), ASrcUnit, ACallback, AImageAttributes );
+end;
 
-function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TIGPRectF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TIGPRectF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
 var
   nMetafile         : GpMetafile;
   nimageAttributes  : GpimageAttributes;
@@ -13257,13 +14343,18 @@ begin
   else
     nimageAttributes := NIL;
 
-  var ADispatcher := TIGPIntDispatcher.Create();
+  var ADispatcher := TIGPIntDispatcher.Create( ACallback );
   var ADispatcherIntf : IGPIntDispatcher := ADispatcher;
   ErrorCheck( GdipEnumerateMetafileSrcRectDestRect( FNativeGraphics, nmetafile, @ADestRect, @ASrcRect, ASrcUnit, GLGPCallback, ADispatcher, nimageAttributes));
 end;
 
+function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestRect : TRectF; const ASrcRect : TRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  EnumerateMetafileF( AMetafile, TIGPRectF.Create( ADestRect ), TIGPRectF.Create( ASrcRect ), ASrcUnit, ACallback, AImageAttributes );
+end;
 
-function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect, ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect, ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
 var
   nMetafile         : GpMetafile;
   nimageAttributes  : GpimageAttributes;
@@ -13282,13 +14373,18 @@ begin
   else
     nimageAttributes := NIL;
 
-  var ADispatcher := TIGPIntDispatcher.Create();
+  var ADispatcher := TIGPIntDispatcher.Create( ACallback );
   var ADispatcherIntf : IGPIntDispatcher := ADispatcher;
   ErrorCheck( GdipEnumerateMetafileSrcRectDestRectI( FNativeGraphics, nmetafile, @ADestRect, @ASrcRect, ASrcUnit, GLGPCallback, ADispatcher, nimageAttributes));
 end;
 
-    
-function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestRect, ASrcRect : TRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  EnumerateMetafile( AMetafile, TIGPRect.Create( ADestRect ), TIGPRect.Create( ASrcRect ), ASrcUnit, ACallback, AImageAttributes );
+end;
+
+function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; const ASrcRect : TIGPRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
 var
   nMetafile         : GpMetafile;
   nimageAttributes  : GpimageAttributes;
@@ -13307,17 +14403,22 @@ begin
   else
     nimageAttributes := NIL;
 
-  var ADispatcher := TIGPIntDispatcher.Create();
+  var ADispatcher := TIGPIntDispatcher.Create( ACallback );
   var ADispatcherIntf : IGPIntDispatcher := ADispatcher;
   ErrorCheck( GdipEnumerateMetafileSrcRectDestPoints( FNativeGraphics, nmetafile, @ADestPoints[ 0 ], Length( ADestPoints ), @ASrcRect, ASrcUnit, GLGPCallback, ADispatcher, nimageAttributes));
 end;
 
+function TIGPGraphics.EnumerateMetafileF( const AMetafile : IGPMetafile; const ADestPoints : array of TPointF; const ASrcRect : TRectF; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  EnumerateMetafileF( AMetafile, ADestPoints, TIGPRectF.Create( ASrcRect ), ASrcUnit, ACallback, AImageAttributes );
+end;
 
-function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; const ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; const ASrcRect : TIGPRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
 var
   nMetafile         : GpMetafile;
   nimageAttributes  : GpimageAttributes;
-    
+
 begin
   Result := Self; // Keep alive!
   if( AMetafile <> NIL ) then
@@ -13332,11 +14433,17 @@ begin
   else
     nimageAttributes := NIL;
 
-  var ADispatcher := TIGPIntDispatcher.Create();
+  var ADispatcher := TIGPIntDispatcher.Create( ACallback );
   var ADispatcherIntf : IGPIntDispatcher := ADispatcher;
   ErrorCheck( GdipEnumerateMetafileSrcRectDestPointsI( FNativeGraphics, nmetafile, @ADestPoints[ 0 ], Length( ADestPoints ), @ASrcRect, ASrcUnit, GLGPCallback, ADispatcher, nimageAttributes));
 end;
-    
+
+function TIGPGraphics.EnumerateMetafile( const AMetafile : IGPMetafile; const ADestPoints : array of TPoint; const ASrcRect : TRect; ASrcUnit : TIGPUnit; const ACallback : TIGPEnumerateMetafileProc; const AImageAttributes : IGPImageAttributes = NIL ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  EnumerateMetafile( AMetafile, ADestPoints, TIGPRect.Create( ASrcRect ), ASrcUnit, ACallback, AImageAttributes );
+end;
+
 function TIGPGraphics.SetClip( const AGraphics : IGPGraphics; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
@@ -13349,10 +14456,22 @@ begin
   ErrorCheck( GdipSetClipRect( FNativeGraphics, ARect.X, ARect.Y, ARect.Width, ARect.Height, ACombineMode ));
 end;
 
+function TIGPGraphics.SetClipF( const ARect : TRectF; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipSetClipRect( FNativeGraphics, ARect.Left, ARect.Top, ARect.Width, ARect.Height, ACombineMode ));
+end;
+
 function TIGPGraphics.SetClip( const ARect : TIGPRect; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipSetClipRectI( FNativeGraphics, ARect.X, ARect.Y, ARect.Width, ARect.Height, ACombineMode ));
+end;
+
+function TIGPGraphics.SetClip( const ARect : TRect; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipSetClipRect( FNativeGraphics, ARect.Left, ARect.Top, ARect.Width, ARect.Height, ACombineMode ));
 end;
 
 function TIGPGraphics.SetClip( const APath : IGPGraphicsPath; ACombineMode : TIGPCombineMode = TIGPCombineMode.Replace ) : IGPGraphics;
@@ -13388,10 +14507,22 @@ begin
   ErrorCheck( GdipSetClipRect( FNativeGraphics, ARect.X, ARect.Y, ARect.Width, ARect.Height, TIGPCombineMode.Intersect ));
 end;
 
+function TIGPGraphics.IntersectClipF( const ARect : TRectF ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipSetClipRect( FNativeGraphics, ARect.Left, ARect.Top, ARect.Width, ARect.Height, TIGPCombineMode.Intersect ));
+end;
+
 function TIGPGraphics.IntersectClip( const ARect : TIGPRect ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipSetClipRectI( FNativeGraphics, ARect.X, ARect.Y, ARect.Width, ARect.Height, TIGPCombineMode.Intersect ));
+end;
+
+function TIGPGraphics.IntersectClip( const ARect : TRect ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipSetClipRectI( FNativeGraphics, ARect.Left, ARect.Top, ARect.Width, ARect.Height, TIGPCombineMode.Intersect ));
 end;
 
 function TIGPGraphics.IntersectClip( const ARegion : IGPRegion ) : IGPGraphics;
@@ -13406,10 +14537,22 @@ begin
   ErrorCheck( GdipSetClipRect( FNativeGraphics, ARect.X, ARect.Y, ARect.Width, ARect.Height, TIGPCombineMode.Exclude ));
 end;
 
+function TIGPGraphics.ExcludeClipF( const ARect : TRectF ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipSetClipRect( FNativeGraphics, ARect.Left, ARect.Top, ARect.Width, ARect.Height, TIGPCombineMode.Exclude ));
+end;
+
 function TIGPGraphics.ExcludeClip( const ARect : TIGPRect ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipSetClipRectI( FNativeGraphics, ARect.X, ARect.Y, ARect.Width, ARect.Height, TIGPCombineMode.Exclude ));
+end;
+
+function TIGPGraphics.ExcludeClip( const ARect : TRect ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipSetClipRectI( FNativeGraphics, ARect.Left, ARect.Top, ARect.Width, ARect.Height, TIGPCombineMode.Exclude ));
 end;
 
 function TIGPGraphics.ExcludeClip( const ARegion : IGPRegion ) : IGPGraphics;
@@ -13502,6 +14645,13 @@ begin
   Result := AWinBoolean;
 end;
 
+function TIGPGraphics.IsVisible( const ARect : TRect ) : Boolean;
+begin
+  var AWinBoolean : BOOL := True;
+  ErrorCheck( GdipIsVisibleRectI( FNativeGraphics, ARect.Left, ARect.Top, ARect.Width, ARect.Height, AWinBoolean ));
+  Result := AWinBoolean;
+end;
+
 function TIGPGraphics.IsVisibleF( x, y : Single ) : Boolean;
 begin
   var AWinBoolean : BOOL := False;
@@ -13530,6 +14680,13 @@ begin
   Result := AWinBoolean;
 end;
 
+function TIGPGraphics.IsVisibleF( const ARect : TRectF ) : Boolean;
+begin
+  var AWinBoolean : BOOL := False;
+  ErrorCheck( GdipIsVisibleRect( FNativeGraphics, ARect.Left, ARect.Top, ARect.Width, ARect.Height, AWinBoolean ));
+  Result := AWinBoolean;
+end;
+
 function TIGPGraphics.Save : TIGPGraphicsState;
 begin
   ErrorCheck( GdipSaveGraphics( FNativeGraphics, Result ));
@@ -13541,14 +14698,24 @@ begin
   ErrorCheck( GdipRestoreGraphics( FNativeGraphics, gstate ));
 end;
 
-function TIGPGraphics.BeginContainerF( const ADstRect,ASrcRect : TIGPRectF; AUnit : TIGPUnit ) : TIGPGraphicsContainer;
+function TIGPGraphics.BeginContainerF( const ADstRect, ASrcRect : TIGPRectF; AUnit : TIGPUnit ) : TIGPGraphicsContainer;
 begin
   ErrorCheck( GdipBeginContainer( FNativeGraphics, @ADstRect, @ASrcRect, AUnit, Result ));
+end;
+
+function TIGPGraphics.BeginContainerF( const ADstRect, ASrcRect : TRectF; AUnit : TIGPUnit ) : TIGPGraphicsContainer;
+begin
+  Result := BeginContainerF( TIGPRectF.Create( ADstRect ), TIGPRectF.Create( ASrcRect ), AUnit );
 end;
 
 function TIGPGraphics.BeginContainer( const ADstRect, ASrcRect : TIGPRect; AUnit : TIGPUnit ) : TIGPGraphicsContainer;
 begin
   ErrorCheck( GdipBeginContainerI( FNativeGraphics, @ADstRect, @ASrcRect, AUnit, Result ));
+end;
+
+function TIGPGraphics.BeginContainer( const ADstRect, ASrcRect : TRect; AUnit : TIGPUnit ) : TIGPGraphicsContainer;
+begin
+  Result := BeginContainer( TIGPRect.Create( ADstRect ), TIGPRect.Create( ASrcRect ), AUnit );
 end;
 
 function TIGPGraphics.BeginContainer : TIGPGraphicsContainer;
@@ -13711,7 +14878,7 @@ var
 
 begin
   var AGPStatus := GdipIsStyleAvailable( FNativeFamily, AStyle, AStyleAvailable );
-  if (AGPStatus <> TIGPStatus.Ok ) then
+  if( AGPStatus <> TIGPStatus.Ok ) then
     AStyleAvailable := False;
       
   Result := AStyleAvailable;
@@ -13828,7 +14995,7 @@ begin
   var AFamily := TIGPFontFamily.Create( AFamilyName, AFontCollection );
   var nativeFamily := AFamily.GetNativeFamily();
 
-  if ( GdipCreateFont( nativeFamily, emSize, SetToInt( AStyle, SizeOf( AStyle )), Integer( AUnit ), FNativeFont ) = TIGPStatus.Ok ) then
+  if( GdipCreateFont( nativeFamily, emSize, SetToInt( AStyle, SizeOf( AStyle )), Integer( AUnit ), FNativeFont ) = TIGPStatus.Ok ) then
     Exit;
 
   nativeFamily := TIGPFontFamily.GenericSansSerif.GetNativeFamily();
@@ -14008,9 +15175,9 @@ end;
 
 function TIGPFontCollection.GetFamilies() : TArray<IGPFontFamily>;
 var
-  nativeFamilyList : Pointer;
-  ACount : Integer;
-  numFound: Integer;
+  nativeFamilyList  : Pointer;
+  ACount            : Integer;
+  numFound          : Integer;
 
 type
   ArrGpFontFamily = array of GpFontFamily;
@@ -14045,7 +15212,7 @@ type
   ArrGpFontFamily = array of GpFontFamily;
 
 begin
-  if (( numSought <= 0 ) or (Length( gpfamilies) = 0 )) then
+  if(( numSought <= 0 ) or (Length( gpfamilies) = 0 )) then
     ErrorCheck( TIGPStatus.InvalidParameter );
 
   numFound := 0;
@@ -14075,11 +15242,6 @@ constructor TIGPInstalledFontCollection.CreateObject();
 begin
   FNativeFontCollection := NIL;
   ErrorCheck( GdipNewInstalledFontCollection( FNativeFontCollection ));
-end;
-
-destructor TIGPInstalledFontCollection.Destroy();
-begin
-  inherited Destroy();
 end;
 
 class function TIGPInstalledFontCollection.Create() : IGPFontCollection;
@@ -14186,7 +15348,7 @@ begin
   var APathData := TIGPPathData.CreateObject();
   Result := APathData;
   var ACount := GetPointCount();
-  if (( ACount <= 0 ) or (( APathData.FCount > 0 ) and ( APathData.FCount < ACount ))) then
+  if(( ACount <= 0 ) or (( APathData.FCount > 0 ) and ( APathData.FCount < ACount ))) then
     begin
     APathData.FCount := 0;
     if( APathData.FPoints <> NIL ) then
@@ -14202,16 +15364,16 @@ begin
       end;
     end;
 
-  if ( APathData.FCount = 0 ) then
+  if( APathData.FCount = 0 ) then
     begin
-    getmem( APathData.FPoints, SizeOf(TPointF ) * ACount );
-    if ( APathData.FPoints = NIL ) then
+    GetMem( APathData.FPoints, SizeOf(TPointF ) * ACount );
+    if( APathData.FPoints = NIL ) then
       ErrorCheck( TIGPStatus.OutOfMemory );
 
-    Getmem( APathData.FTypes, ACount );
-    if ( APathData.FTypes = NIL ) then
+    GetMem( APathData.FTypes, ACount );
+    if( APathData.FTypes = NIL ) then
       begin
-      freemem( APathData.FPoints);
+      FreeMem( APathData.FPoints);
       APathData.FPoints := NIL;
       ErrorCheck( TIGPStatus.OutOfMemory );
       end;
@@ -14265,7 +15427,8 @@ end;
 
 function TIGPGraphicsPath.AddLineF( const pt1, pt2 : TPointF ) : IGPGraphicsPath;
 begin
-  Result := AddLineF( pt1.X, pt1.Y, pt2.X, pt2.Y);
+  Result := Self; // Keep alive!
+  AddLineF( pt1.X, pt1.Y, pt2.X, pt2.Y);
 end;
 
 function TIGPGraphicsPath.AddLineF( x1, y1, x2, y2 : Single ) : IGPGraphicsPath;
@@ -14282,7 +15445,8 @@ end;
 
 function TIGPGraphicsPath.AddLine( const pt1, pt2 : TPoint ) : IGPGraphicsPath;
 begin
-  Result := AddLine( pt1.X, pt1.Y, pt2.X, pt2.Y);
+  Result := Self; // Keep alive!
+  AddLine( pt1.X, pt1.Y, pt2.X, pt2.Y);
 end;
 
 function TIGPGraphicsPath.AddLine( x1, y1, x2, y2 : Integer ) : IGPGraphicsPath;
@@ -14299,7 +15463,14 @@ end;
 
 function TIGPGraphicsPath.AddArcF( const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath;
 begin
-  Result := AddArcF( ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+  Result := Self; // Keep alive!
+  AddArcF( ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+end;
+
+function TIGPGraphicsPath.AddArcF( const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  AddArcF( ARect.Left, ARect.Top, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
 end;
 
 function TIGPGraphicsPath.AddArcF( x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath;
@@ -14310,7 +15481,14 @@ end;
 
 function TIGPGraphicsPath.AddArc( const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath;
 begin
-  Result := AddArc( ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+  Result := Self; // Keep alive!
+  AddArc( ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+end;
+
+function TIGPGraphicsPath.AddArc( const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  AddArc( ARect.Left, ARect.Top, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
 end;
 
 function TIGPGraphicsPath.AddArc( x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath;
@@ -14338,7 +15516,8 @@ end;
 
 function TIGPGraphicsPath.AddBezier( const pt1, pt2, pt3, pt4: TPoint ) : IGPGraphicsPath;
 begin
-  Result := AddBezier( pt1.X, pt1.Y, pt2.X, pt2.Y, pt3.X, pt3.Y, pt4.X, pt4.Y);
+  Result := Self; // Keep alive!
+  AddBezier( pt1.X, pt1.Y, pt2.X, pt2.Y, pt3.X, pt3.Y, pt4.X, pt4.Y);
 end;
 
 function TIGPGraphicsPath.AddBezier( x1, y1, x2, y2, x3, y3, x4, y4: Integer ) : IGPGraphicsPath;
@@ -14421,6 +15600,12 @@ begin
   ErrorCheck( GdipAddPathRectangle( FNativePath, ARect.X, ARect.Y, ARect.Width, ARect.Height ));
 end;
 
+function TIGPGraphicsPath.AddRectangleF( const ARect : TRectF ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipAddPathRectangle( FNativePath, ARect.Left, ARect.Top, ARect.Width, ARect.Height ));
+end;
+
 function TIGPGraphicsPath.AddRectangleF( x, y, AWidth, AHeight : Single ) : IGPGraphicsPath;
 begin
   Result := Self; // Keep alive!
@@ -14433,10 +15618,44 @@ begin
   ErrorCheck( GdipAddPathRectangles( FNativePath, @ARects[ 0 ], Length( ARects )));
 end;
 
+function TIGPGraphicsPath.AddRectanglesF( const ARects : array of TRectF ) : IGPGraphicsPath;
+var
+  ALocalRects : array of TIGPRectF;
+
+begin
+  Result := Self; // Keep alive!
+  var ASize := Length( ARects );
+  SetLength( ALocalRects, ASize );
+  for var I := 0 to ASize - 1 do
+    ALocalRects[ I ] := TIGPRectF.Create( ARects[ I ] );
+
+  AddRectanglesF( ALocalRects );
+end;
+
 function TIGPGraphicsPath.AddRectangle( const ARect : TIGPRect ) : IGPGraphicsPath;
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipAddPathRectangleI( FNativePath, ARect.X, ARect.Y, ARect.Width, ARect.Height ));
+end;
+
+function TIGPGraphicsPath.AddRectangles( const ARects : array of TRect ) : IGPGraphicsPath;
+var
+  ALocalRects : array of TIGPRect;
+
+begin
+  Result := Self; // Keep alive!
+  var ASize := Length( ARects );
+  SetLength( ALocalRects, ASize );
+  for var I := 0 to ASize - 1 do
+    ALocalRects[ I ] := TIGPRect.Create( ARects[ I ] );
+
+  AddRectangles( ALocalRects );
+end;
+
+function TIGPGraphicsPath.AddRectangle( const ARect : TRect ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipAddPathRectangleI( FNativePath, ARect.Left, ARect.Top, ARect.Width, ARect.Height ));
 end;
 
 function TIGPGraphicsPath.AddRectangle( x, y, AWidth, AHeight : Integer ) : IGPGraphicsPath;
@@ -14453,7 +15672,14 @@ end;
 
 function TIGPGraphicsPath.AddEllipseF( const ARect : TIGPRectF ) : IGPGraphicsPath;
 begin
-  Result := AddEllipseF( ARect.X, ARect.Y, ARect.Width, ARect.Height );
+  Result := Self; // Keep alive!
+  AddEllipseF( ARect.X, ARect.Y, ARect.Width, ARect.Height );
+end;
+
+function TIGPGraphicsPath.AddEllipseF( const ARect : TRectF ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  AddEllipseF( ARect.Left, ARect.Top, ARect.Width, ARect.Height );
 end;
 
 function TIGPGraphicsPath.AddEllipseF( x, y, AWidth, AHeight : Single ) : IGPGraphicsPath;
@@ -14464,13 +15690,20 @@ end;
 
 function TIGPGraphicsPath.AddEllipse( const ARect : TIGPRect ) : IGPGraphicsPath;
 begin
-  Result := AddEllipse( ARect.X, ARect.Y, ARect.Width, ARect.Height );
+  Result := Self; // Keep alive!
+  AddEllipse( ARect.X, ARect.Y, ARect.Width, ARect.Height );
 end;
 
 function TIGPGraphicsPath.AddEllipse( x, y, AWidth, AHeight : Integer ) : IGPGraphicsPath;
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipAddPathEllipseI( FNativePath, x, y, AWidth, AHeight ));
+end;
+
+function TIGPGraphicsPath.AddEllipse( const ARect : TRect ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  AddEllipse( ARect.Left, ARect.Top, ARect.Width, ARect.Height );
 end;
 
 function TIGPGraphicsPath.AddRoundRectangleF( const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphicsPath;
@@ -14509,6 +15742,12 @@ begin
   CloseFigure();
 end;
 
+function TIGPGraphicsPath.AddRoundRectangleF( const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  AddRoundRectangleF( TIGPRectF.Create( ARect ), ACornerSize );
+end;
+
 function TIGPGraphicsPath.AddRoundRectangle( const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphicsPath;
 begin
   Result := Self; // Keep alive!
@@ -14533,10 +15772,22 @@ begin
   CloseFigure();
 end;
 
+function TIGPGraphicsPath.AddRoundRectangle( const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  AddRoundRectangle( TIGPRect.Create( ARect ), ACornerSize );
+end;
+
 function TIGPGraphicsPath.AddPieF( const ARect : TIGPRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath;
 begin
   Result := Self; // Keep alive!
   AddPieF( ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+end;
+
+function TIGPGraphicsPath.AddPieF( const ARect : TRectF; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  AddPieF( ARect.Left, ARect.Top, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
 end;
 
 function TIGPGraphicsPath.AddPieF( x, y, AWidth, AHeight, AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath;
@@ -14547,7 +15798,14 @@ end;
 
 function TIGPGraphicsPath.AddPie( const ARect : TIGPRect; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath;
 begin
-  Result := AddPie( ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+  Result := Self; // Keep alive!
+  AddPie( ARect.X, ARect.Y, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
+end;
+
+function TIGPGraphicsPath.AddPie( const ARect : TRect; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  AddPieF( ARect.Left, ARect.Top, ARect.Width, ARect.Height, AStartAngle, ASweepAngle );
 end;
 
 function TIGPGraphicsPath.AddPie( x, y, AWidth, AHeight : Integer; AStartAngle, ASweepAngle : Single ) : IGPGraphicsPath;
@@ -14580,22 +15838,32 @@ end;
 
 function TIGPGraphicsPath.AddStringF( const AString : WideString; const AFont : IGPFont; const AOrigin : TPointF; const AFormat : IGPStringFormat ) : IGPGraphicsPath;
 begin
-  Result := AddStringF( AString, AFont.Family, AFont.Style, AFont.Size, AOrigin, AFormat );
+  Result := Self; // Keep alive!
+  AddStringF( AString, AFont.Family, AFont.Style, AFont.Size, AOrigin, AFormat );
 end;
 
 function TIGPGraphicsPath.AddStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRectF; const AFormat : IGPStringFormat ) : IGPGraphicsPath;
 begin
-  Result := AddStringF( AString, AFont.Family, AFont.Style, AFont.Size, ALayoutRect, AFormat );
+  Result := Self; // Keep alive!
+  AddStringF( AString, AFont.Family, AFont.Style, AFont.Size, ALayoutRect, AFormat );
+end;
+
+function TIGPGraphicsPath.AddStringF( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRectF; const AFormat : IGPStringFormat ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  AddStringF( AString, AFont.Family, AFont.Style, AFont.Size, TIGPRectF.Create( ALayoutRect ), AFormat );
 end;
 
 function TIGPGraphicsPath.AddString( const AString : WideString; const AFont : IGPFont; const AOrigin : TPoint; const AFormat : IGPStringFormat ) : IGPGraphicsPath;
 begin
-  Result := AddString( AString, AFont.Family, AFont.Style, AFont.Size, AOrigin, AFormat );
+  Result := Self; // Keep alive!
+  AddString( AString, AFont.Family, AFont.Style, AFont.Size, AOrigin, AFormat );
 end;
 
 function TIGPGraphicsPath.AddString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TIGPRect; const AFormat : IGPStringFormat ) : IGPGraphicsPath;
 begin
-  Result := AddString( AString, AFont.Family, AFont.Style, AFont.Size, ALayoutRect, AFormat );
+  Result := Self; // Keep alive!
+  AddString( AString, AFont.Family, AFont.Style, AFont.Size, ALayoutRect, AFormat );
 end;
 
 function TIGPGraphicsPath.AddStringF( const AString : WideString; const AFamily : IGPFontFamily; AStyle  : TFontStyles;
@@ -14616,6 +15884,12 @@ begin
   ErrorCheck( GdipAddPathString( FNativePath, PWideChar( AString ), Length( AString ), gpff, SetToInt( AStyle, SizeOf( AStyle )), emSize, @ARect, gpsf));
 end;
 
+function TIGPGraphicsPath.AddString( const AString : WideString; const AFont : IGPFont; const ALayoutRect : TRect; const AFormat : IGPStringFormat ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  AddString( AString, AFont, TIGPRect.Create( ALayoutRect ), AFormat );
+end;
+
 function TIGPGraphicsPath.AddStringF(
     const AString : WideString;
     const AFamily : IGPFontFamily;
@@ -14634,6 +15908,17 @@ begin
     gpsf := AFormat.GetNativeFormat();
 
   ErrorCheck( GdipAddPathString( FNativePath, PWideChar( AString ), Length( AString ), gpff, SetToInt( AStyle, SizeOf( AStyle )), emSize, @ALayoutRect, gpsf));
+end;
+
+function TIGPGraphicsPath.AddStringF( const AString : WideString;
+    const AFamily : IGPFontFamily;
+    AStyle  : TFontStyles;
+    emSize : Single;  // World units
+    const ALayoutRect : TRectF;
+    const AFormat : IGPStringFormat ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  AddStringF( AString,AFamily, AStyle, emSize, TIGPRectF.Create( ALayoutRect ), AFormat );
 end;
 
 function TIGPGraphicsPath.AddString(
@@ -14675,6 +15960,18 @@ begin
     gpsf := AFormat.GetNativeFormat();
 
   ErrorCheck( GdipAddPathStringI( FNativePath, PWideChar( AString ), Length( AString ), gpff, SetToInt( AStyle, SizeOf( AStyle )), emSize, @ALayoutRect, gpsf ));
+end;
+
+function TIGPGraphicsPath.AddString(
+    const AString : WideString;
+    const AFamily : IGPFontFamily;
+    AStyle  : TFontStyles;
+    emSize : Single;  // World units
+    const ALayoutRect : TRect;
+    const AFormat : IGPStringFormat ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  AddString( AString, AFamily, AStyle, emSize, TIGPRect.Create( ALayoutRect ), AFormat );
 end;
 
 function TIGPGraphicsPath.Transform( const AMatrix : IGPMatrix ) : IGPGraphicsPath;
@@ -14762,6 +16059,16 @@ begin
     ANativeMatrix := AMatrix.GetNativeMatrix();
 
   ErrorCheck( GdipWarpPath( FNativePath, ANativeMatrix, @ADestPoints[ 0 ], Length( ADestPoints ), ASrcRect.X, ASrcRect.Y, ASrcRect.Width, ASrcRect.Height, AWarpMode, AFlatness ));
+end;
+
+function TIGPGraphicsPath.Warp( const ADestPoints : array of TPointF; const ASrcRect : TRectF; const AMatrix : IGPMatrix = NIL; AWarpMode : TIGPWarpMode = TIGPWarpMode.Perspective; AFlatness : Single = FlatnessDefault ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+  var ANativeMatrix : GpMatrix := NIL;
+  if( AMatrix <> NIL ) then
+    ANativeMatrix := AMatrix.GetNativeMatrix();
+
+  ErrorCheck( GdipWarpPath( FNativePath, ANativeMatrix, @ADestPoints[ 0 ], Length( ADestPoints ), ASrcRect.Left, ASrcRect.Top, ASrcRect.Width, ASrcRect.Height, AWarpMode, AFlatness ));
 end;
 
 function TIGPGraphicsPath.GetPointCount() : Integer;
@@ -15397,7 +16704,8 @@ end;
 
 function TIGPPathGradientBrush.ScaleTransform( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush;
 begin
-  Result := ScaleTransform( s, s, AOrder );
+  Result := Self; // Keep alive!
+  ScaleTransform( s, s, AOrder );
 end;
 
 function TIGPPathGradientBrush.RotateTransform( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush;
@@ -15438,7 +16746,8 @@ end;
 
 function TIGPPathGradientBrush.ScaleTransformXYT( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
 begin
-  Result := ScaleTransformT( s, s, AOrder );
+  Result := Self; // Keep alive!
+  ScaleTransformT( s, s, AOrder );
 end;
 
 function TIGPPathGradientBrush.RotateTransformT( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
@@ -15737,25 +17046,25 @@ end;
 
 constructor TIGPRectF.Create( AX, AY, AWidth, AHeight : Single );
 begin
-  X      := AX;
-  Y      := AY;
-  Width  := AWidth;
+  X := AX;
+  Y := AY;
+  Width := AWidth;
   Height := AHeight;
 end;
 
 constructor TIGPRectF.Create( AWidth, AHeight : Single );
 begin
-  X      := 0;
-  Y      := 0;
-  Width  := AWidth;
+  X := 0;
+  Y := 0;
+  Width := AWidth;
   Height := AHeight;
 end;
 
 constructor TIGPRectF.Create( ASize : Single );
 begin
-  X      := 0;
-  Y      := 0;
-  Width  := ASize;
+  X := 0;
+  Y := 0;
+  Width := ASize;
   Height := ASize;
 end;
 
@@ -15776,6 +17085,14 @@ begin
 end;
 
 constructor TIGPRectF.Create( const ARect : TRect );
+begin
+  X := ARect.Left;
+  Y := ARect.Top;
+  Width := ARect.Right - ARect.Left - 1;
+  Height := ARect.Bottom - ARect.Top - 1;
+end;
+
+constructor TIGPRectF.Create( const ARect : TRectF );
 begin
   X := ARect.Left;
   Y := ARect.Top;
@@ -15915,6 +17232,23 @@ begin
   Exit( True );
 end;
 
+function TIGPRectF.Intersects( const ARect : TRectF ) : Boolean;
+begin
+  if( X + Width < ARect.Left ) then
+    Exit( False );
+
+  if( Y + Height < ARect.Top ) then
+    Exit( False );
+
+  if( ARect.Left + ARect.Width < X ) then
+    Exit( False );
+
+  if( ARect.Top + ARect.Height < Y ) then
+    Exit( False );
+
+  Exit( True );
+end;
+
 function TIGPRectF.Contains( const ARect : TIGPRect ) : Boolean;
 begin
   if( ARect.X < X ) then
@@ -15929,6 +17263,20 @@ begin
   Result := ( ARect.Y + ARect.Height <= Y + Height );
 end;
 
+function TIGPRectF.Contains( const ARect : TRect ) : Boolean;
+begin
+  if( ARect.Left < X ) then
+    Exit( False );
+
+  if( ARect.Top < Y ) then
+    Exit( False );
+
+  if( ARect.Left + ARect.Width > X + Width ) then
+    Exit( False );
+
+  Result := ( ARect.Top + ARect.Height <= Y + Height );
+end;
+
 function TIGPRectF.Contains( const ARect : TIGPRectF ) : Boolean;
 begin
   if( ARect.X < X ) then
@@ -15941,6 +17289,20 @@ begin
     Exit( False );
 
   Result := ( ARect.Y + ARect.Height <= Y + Height );
+end;
+
+function TIGPRectF.Contains( const ARect : TRectF ) : Boolean;
+begin
+  if( ARect.Left < X ) then
+    Exit( False );
+
+  if( ARect.Top < Y ) then
+    Exit( False );
+
+  if( ARect.Left + ARect.Width > X + Width ) then
+    Exit( False );
+
+  Result := ( ARect.Top + ARect.Height <= Y + Height );
 end;
 
 function TIGPRectF.ContainedBy( const ARect : TRect ) : Boolean;
@@ -15983,6 +17345,20 @@ begin
     Exit( False );
 
   Result := ( Y + Height <= ARect.Y + ARect.Height );
+end;
+
+function TIGPRectF.ContainedBy( const ARect : TRectF ) : Boolean;
+begin
+  if( X < ARect.Left ) then
+    Exit( False );
+
+  if( Y < ARect.Top ) then
+    Exit( False );
+
+  if( X + Width > ARect.Left + ARect.Width ) then
+    Exit( False );
+
+  Result := ( Y + Height <= ARect.Top + ARect.Height );
 end;
 
 function TIGPRectF.MultiplyBy( const AValue : Single ) : TIGPRectF;
@@ -16201,6 +17577,23 @@ begin
   Exit( True );
 end;
 
+function TIGPRect.Intersects( const ARect : TRect ) : Boolean;
+begin
+  if( X + Width < ARect.Left ) then
+    Exit( False );
+
+  if( Y + Height < ARect.Top ) then
+    Exit( False );
+
+  if( ARect.Left + ARect.Width < X ) then
+    Exit( False );
+
+  if( ARect.Top + ARect.Height < Y ) then
+    Exit( False );
+
+  Exit( True );
+end;
+
 function TIGPRect.Contains( const ARect : TIGPRect ) : Boolean;
 begin
   if( ARect.X < X ) then
@@ -16213,6 +17606,20 @@ begin
     Exit( False );
 
   Result := ( ARect.Y + ARect.Height <= Y + Height );
+end;
+
+function TIGPRect.Contains( const ARect : TRect ) : Boolean;
+begin
+  if( ARect.Left < X ) then
+    Exit( False );
+
+  if( ARect.Top < Y ) then
+    Exit( False );
+
+  if( ARect.Left + ARect.Width > X + Width ) then
+    Exit( False );
+
+  Result := ( ARect.Top + ARect.Height <= Y + Height );
 end;
 
 function TIGPRect.ContainedBy( const ARect : TRect ) : Boolean;
@@ -16612,5 +18019,10 @@ finalization
 
 {$ENDIF}
 
+{$ELSE}
+constructor TIGPGraphics.CreateObject();
+begin
+  inherited Create();
+end;
 {$ENDIF}
 end.
