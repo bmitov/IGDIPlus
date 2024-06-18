@@ -1,6 +1,6 @@
 {******************************************************************************
 
-              Copyright (C) 2008-2023 by Boian Mitov
+              Copyright (C) 2008-2024 by Boian Mitov
               mitov@mitov.com
               www.mitov.com
               www.igdiplus.org
