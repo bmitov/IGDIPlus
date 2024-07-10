@@ -2211,10 +2211,10 @@ const
   // Shift count and bit mask for A, R, G, B components
 
   function  MakeARGBColor( AAlpha : Byte; AColor : TAlphaColor ) : TAlphaColor;
+  function  MakeGrayScaleColor( AAlpha : Byte; AColor : Byte ) : TAlphaColor; overload;
+  function  MakeGrayScaleColor( AGrayScale : Byte ) : TAlphaColor; overload;
   function  MakeColor( AAlpha : Byte; AColor : TColor ) : TAlphaColor; overload;
-  function  MakeGrayScaleColor( AAlpha : Byte; AColor : Byte ) : TAlphaColor;
   function  MakeColor( AColor : TColor ) : TAlphaColor; overload;
-  function  MakeColor( AGrayScale : Byte ) : TAlphaColor; overload;
   function  MakeColor( r, g, b : Byte ) : TAlphaColor; overload;
   function  MakeColor( a, r, g, b : Byte ) : TAlphaColor; overload;
   function  GetAlpha( AColor : TAlphaColor ) : Byte;
@@ -3526,7 +3526,7 @@ type
     constructor CreateObject( const AFamily : IGPFontFamily; emSize : Single; const AStyle : TFontStyles = []; AUnit : TIGPUnit = TIGPUnit.Point ); overload;
     constructor CreateObject( const AFamilyName : WideString; emSize : Single; const AStyle : TFontStyles = []; AUnit : TIGPUnit = TIGPUnit.Point; AFontCollection : IGPFontCollection = NIL ); overload;
     destructor  Destroy(); override;
-    
+
   public
     function GetLogFontA( const AGraphics : IGPGraphics ) : TLogFontA;
     function GetLogFontW( const AGraphics : IGPGraphics ) : TLogFontW;
@@ -7367,7 +7367,7 @@ end;
 constructor TIGPStringFormat.CreateObject( const AFormatFlags : TIGPStringFormatFlags = []; ALanguage : LANGID = LANG_NEUTRAL );
 begin
   FNativeFormat := NIL;
-  ErrorCheck( GdipCreateStringFormat( PInteger( @AFormatFlags )^, ALanguage, FNativeFormat ));
+  ErrorCheck( GdipCreateStringFormat( SetToInt( AFormatFlags, SizeOf( AFormatFlags )), ALanguage, FNativeFormat ));
 end;
 
 class function TIGPStringFormat.GenericDefault() : IGPStringFormat;
@@ -7405,7 +7405,7 @@ begin
 
   else
     gpstf := NIL;
-      
+
   ErrorCheck( GdipCloneStringFormat( gpstf, FNativeFormat ));
 end;
 
@@ -7424,19 +7424,19 @@ end;
 function TIGPStringFormat.SetFormatFlags( const AFlags : TIGPStringFormatFlags ) : IGPStringFormat;
 begin
   Result := Self; // Keep alive!
-  ErrorCheck( GdipSetStringFormatFlags( FNativeFormat, PInteger( @AFlags )^ ));
+  ErrorCheck( GdipSetStringFormatFlags( FNativeFormat, SetToInt( AFlags, SizeOf( AFlags )) ));
 end;
 
 procedure TIGPStringFormat.SetFormatFlagsProp( const AFlags : TIGPStringFormatFlags );
 begin
-  ErrorCheck( GdipSetStringFormatFlags( FNativeFormat, PInteger( @AFlags )^ ));
+  ErrorCheck( GdipSetStringFormatFlags( FNativeFormat, SetToInt( AFlags, SizeOf( AFlags )) ));
 end;
 
 function TIGPStringFormat.GetFormatFlags() : TIGPStringFormatFlags;
 begin
   var AIntResult : Integer;
   ErrorCheck( GdipGetStringFormatFlags( FNativeFormat, AIntResult ));
-  Result := PIGPStringFormatFlags( @AIntResult )^;
+  IntToSet( AIntResult, SizeOf( Result ), Result );
 end;
 
 function TIGPStringFormat.SetAlignment( AAlign : TIGPStringAlignment ) : IGPStringFormat;
@@ -7918,7 +7918,7 @@ end;
 
 function TIGPMetafile.EmfToWmfBits( hemf : HENHMETAFILE; cbData16 : Cardinal; pData16 : PBYTE; iMapMode : Integer = MM_ANISOTROPIC; eFlags : TIGPEmfToWmfBits = [] ) : Cardinal;
 begin
-  Result := GdipEmfToWmfBits( hemf, cbData16, pData16, iMapMode, PInteger( @eFlags )^ );
+  Result := GdipEmfToWmfBits( hemf, cbData16, pData16, iMapMode, SetToInt( eFlags, SizeOf( eFlags )) );
 end;
 
 constructor TIGPMetafile.CreateObject();
@@ -15002,7 +15002,7 @@ begin
   ErrorCheck( GdipCreateFont(
         nativeFamily,
         emSize,
-        PInteger(@AStyle )^,
+        SetToInt( AStyle, SizeOf( AStyle )),
         Integer( AUnit),
         FNativeFont ));
 
@@ -17789,7 +17789,7 @@ begin
   Result := RGB( GetRed( AColor ), GetGreen( AColor ), GetBlue( AColor ));
 end;
 
-function MakeColor( AGrayScale : Byte ) : TAlphaColor;
+function MakeGrayScaleColor( AGrayScale : Byte ) : TAlphaColor;
 begin
   Result := MakeColor( 255, AGrayScale, AGrayScale, AGrayScale );
 end;
