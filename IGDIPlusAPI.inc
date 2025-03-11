@@ -17,12 +17,48 @@ type
 
   PGPBitmapDataRecord = ^TIGPBitmapDataRecord;
 
+  TIGPImageCodecInfoRecord = packed record
+{$IFDEF MSWINDOWS}
+    Clsid             : TGUID;
+    FormatID          : TGUID;
+    CodecName         : PWCHAR;
+    DllName           : PWCHAR;
+    FormatDescription : PWCHAR;
+    FilenameExtension : PWCHAR;
+    MimeType          : PWCHAR;
+    Flags             : DWORD;
+    Version           : DWORD;
+    SigCount          : DWORD;
+    SigSize           : DWORD;
+    SigPattern        : PBYTE;
+    SigMask           : PBYTE;
+{$ENDIF} //MSWINDOWS
+  end;
+
+  PGPImageCodecInfoRecord = ^TIGPImageCodecInfoRecord;
+
+//--------------------------------------------------------------------------
+// Information flags about image codecs
+//--------------------------------------------------------------------------
+  TIGPImageCodecFlagsGdip = (
+    ImageCodecFlagsEncoder            = $00000001,
+    ImageCodecFlagsDecoder            = $00000002,
+    ImageCodecFlagsSupportBitmap      = $00000004,
+    ImageCodecFlagsSupportVector      = $00000008,
+    ImageCodecFlagsSeekableEncode     = $00000010,
+    ImageCodecFlagsBlockingDecode     = $00000020,
+
+    ImageCodecFlagsBuiltin            = $00010000,
+    ImageCodecFlagsSystem             = $00020000,
+    ImageCodecFlagsUser               = $00040000
+  );
+
   TIGPImageAbort = function ( callbackData : Pointer ) : BOOL; stdcall;
   TIGPDrawImageAbort         = TIGPImageAbort;
   TIGPGetThumbnailImageAbort = TIGPImageAbort;
 
   GpEnumerateMetafileProc = function( recordType : TIGPEmfPlusRecordType; flags : UINT;
-    dataSize : UINT; data : PBYTE; callbackData : pointer ) : BOOL; stdcall;
+    dataSize : UINT; data : PBYTE; callbackData : Pointer ) : BOOL; stdcall;
 
   // GDI+ initialization. Must not be called from DllMain - can cause deadlock.
   //
@@ -46,8 +82,8 @@ type
   // Memory Allocation APIs
   //----------------------------------------------------------------------------
 
-  function GdipAlloc( size : ULONG ) : pointer; stdcall; external WINGDIPDLL;
-  procedure GdipFree( ptr : pointer ); stdcall; external WINGDIPDLL;
+  function GdipAlloc( size : ULONG ) : Pointer; stdcall; external WINGDIPDLL;
+  procedure GdipFree( ptr : Pointer ); stdcall; external WINGDIPDLL;
 
   function GdipCreatePath( brushMode : GPFILLMODE;
     out path : GPPATH ) : GpStatus; stdcall; external WINGDIPDLL;
@@ -221,16 +257,16 @@ type
     matrix : GPMATRIX; pen : GPPEN ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsVisiblePathPoint( path : GPPATH; x : Single; y : Single;
-    graphics : GpGraphics; out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    graphics : GpGraphics; out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
   
   function GdipIsVisiblePathPointI( path : GPPATH; x : Integer; y : Integer;
-    graphics : GpGraphics; out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    graphics : GpGraphics; out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsOutlineVisiblePathPoint( path : GPPATH; x : Single; y : Single;
-    pen : GPPEN; graphics : GpGraphics; out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    pen : GPPEN; graphics : GpGraphics; out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsOutlineVisiblePathPointI( path : GPPATH; x : Integer; y : Integer;
-    pen : GPPEN; graphics : GpGraphics; out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    pen : GPPEN; graphics : GpGraphics; out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
 //----------------------------------------------------------------------------
 // PathIterator APIs 
@@ -338,13 +374,13 @@ type
     matrixOut : PSingle ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsMatrixInvertible( matrix : GPMATRIX;
-    out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsMatrixIdentity( matrix : GPMATRIX;
-    out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsMatrixEqual( matrix : GPMATRIX; matrix2 : GPMATRIX;
-    out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
 //----------------------------------------------------------------------------
 // Region APIs
@@ -404,13 +440,13 @@ type
     out hRgn : HRGN ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsEmptyRegion( region : GpRegion; graphics : GpGraphics;
-    out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsInfiniteRegion( region : GpRegion; graphics : GpGraphics;
-    out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsEqualRegion( region : GpRegion; region2 : GpRegion;
-    graphics : GpGraphics; out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    graphics : GpGraphics; out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetRegionDataSize( region : GpRegion;
     out bufferSize : UINT ) : GpStatus; stdcall; external WINGDIPDLL;
@@ -419,18 +455,18 @@ type
     bufferSize : UINT; sizeFilled : PUINT ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsVisibleRegionPoint( region : GpRegion; x : Single; y : Single;
-    graphics : GpGraphics; out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    graphics : GpGraphics; out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsVisibleRegionPointI( region : GpRegion; x : Integer; y : Integer;
-    graphics : GpGraphics; out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    graphics : GpGraphics; out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsVisibleRegionRect( region : GpRegion; x : Single; y : Single;
     width : Single; height : Single; graphics : GpGraphics;
-    out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsVisibleRegionRectI( region : GpRegion; x : Integer; y : Integer;
     width : Integer; height : Integer; graphics : GpGraphics;
-    out result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    out AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetRegionScansCount( region : GpRegion; out count : UINT;
     matrix : GPMATRIX) : GpStatus; stdcall; external WINGDIPDLL;
@@ -1651,7 +1687,7 @@ type
     rect : GPRECT ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsClipEmpty( graphics : GpGraphics;
-    result : PBool ) : GpStatus; stdcall; external WINGDIPDLL;
+    AResult : PBool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetVisibleClipBounds( graphics : GpGraphics;
     rect : GPRECTF ) : GpStatus; stdcall; external WINGDIPDLL;
@@ -1660,19 +1696,19 @@ type
     rect : GPRECT ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsVisibleClipEmpty( graphics : GpGraphics;
-    var result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    var AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsVisiblePoint( graphics : GpGraphics; x : Single; y : Single;
-    var result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    var AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsVisiblePointI( graphics : GpGraphics; x : Integer; y : Integer;
-    var result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    var AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsVisibleRect( graphics : GpGraphics; x : Single; y : Single;
-    width : Single; height : Single; var result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    width : Single; height : Single; var AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipIsVisibleRectI( graphics : GpGraphics; x : Integer; y : Integer;
-    width : Integer; height : Integer; var result : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
+    width : Integer; height : Integer; var AResult : Bool ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipSaveGraphics( graphics : GpGraphics;
     var state : TIGPGraphicsState ) : GpStatus; stdcall; external WINGDIPDLL;
@@ -1767,13 +1803,13 @@ type
     out size : UINT ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetImageDecoders( numDecoders : UINT; size : UINT;
-    decoders : PGPImageCodecInfo ) : GpStatus; stdcall; external WINGDIPDLL;
+    decoders : PGPImageCodecInfoRecord ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetImageEncodersSize( out numEncoders : UINT;
     out size : UINT ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipGetImageEncoders( numEncoders : UINT; size : UINT;
-    encoders : PGPImageCodecInfo ) : GpStatus; stdcall; external WINGDIPDLL;
+    encoders : PGPImageCodecInfoRecord ) : GpStatus; stdcall; external WINGDIPDLL;
 
   function GdipComment( graphics : GpGraphics; sizeData : UINT;
     data : PBYTE ) : GpStatus; stdcall; external WINGDIPDLL;

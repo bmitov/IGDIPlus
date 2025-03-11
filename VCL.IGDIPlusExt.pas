@@ -1,6 +1,6 @@
 {******************************************************************************
 
-              Copyright (C) 2008-2024 by Boian Mitov
+              Copyright (C) 2008-2025 by Boian Mitov
               mitov@mitov.com
               www.mitov.com
               www.igdiplus.org
@@ -35,7 +35,7 @@ unit VCL.IGDIPlusExt;
 interface
 
 uses
-  IGDIPlus, VCL.Graphics;
+  IGDIPlus, VCL.Graphics, Mitov.Containers.Common;
 
 type
   TIGPBitmapHelper = class helper for TIGPBitmap
@@ -53,6 +53,9 @@ type
   protected
     function  GetGPBitmap() : IGPBitmap; inline;
     function  GetGraphics() : IGPGraphics; inline;
+
+  public
+    function  ForGraphics( const AProc : TConstProc<IGPGraphics> ) : TBitmap;
 
   public
     property GPBitmap : IGPBitmap   read GetGPBitmap;
@@ -75,6 +78,9 @@ type
   TIGPVclCanvasHelper = class helper for TCanvas
   protected
     function  GetGraphics() : IGPGraphics; inline;
+
+  public
+    function  ForGraphics( const AProc : TConstProc<IGPGraphics> ) : TCanvas;
 
   public
     property Graphics : IGPGraphics read GetGraphics;
@@ -116,6 +122,13 @@ begin
   Result := TIGPGraphics.CreateObject( Canvas );
 end;
 //---------------------------------------------------------------------------
+function TIGPVclBitmapHelper.ForGraphics( const AProc : TConstProc<IGPGraphics> ) : TBitmap;
+begin
+  Assert( Assigned( AProc ));
+  AProc( TIGPGraphics.CreateObject( Canvas ) );
+  Result := Self;
+end;
+//---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -140,6 +153,13 @@ end;
 function TIGPVclCanvasHelper.GetGraphics() : IGPGraphics;
 begin
   Result := TIGPGraphics.CreateObject( Self );
+end;
+//---------------------------------------------------------------------------
+function TIGPVclCanvasHelper.ForGraphics( const AProc : TConstProc<IGPGraphics> ) : TCanvas;
+begin
+  Assert( Assigned( AProc ));
+  AProc( TIGPGraphics.CreateObject( Self ) );
+  Result := Self;
 end;
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
