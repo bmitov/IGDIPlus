@@ -3085,6 +3085,7 @@ type
   IGPTransformable = interface;
 
   TIGPGetGraphicsProc = reference to procedure( const AGraphics : IGPGraphics );
+  TIGPConstProc<T> = reference to procedure ( const AArg : T );
   TIGPGraphicsConstProc<T> = reference to procedure ( const AGraphics : IGPGraphics; const AArg : T );
 
 (**************************************************************************\
@@ -5002,6 +5003,7 @@ type
     function  StartFigure() : IGPGraphicsPath;
     function  CloseFigure() : IGPGraphicsPath;
     function  CloseAllFigures() : IGPGraphicsPath;
+    function  ForFigure( const AProc : TIGPConstProc<IGPGraphicsPath> ) : IGPGraphicsPath;
     function  SetMarker() : IGPGraphicsPath;
     function  ClearMarkers() : IGPGraphicsPath;
     function  Reverse() : IGPGraphicsPath;
@@ -5167,6 +5169,7 @@ type
     function  StartFigure() : IGPGraphicsPath;
     function  CloseFigure() : IGPGraphicsPath;
     function  CloseAllFigures() : IGPGraphicsPath;
+    function  ForFigure( const AProc : TIGPConstProc<IGPGraphicsPath> ) : IGPGraphicsPath;
     function  SetMarker() : IGPGraphicsPath;
     function  ClearMarkers() : IGPGraphicsPath;
     function  Reverse() : IGPGraphicsPath;
@@ -16441,6 +16444,21 @@ begin
   ErrorCheck( GdipClosePathFigures( FNativePath ));
 end;
 
+function TIGPGraphicsPath.ForFigure( const AProc : TIGPConstProc<IGPGraphicsPath> ) : IGPGraphicsPath;
+begin
+  Result := Self; // Keep alive!
+
+  Assert( Assigned( AProc ));
+
+  ErrorCheck( GdipStartPathFigure( FNativePath ));
+  try
+    AProc( Self );
+  finally
+    ErrorCheck( GdipClosePathFigure( FNativePath ));
+    end;
+
+end;
+
 function TIGPGraphicsPath.SetMarker() : IGPGraphicsPath;
 begin
   Result := Self; // Keep alive!
@@ -16774,11 +16792,15 @@ begin
     ACornerSizeX.Height := ARect.Height;
 
   StartFigure();
-  AddArcF( ARect.X, ARect.Y, ACornerSizeX.Width, ACornerSizeX.Height, 180, 90 );
-  AddArcF( ARectRight - ACornerSizeX.Width, ARect.Y, ACornerSizeX.Width, ACornerSizeX.Height, 270, 90 );
-  AddArcF( ARectRight - ACornerSizeX.Width, ARect.Y + ARect.Height - ACornerSizeX.Height, ACornerSizeX.Width, ACornerSizeX.Height, 0, 90 );
-  AddArcF( ARect.X, ARect.Y + ARect.Height - ACornerSizeX.Height, ACornerSizeX.Width, ACornerSizeX.Height, 90, 90 );
-  CloseFigure();
+  try
+    AddArcF( ARect.X, ARect.Y, ACornerSizeX.Width, ACornerSizeX.Height, 180, 90 );
+    AddArcF( ARectRight - ACornerSizeX.Width, ARect.Y, ACornerSizeX.Width, ACornerSizeX.Height, 270, 90 );
+    AddArcF( ARectRight - ACornerSizeX.Width, ARect.Y + ARect.Height - ACornerSizeX.Height, ACornerSizeX.Width, ACornerSizeX.Height, 0, 90 );
+    AddArcF( ARect.X, ARect.Y + ARect.Height - ACornerSizeX.Height, ACornerSizeX.Width, ACornerSizeX.Height, 90, 90 );
+  finally
+    CloseFigure();
+    end;
+
 end;
 
 function TIGPGraphicsPath.AddRoundRectangleF( const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphicsPath;
@@ -16804,11 +16826,15 @@ begin
     ACornerSizeX.Height := ARect.Height;
 
   StartFigure();
-  AddArc( ARect.X, ARect.Y, ACornerSizeX.Width, ACornerSizeX.Height, 180, 90 );
-  AddArc( ARectRight - ACornerSizeX.Width, ARect.Y, ACornerSizeX.Width, ACornerSizeX.Height, 270, 90 );
-  AddArc( ARectRight - ACornerSizeX.Width, ARect.Y + ARect.Height - ACornerSizeX.Height, ACornerSizeX.Width, ACornerSizeX.Height, 0, 90 );
-  AddArc( ARect.X, ARect.Y + ARect.Height - ACornerSizeX.Height, ACornerSizeX.Width, ACornerSizeX.Height, 90, 90 );
-  CloseFigure();
+  try
+    AddArc( ARect.X, ARect.Y, ACornerSizeX.Width, ACornerSizeX.Height, 180, 90 );
+    AddArc( ARectRight - ACornerSizeX.Width, ARect.Y, ACornerSizeX.Width, ACornerSizeX.Height, 270, 90 );
+    AddArc( ARectRight - ACornerSizeX.Width, ARect.Y + ARect.Height - ACornerSizeX.Height, ACornerSizeX.Width, ACornerSizeX.Height, 0, 90 );
+    AddArc( ARect.X, ARect.Y + ARect.Height - ACornerSizeX.Height, ACornerSizeX.Width, ACornerSizeX.Height, 90, 90 );
+  finally
+    CloseFigure();
+    end;
+
 end;
 
 function TIGPGraphicsPath.AddRoundRectangle( const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphicsPath;
@@ -17298,8 +17324,8 @@ end;
 
 function TIGPGraphicsPathIterator.NextSubpath( const APath : IGPGraphicsPath; out AIsClosed : Boolean ) : Integer;
 var
-  AResultCount : Integer;
-  AValue      : BOOL;
+  AResultCount  : Integer;
+  AValue        : BOOL;
 
 begin
   var ANativePath : GpPath := NIL;
@@ -17571,7 +17597,7 @@ end;
 
 function TIGPPathGradientBrush.GetBlend() : TArray<TIGPBlend>;
 var
-  ACount       : Integer;
+  ACount      : Integer;
   aFactors    : array of Single;
   aPositions  : array of Single;
 
