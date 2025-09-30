@@ -3,6 +3,7 @@
               Copyright (C) 2008-2025 by Boian Mitov
               mitov@mitov.com
               www.mitov.com
+              www.visuino.com
               www.igdiplus.org
               www.openwire.org
 
@@ -1747,6 +1748,7 @@ type
 
 type
   TPointFHelper = record helper for TPointF
+
     class function  Create( XY : Single ) : TPointF; overload; static; inline;
 
   end;
@@ -1882,9 +1884,9 @@ type
 
   end;
 
-  function GPIntersectRect( const ARect1 : TIGPRect; const ARect2 : TIGPRect ) : TIGPRect; inline;
-  function GPCheckIntersectRect( const ARect1 : TIGPRect; const ARect2 : TIGPRect ) : Boolean; inline;
-  function GPEqualRect( const ARect1 : TIGPRect; const ARect2 : TIGPRect ) : Boolean; inline;
+  function  GPIntersectRect( const ARect1 : TIGPRect; const ARect2 : TIGPRect ) : TIGPRect; inline;
+  function  GPCheckIntersectRect( const ARect1 : TIGPRect; const ARect2 : TIGPRect ) : Boolean; inline;
+  function  GPEqualRect( const ARect1 : TIGPRect; const ARect2 : TIGPRect ) : Boolean; inline;
 
 type
   PGPCharacterRange = ^TIGPCharacterRange;
@@ -3112,12 +3114,12 @@ type
   IGPPathData = interface
     ['{1CA67396-A73B-4621-830D-989DA20EBE36}']
     function  GetCount()  : Integer;
-    function  GetPoints( Index : Integer ) : TPointF;
-    function  GetTypes( Index : Integer )  : TIGPPathPointType;
+    function  GetPoints( AIndex : Integer ) : TPointF;
+    function  GetTypes( AIndex : Integer )  : TIGPPathPointType;
 
-    property Count     : Integer   read GetCount;
-    property Points[ Index : Integer ] : TPointF        read GetPoints;
-    property Types[ Index : Integer ]  : TIGPPathPointType read GetTypes;
+    property Count : Integer                                read GetCount;
+    property Points[ AIndex : Integer ] : TPointF           read GetPoints;
+    property Types[ AIndex : Integer ] : TIGPPathPointType  read GetTypes;
     
   end;
   
@@ -3154,11 +3156,11 @@ type
     // Get the EMF header of the metafile (if it is an EMF)
     function  GetEmfHeader() : PENHMETAHEADER3;
     
-    property MetafileSize : UINT    read GetMetafileSize;
-    property Version      : UINT    read GetVersion;
-    property DpiX         : Single  read GetDpiX;
-    property DpiY         : Single  read GetDpiY;
-    property Bounds       : TIGPRect read GetBounds;
+    property MetafileSize : UINT  read GetMetafileSize;
+    property Version : UINT       read GetVersion;
+    property DpiX : Single        read GetDpiX;
+    property DpiY : Single        read GetDpiY;
+    property Bounds : TIGPRect    read GetBounds;
 
   end;
 
@@ -3243,19 +3245,29 @@ type
     FNativeRegion : GpRegion;
 
   protected
-    function GetNativeRegion() : GpRegion;
+    function  GetNativeRegion() : GpRegion;
     procedure SetNativeRegion( ANativeRegion : GpRegion );
     constructor CreateGdiPlus( ANativeRegion : GpRegion; ADummy : Boolean );
 
   public
-    class function Create() : IGPRegion; overload;
-    class function Create( const ARect : TIGPRectF ) : IGPRegion; overload;
-    class function Create( const ARect : TRectF ) : IGPRegion; overload;
-    class function Create( const ARect : TIGPRect ) : IGPRegion; overload;
-    class function Create( const ARect : TRect ) : IGPRegion; overload;
-    class function Create( const APath : IGPGraphicsPath ) : IGPRegion; overload;
-    class function Create( const ARegionData : array of Byte ) : IGPRegion; overload;
-    class function Create( hRgn : HRGN ) : IGPRegion; overload;
+    class function  Make() : IGPRegion; overload; inline;
+    class function  Make( const ARect : TIGPRectF ) : IGPRegion; overload; inline;
+    class function  Make( const ARect : TRectF ) : IGPRegion; overload; inline;
+    class function  Make( const ARect : TIGPRect ) : IGPRegion; overload; inline;
+    class function  Make( const ARect : TRect ) : IGPRegion; overload; inline;
+    class function  Make( const APath : IGPGraphicsPath ) : IGPRegion; overload; inline;
+    class function  Make( const ARegionData : array of Byte ) : IGPRegion; overload;
+    class function  Make( hRgn : HRGN ) : IGPRegion; overload; inline;
+
+  public
+    class function  Create() : IGPRegion; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TIGPRectF ) : IGPRegion; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TRectF ) : IGPRegion; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TIGPRect ) : IGPRegion; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TRect ) : IGPRegion; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const APath : IGPGraphicsPath ) : IGPRegion; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARegionData : array of Byte ) : IGPRegion; overload; deprecated 'Use Make instead!';
+    class function  Create( hRgn : HRGN ) : IGPRegion; overload; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject(); overload;
@@ -3355,20 +3367,24 @@ type
     function  GetCellDescent( AStyle : Integer ) : UINT16;
     function  GetLineSpacing( AStyle : Integer ) : UINT16;
     function  GetNativeFamily() : GpFontFamily;
-    
+
   end;
-  
+
 {$IFDEF MSWINDOWS}
   TIGPFontFamily = class( TIGPBase, IGPFontFamily )
   protected
     FNativeFamily : GpFontFamily;
-    
+
   protected
     constructor CreateGdiPlus( ANativeFamily : GpFontFamily; ADummy : Boolean );
-    
+
   public
-    class function Create() : IGPFontFamily; overload;
-    class function Create( const AName : WideString; const AFontCollection : IGPFontCollection = NIL ) : IGPFontFamily; overload;
+    class function  Make() : IGPFontFamily; overload; inline;
+    class function  Make( const AName : WideString; const AFontCollection : IGPFontCollection = NIL ) : IGPFontFamily; overload; inline;
+
+  public
+    class function  Create() : IGPFontFamily; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AName : WideString; const AFontCollection : IGPFontCollection = NIL ) : IGPFontFamily; overload; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject(); overload;
@@ -3376,10 +3392,10 @@ type
     destructor  Destroy(); override;
 
   public
-    class function GenericSansSerif() : IGPFontFamily; static;
-    class function GenericSerif() : IGPFontFamily; static;
-    class function GenericMonospace() : IGPFontFamily; static;
-    
+    class function  GenericSansSerif() : IGPFontFamily; static;
+    class function  GenericSerif() : IGPFontFamily; static;
+    class function  GenericMonospace() : IGPFontFamily; static;
+
   public
     function  GetFamilyName( ALanguage : LANGID = 0 ) : String;
     function  Clone() : IGPFontFamily;
@@ -3416,7 +3432,10 @@ type
     function  GetNativeFontCollection() : GpFontCollection;
 
   public
-    class function Create() : IGPFontCollection;
+    class function  Make() : IGPFontCollection; inline;
+
+  public
+    class function  Create() : IGPFontCollection; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject();
@@ -3428,9 +3447,14 @@ type
 
   end;
 
-  TIGPInstalledFontCollection = class(TIGPFontCollection )
+  TIGPInstalledFontCollection = class( TIGPFontCollection )
   public
-    class function Create() : IGPFontCollection;
+    class function  Make() : IGPFontCollection; inline;
+
+  public
+{$WARN SYMBOL_DEPRECATED OFF}
+    class function  Create() : IGPFontCollection; inline; deprecated 'Use Make instead!';
+{$WARN SYMBOL_DEPRECATED ON}
 
   public
     constructor CreateObject();
@@ -3449,7 +3473,12 @@ type
 {$IFDEF MSWINDOWS}
   TIGPPrivateFontCollection = class( TIGPFontCollection, IGPPrivateFontCollection )
   public
-    class function Create() : IGPPrivateFontCollection;
+    class function  Make() : IGPPrivateFontCollection; inline;
+
+  public
+{$WARN SYMBOL_DEPRECATED OFF}
+    class function  Create() : IGPPrivateFontCollection; inline; deprecated 'Use Make instead!';
+{$WARN SYMBOL_DEPRECATED ON}
 
   public
     constructor CreateObject();
@@ -3499,12 +3528,20 @@ type
     constructor CreateGdiPlus( AFont : GpFont; ADummy : Boolean );
 
   public
-    class function Create( hdc : HDC ) : IGPFont; overload;
-    class function Create( hdc : HDC; ALogFont : PLogFontA ) : IGPFont; overload;
-    class function Create( hdc : HDC; ALogFont : PLogFontW ) : IGPFont; overload;
-    class function Create( hdc : HDC; hfont : HFONT ) : IGPFont; overload;
-    class function Create( const AFamily : IGPFontFamily; emSize : Single; const AStyle : TFontStyles = []; AUnit : TIGPUnit = TIGPUnit.Point ) : IGPFont; overload;
-    class function Create( const AFamilyName : WideString; emSize : Single; const AStyle : TFontStyles = []; AUnit : TIGPUnit = TIGPUnit.Point; const AFontCollection : IGPFontCollection = NIL ) : IGPFont; overload;
+    class function  Make( hdc : HDC ) : IGPFont; overload; inline;
+    class function  Make( hdc : HDC; ALogFont : PLogFontA ) : IGPFont; overload; inline;
+    class function  Make( hdc : HDC; ALogFont : PLogFontW ) : IGPFont; overload; inline;
+    class function  Make( hdc : HDC; hfont : HFONT ) : IGPFont; overload; inline;
+    class function  Make( const AFamily : IGPFontFamily; emSize : Single; const AStyle : TFontStyles = []; AUnit : TIGPUnit = TIGPUnit.Point ) : IGPFont; overload; inline;
+    class function  Make( const AFamilyName : WideString; emSize : Single; const AStyle : TFontStyles = []; AUnit : TIGPUnit = TIGPUnit.Point; const AFontCollection : IGPFontCollection = NIL ) : IGPFont; overload; inline;
+
+  public
+    class function  Create( hdc : HDC ) : IGPFont; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( hdc : HDC; ALogFont : PLogFontA ) : IGPFont; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( hdc : HDC; ALogFont : PLogFontW ) : IGPFont; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( hdc : HDC; hfont : HFONT ) : IGPFont; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFamily : IGPFontFamily; emSize : Single; const AStyle : TFontStyles = []; AUnit : TIGPUnit = TIGPUnit.Point ) : IGPFont; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFamilyName : WideString; emSize : Single; const AStyle : TFontStyles = []; AUnit : TIGPUnit = TIGPUnit.Point; const AFontCollection : IGPFontCollection = NIL ) : IGPFont; overload; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject( hdc : HDC ); overload;
@@ -3601,7 +3638,7 @@ type
     property PropertyIdList       : TArray<TPropID> read GetPropertyIdList;
     property Graphics             : IGPGraphics     read GetGraphics;
 {$ELSE}
-    function GetGraphics() : IGPGraphics;
+    function  GetGraphics() : IGPGraphics;
     property Graphics             : IGPGraphics     read GetGraphics;
 {$ENDIF}
 
@@ -3617,13 +3654,22 @@ type
     function  GetNativeImage() : GpImage;
 
   protected
-    class function CreateGdiPlus( ANativeImage : GpImage; ADummy : Boolean ) : IGPImage;
+    class function  MakeGdiPlus( ANativeImage : GpImage; ADummy : Boolean ) : IGPImage; inline;
+
+  protected
+    class function  CreateGdiPlus( ANativeImage : GpImage; ADummy : Boolean ) : IGPImage; inline; deprecated 'Use MakeGdiPlus instead!';
 
   public
-    class function Create( const AFileName : WideString; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage; overload;
-    class function Create( const AStream : IStream; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage; overload;
-    class function Create( AStream : TStream; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage; overload;
-    class function Create( const ABytes : TBytes; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage; overload;
+    class function  Make( const AFileName : WideString; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage; overload; inline;
+    class function  Make( const AStream : IStream; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage; overload; inline;
+    class function  Make( AStream : TStream; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage; overload; inline;
+    class function  Make( const ABytes : TBytes; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage; overload; inline;
+
+  public
+    class function  Create( const AFileName : WideString; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AStream : IStream; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( AStream : TStream; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ABytes : TBytes; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage; overload; inline; deprecated 'Use Make instead!';
 
   protected
     constructor CreateGdiPlusObject( ANativeImage : GpImage; ADummy : Boolean );
@@ -3744,9 +3790,13 @@ type
     function  CloneF( const ARect : TIGPRectF; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
     function  CloneF( const ARect : TRectF; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
     function  CloneF( x, y, AWidth, AHeight : Single; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
+    function  ForGraphics( const AOnGraphics : TIGPGetGraphicsProc ) : IGPBitmap;
     function  LockBits( const ARect : TIGPRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData; overload;
     function  LockBits( const ARect : TRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData; overload;
     function  LockBits( AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData; overload;
+    function  ForLockBits( const ARect : TIGPRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat; const AProc : TIGPConstProc<IGPBitmapData> ) : IGPBitmap; overload;
+    function  ForLockBits( const ARect : TRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat; const AProc : TIGPConstProc<IGPBitmapData> ) : IGPBitmap; overload;
+    function  ForLockBits( AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat; const AProc : TIGPConstProc<IGPBitmapData> ) : IGPBitmap; overload;
     function  GetPixel( x, y : Integer ) : TAlphaColor;
     function  SetPixel( x, y : Integer; AColor : TAlphaColor ) : IGPBitmap;
     procedure SetPixelProp( x, y : Integer; AColor : TAlphaColor );
@@ -3762,26 +3812,47 @@ type
   TIGPBitmap = class( TIGPImage, IGPBitmap )
   protected
     procedure LockBitsInternal( const ARect : TIGPRect; AFlags : Cardinal; AFormat : TIGPPixelFormat; var AData : TIGPBitmapDataRecord );
-    function  UnlockBits( var lockedBitmapData : TIGPBitmapDataRecord ) : TIGPBitmap;
+    procedure UnlockBits( var lockedBitmapData : TIGPBitmapDataRecord );
 
   protected
-    class function CreateGdiPlus( ANativeBitmap : GpBitmap; ADummy : Boolean ) : IGPBitmap;
+    class function  MakeGdiPlus( ANativeBitmap : GpBitmap; ADummy : Boolean ) : IGPBitmap; inline;
+
+  protected
+{$WARN SYMBOL_DEPRECATED OFF}
+    class function  CreateGdiPlus( ANativeBitmap : GpBitmap; ADummy : Boolean ) : IGPBitmap; inline; deprecated 'Use MakeGdiPlus instead!';
+{$WARN SYMBOL_DEPRECATED ON}
 
   public
-    class function Create( const AFileName : WideString; AUseEmbeddedColorManagement : Boolean = False ) : IGPBitmap; overload;
-    class function Create( const AStream : IStream; AUseEmbeddedColorManagement : Boolean = False ) : IGPBitmap; overload;
+    class function  Make( const AFileName : WideString; AUseEmbeddedColorManagement : Boolean = False ) : IGPBitmap; overload; inline;
+    class function  Make( const AStream : IStream; AUseEmbeddedColorManagement : Boolean = False ) : IGPBitmap; overload; inline;
 
   public
-    class function Create( AWidth, AHeight, AStride : Integer; AFormat : TIGPPixelFormat; AScan0 : PBYTE ) : IGPBitmap;  overload;
-    class function Create( AWidth, AHeight : Integer; AFormat : TIGPPixelFormat = GPPixelFormat32bppARGB ) : IGPBitmap;  overload;
-    class function Create( AWidth, AHeight : Integer; ATarget : TIGPGraphics ) : IGPBitmap; overload;
+    class function  Create( const AFileName : WideString; AUseEmbeddedColorManagement : Boolean = False ) : IGPBitmap; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AStream : IStream; AUseEmbeddedColorManagement : Boolean = False ) : IGPBitmap; overload; inline; deprecated 'Use Make instead!';
 
   public
-//    class function Create( surface : IDirectDrawSurface7); overload;
-    class function CreateData( var AGdiBitmapInfo : TBITMAPINFO; AGdiBitmapData : Pointer ) : IGPBitmap;
-    class function CreateHBITMAP( AHbm : HBITMAP; AHpal : HPALETTE ) : IGPBitmap;
-    class function CreateHICON( AHicon : HICON ) : IGPBitmap;
-    class function CreateRes( AHInstance : HMODULE; const ABitmapName : WideString ) : IGPBitmap;
+    class function  Make( AWidth, AHeight, AStride : Integer; AFormat : TIGPPixelFormat; AScan0 : PBYTE ) : IGPBitmap;  overload; inline;
+    class function  Make( AWidth, AHeight : Integer; AFormat : TIGPPixelFormat = GPPixelFormat32bppARGB ) : IGPBitmap;  overload; inline;
+    class function  Make( AWidth, AHeight : Integer; ATarget : TIGPGraphics ) : IGPBitmap; overload; inline;
+
+  public
+    class function  Create( AWidth, AHeight, AStride : Integer; AFormat : TIGPPixelFormat; AScan0 : PBYTE ) : IGPBitmap;  overload; inline; deprecated 'Use Make instead!';
+    class function  Create( AWidth, AHeight : Integer; AFormat : TIGPPixelFormat = GPPixelFormat32bppARGB ) : IGPBitmap;  overload; inline; deprecated 'Use Make instead!';
+    class function  Create( AWidth, AHeight : Integer; ATarget : TIGPGraphics ) : IGPBitmap; overload; inline; deprecated 'Use Make instead!';
+
+  public
+//    class function  Make( surface : IDirectDrawSurface7) : IGPBitmap; overload; inline;
+    class function  MakeData( var AGdiBitmapInfo : TBITMAPINFO; AGdiBitmapData : Pointer ) : IGPBitmap; inline;
+    class function  MakeHBITMAP( AHbm : HBITMAP; AHpal : HPALETTE ) : IGPBitmap; inline;
+    class function  MakeHICON( AHicon : HICON ) : IGPBitmap; inline;
+    class function  MakeRes( AHInstance : HMODULE; const ABitmapName : WideString ) : IGPBitmap; inline;
+    
+  public
+//    class function  Create( surface : IDirectDrawSurface7); overload; inline; deprecated 'Use Make instead!';
+    class function  CreateData( var AGdiBitmapInfo : TBITMAPINFO; AGdiBitmapData : Pointer ) : IGPBitmap; inline; deprecated 'Use MakeData instead!';
+    class function  CreateHBITMAP( AHbm : HBITMAP; AHpal : HPALETTE ) : IGPBitmap; inline; deprecated 'Use MakeHBITMAP instead!';
+    class function  CreateHICON( AHicon : HICON ) : IGPBitmap; inline; deprecated 'Use MakeHICON instead!';
+    class function  CreateRes( AHInstance : HMODULE; const ABitmapName : WideString ) : IGPBitmap; inline; deprecated 'Use MakeRes instead!';
     
   protected
     constructor CreateGdiPlusObject( ANativeBitmap : GpBitmap; ADummy : Boolean );
@@ -3809,9 +3880,13 @@ type
     function  CloneF( const ARect : TIGPRectF; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
     function  CloneF( const ARect : TRectF; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
     function  CloneF( x, y, AWidth, AHeight : Single; AFormat : TIGPPixelFormat ) : IGPBitmap; overload;
+    function  ForGraphics( const AOnGraphics : TIGPGetGraphicsProc ) : IGPBitmap;
     function  LockBits( const ARect : TIGPRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData; overload;
     function  LockBits( const ARect : TRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData; overload;
     function  LockBits( AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData; overload;
+    function  ForLockBits( const ARect : TIGPRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat; const AProc : TIGPConstProc<IGPBitmapData> ) : IGPBitmap; overload;
+    function  ForLockBits( const ARect : TRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat; const AProc : TIGPConstProc<IGPBitmapData> ) : IGPBitmap; overload;
+    function  ForLockBits( AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat; const AProc : TIGPConstProc<IGPBitmapData> ) : IGPBitmap; overload;
     function  GetPixel( x, y : Integer ) : TAlphaColor;
     function  SetPixel( x, y : Integer; AColor : TAlphaColor ) : IGPBitmap;
     procedure SetPixelProp( x, y : Integer; AColor : TAlphaColor );
@@ -3832,7 +3907,10 @@ type
 {$ELSE}
   TIGPBitmap = class( TIGPImage, IGPBitmap )
   public
-    class function Create( AWidth, AHeight : Integer; AFormat : TIGPPixelFormat = GPPixelFormat32bppARGB ) : IGPBitmap;  overload;
+    class function  Make( AWidth, AHeight : Integer; AFormat : TIGPPixelFormat = GPPixelFormat32bppARGB ) : IGPBitmap;  overload; inline;
+
+  public
+    class function  Create( AWidth, AHeight : Integer; AFormat : TIGPPixelFormat = GPPixelFormat32bppARGB ) : IGPBitmap; overload; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject( AWidth, AHeight : Integer; AFormat : TIGPPixelFormat = GPPixelFormat32bppARGB );  overload;
@@ -3884,11 +3962,18 @@ type
     procedure SetNativeCap( ANativeCap : GpCustomLineCap );
 
   protected
-    class function CreateGdiPlus( ANativeCap : GpCustomLineCap; ADummy : Boolean ) : IGPCustomLineCap;
+    class function  MakeGdiPlus( ANativeCap : GpCustomLineCap; ADummy : Boolean ) : IGPCustomLineCap; inline;
+
+  protected
+    class function  CreateGdiPlus( ANativeCap : GpCustomLineCap; ADummy : Boolean ) : IGPCustomLineCap; inline; deprecated 'Use MakeGdiPlus instead!';
 
   public
-    class function Create() : IGPCustomLineCap; overload;
-    class function Create( const AFillPath : IGPGraphicsPath; const AStrokePath : IGPGraphicsPath; ABaseCap : TIGPLineCap = TIGPLineCap.Flat; ABaseInset : Single = 0 ) : IGPCustomLineCap; overload;
+    class function  Make() : IGPCustomLineCap; overload; inline;
+    class function  Make( const AFillPath : IGPGraphicsPath; const AStrokePath : IGPGraphicsPath; ABaseCap : TIGPLineCap = TIGPLineCap.Flat; ABaseInset : Single = 0 ) : IGPCustomLineCap; overload; inline;
+
+  public
+    class function  Create() : IGPCustomLineCap; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFillPath : IGPGraphicsPath; const AStrokePath : IGPGraphicsPath; ABaseCap : TIGPLineCap = TIGPLineCap.Flat; ABaseInset : Single = 0 ) : IGPCustomLineCap; overload; inline; deprecated 'Use Make instead!';
 
   protected
     constructor CreateGdiPlusObject( ANativeCap : GpCustomLineCap; ADummy : Boolean );
@@ -3927,7 +4012,7 @@ type
   IGPCachedBitmap = interface
     ['{96A926BE-354E-4A88-B4B3-0DB3A648D181}']
     
-    function GetNativeCachedBitmap() : GpCachedBitmap;
+    function  GetNativeCachedBitmap() : GpCachedBitmap;
     
   end;
 
@@ -3937,10 +4022,13 @@ type
     FNativeCachedBitmap : GpCachedBitmap;
 
   protected
-    function GetNativeCachedBitmap() : GpCachedBitmap;
+    function  GetNativeCachedBitmap() : GpCachedBitmap;
 
   public
-    class function Create( const ABitmap : IGPBitmap; const AGraphics : IGPGraphics ) : IGPCachedBitmap;
+    class function  Make( const ABitmap : IGPBitmap; const AGraphics : IGPGraphics ) : IGPCachedBitmap; inline;
+
+  public
+    class function  Create( const ABitmap : IGPBitmap; const AGraphics : IGPGraphics ) : IGPCachedBitmap; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject( const ABitmap : IGPBitmap; const AGraphics : IGPGraphics ); reintroduce;
@@ -4019,10 +4107,16 @@ type
     procedure SetNativeImageAttr( ANativeImageAttr : GpImageAttributes );
 
   protected
-    class function CreateGdiPlus( AImageAttr : GpImageAttributes; ADummy : Boolean ) : IGPImageAttributes;
+    class function  MakeGdiPlus( AImageAttr : GpImageAttributes; ADummy : Boolean ) : IGPImageAttributes; inline;
+
+  protected
+    class function  CreateGdiPlus( AImageAttr : GpImageAttributes; ADummy : Boolean ) : IGPImageAttributes; inline; deprecated 'Use MakeGdiPlus instead!';
 
   public
-    class function Create() : IGPImageAttributes;
+    class function  Make() : IGPImageAttributes; inline;
+
+  public
+    class function  Create() : IGPImageAttributes; inline; deprecated 'Use Make instead!';
 
   protected
     constructor CreateGdiPlusObject( AImageAttr : GpImageAttributes; ADummy : Boolean );
@@ -4126,16 +4220,28 @@ type
     function  GetNativeMatrix() : GpMatrix;
 
   protected
-    class function CreateGdiPlus( ANativeMatrix : GpMatrix; ADummy : Boolean ) : IGPMatrix;
+    class function  MakeGdiPlus( ANativeMatrix : GpMatrix; ADummy : Boolean ) : IGPMatrix; inline;
+    
+  protected
+    class function  CreateGdiPlus( ANativeMatrix : GpMatrix; ADummy : Boolean ) : IGPMatrix; inline; deprecated 'Use MakeGdiPlus instead!';
     
   public
     // Default class function is set to identity matrix.
-    class function Create() : IGPMatrix; overload;
-    class function Create( m11, m12, m21, m22, dx, dy : Single ) : IGPMatrix; overload;
-    class function Create( const ARect : TIGPRectF; const ADstplg : TPointF ) : IGPMatrix; overload;
-    class function Create( const ARect : TRectF; const ADstplg : TPointF ) : IGPMatrix; overload;
-    class function Create( const ARect : TIGPRect; const ADstplg : TPoint ) : IGPMatrix; overload;
-    class function Create( const ARect : TRect; const ADstplg : TPoint ) : IGPMatrix; overload;
+    class function  Make() : IGPMatrix; overload; inline;
+    class function  Make( m11, m12, m21, m22, dx, dy : Single ) : IGPMatrix; overload; inline;
+    class function  Make( const ARect : TIGPRectF; const ADstplg : TPointF ) : IGPMatrix; overload; inline;
+    class function  Make( const ARect : TRectF; const ADstplg : TPointF ) : IGPMatrix; overload; inline;
+    class function  Make( const ARect : TIGPRect; const ADstplg : TPoint ) : IGPMatrix; overload; inline;
+    class function  Make( const ARect : TRect; const ADstplg : TPoint ) : IGPMatrix; overload; inline;
+
+  public
+    // Default class function is set to identity matrix.
+    class function  Create() : IGPMatrix; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( m11, m12, m21, m22, dx, dy : Single ) : IGPMatrix; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TIGPRectF; const ADstplg : TPointF ) : IGPMatrix; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TRectF; const ADstplg : TPointF ) : IGPMatrix; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TIGPRect; const ADstplg : TPoint ) : IGPMatrix; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TRect; const ADstplg : TPoint ) : IGPMatrix; overload; inline; deprecated 'Use Make instead!';
 
   protected
     constructor CreateGdiPlusObject( ANativeMatrix : GpMatrix; ADummy : Boolean );
@@ -4202,7 +4308,10 @@ type
     procedure Restore();
 
   public
-    class function Create( const ATransformable : IGPTransformable ) : IGPMatrixStore;
+    class function  Make( const ATransformable : IGPTransformable ) : IGPMatrixStore; inline;
+
+  public
+    class function  Create( const ATransformable : IGPTransformable ) : IGPMatrixStore; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject( const ATransformable : IGPTransformable );
@@ -4219,9 +4328,9 @@ type
 
   IGPBrush = interface
     ['{C5A51119-107A-4EE4-8989-83659A5149A1}']
-    function Clone() : IGPBrush;
-    function GetType() : TIGPBrushType;
-    function GetNativeBrush() : GpBrush;
+    function  Clone() : IGPBrush;
+    function  GetType() : TIGPBrushType;
+    function  GetNativeBrush() : GpBrush;
 
     property BrushType : TIGPBrushType read GetType;
     
@@ -4278,10 +4387,16 @@ type
     function  GetNativeBrush() : GpBrush;
 
   protected
-    class function Create( ANativeBrush : GpBrush ) : IGPBrush; overload;
+    class function  Make( ANativeBrush : GpBrush ) : IGPBrush; overload; inline;
+
+  protected
+    class function  Create( ANativeBrush : GpBrush ) : IGPBrush; overload; inline; deprecated 'Use Make instead!';
 
   public
-    class function Create() : IGPBrush; overload;
+    class function  Make() : IGPBrush; overload; inline;
+
+  public
+    class function  Create() : IGPBrush; overload; inline; deprecated 'Use Make instead!';
 
   protected
     constructor CreateObject( ANativeBrush : GpBrush ); overload;
@@ -4291,8 +4406,8 @@ type
     destructor  Destroy(); override;
 
   public
-    function Clone() : IGPBrush; virtual;
-    function GetType() : TIGPBrushType;
+    function  Clone() : IGPBrush; virtual;
+    function  GetType() : TIGPBrushType;
     
   end;
 {$ENDIF}
@@ -4320,8 +4435,12 @@ type
     procedure SetColorProp( AColor : TAlphaColor );
 
   public
-    class function Create( AColor : TAlphaColor ) : IGPSolidBrush; overload;
-    class function Create() : IGPSolidBrush; overload;
+    class function  Make( AColor : TAlphaColor ) : IGPSolidBrush; overload; inline;
+    class function  Make() : IGPSolidBrush; overload; inline;
+
+  public
+    class function  Create( AColor : TAlphaColor ) : IGPSolidBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create() : IGPSolidBrush; overload; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject( AColor : TAlphaColor ); overload;
@@ -4340,6 +4459,7 @@ type
     function  ResetTransform() : IGPTransformable;
     function  MultiplyTransform( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
+    function  TranslateTransformXY( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  ScaleTransformXY( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  RotateTransform( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
@@ -4357,7 +4477,8 @@ type
     function  SetTransform( const AMatrix : IGPMatrix ) : IGPTextureBrush;
     function  ResetTransform() : IGPTextureBrush;
     function  MultiplyTransform( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush;
-    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush;
+    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush; overload;
+    function  TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush; overload;
     function  ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush; overload;
     function  ScaleTransform( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush; overload;
     function  RotateTransform( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush;
@@ -4375,18 +4496,32 @@ type
 {$IFDEF MSWINDOWS}
   TIGPTextureBrush = class( TIGPBrush, IGPTextureBrush, IGPTransformable )
   public
-    class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode = TIGPWrapMode.Tile ) : IGPTextureBrush; overload;
-    class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRectF ) : IGPTextureBrush; overload;
-    class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRectF ) : IGPTextureBrush; overload;
-    class function Create( const AImage : IGPImage; const ADstRect : TIGPRectF; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload;
-    class function Create( const AImage : IGPImage; const ADstRect : TRectF; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload;
-    class function Create( const AImage : IGPImage; const ADstRect : TIGPRect; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload;
-    class function Create( const AImage : IGPImage; const ADstRect : TRect; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload;
-    class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRect ) : IGPTextureBrush; overload;
-    class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRect ) : IGPTextureBrush; overload;
-    class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; ADstX, ADstY, ADstWidth, ADstHeight : Single ) : IGPTextureBrush; overload;
-    class function Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; ADstX, ADstY, ADstWidth, ADstHeight : Integer ) : IGPTextureBrush; overload;
-    class function Create() : IGPTextureBrush; overload;
+    class function  Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode = TIGPWrapMode.Tile ) : IGPTextureBrush; overload; inline;
+    class function  Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRectF ) : IGPTextureBrush; overload; inline;
+    class function  Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRectF ) : IGPTextureBrush; overload; inline;
+    class function  Make( const AImage : IGPImage; const ADstRect : TIGPRectF; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload; inline;
+    class function  Make( const AImage : IGPImage; const ADstRect : TRectF; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload; inline;
+    class function  Make( const AImage : IGPImage; const ADstRect : TIGPRect; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload; inline;
+    class function  Make( const AImage : IGPImage; const ADstRect : TRect; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload; inline;
+    class function  Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRect ) : IGPTextureBrush; overload; inline;
+    class function  Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRect ) : IGPTextureBrush; overload; inline;
+    class function  Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode; ADstX, ADstY, ADstWidth, ADstHeight : Single ) : IGPTextureBrush; overload; inline;
+    class function  Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode; ADstX, ADstY, ADstWidth, ADstHeight : Integer ) : IGPTextureBrush; overload; inline;
+    class function  Make() : IGPTextureBrush; overload;
+
+  public
+    class function  Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode = TIGPWrapMode.Tile ) : IGPTextureBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRectF ) : IGPTextureBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRectF ) : IGPTextureBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AImage : IGPImage; const ADstRect : TIGPRectF; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AImage : IGPImage; const ADstRect : TRectF; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AImage : IGPImage; const ADstRect : TIGPRect; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AImage : IGPImage; const ADstRect : TRect; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRect ) : IGPTextureBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRect ) : IGPTextureBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; ADstX, ADstY, ADstWidth, ADstHeight : Single ) : IGPTextureBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode; ADstX, ADstY, ADstWidth, ADstHeight : Integer ) : IGPTextureBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create() : IGPTextureBrush; overload; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject( const AImage : IGPImage; AWrapMode : TIGPWrapMode = TIGPWrapMode.Tile ); overload;
@@ -4407,6 +4542,7 @@ type
     function  ResetTransformT() : IGPTransformable;
     function  MultiplyTransformT( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  TranslateTransformT( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
+    function  TranslateTransformXYT( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  ScaleTransformT( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  ScaleTransformXYT( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  RotateTransformT( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
@@ -4415,6 +4551,7 @@ type
     function  IGPTransformable.ResetTransform = ResetTransformT;
     function  IGPTransformable.MultiplyTransform = MultiplyTransformT;
     function  IGPTransformable.TranslateTransform = TranslateTransformT;
+    function  IGPTransformable.TranslateTransformXY = TranslateTransformXYT;
     function  IGPTransformable.ScaleTransform = ScaleTransformT;
     function  IGPTransformable.ScaleTransformXY = ScaleTransformXYT;
     function  IGPTransformable.RotateTransform = RotateTransformT;
@@ -4425,7 +4562,8 @@ type
     function  GetTransform() : IGPMatrix;
     function  ResetTransform() : IGPTextureBrush;
     function  MultiplyTransform( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush;
-    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush;
+    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush; overload;
+    function  TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush; overload;
     function  ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush; overload;
     function  ScaleTransform( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush; overload;
     function  RotateTransform( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush;
@@ -4463,6 +4601,7 @@ type
     function  ResetTransform() : IGPLinearGradientBrush; overload;
     function  MultiplyTransform( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush;
     function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush; overload;
+    function  TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush; overload;
     function  ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush; overload;
     function  ScaleTransform( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush; overload;
     function  RotateTransform( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush; overload;
@@ -4474,17 +4613,30 @@ type
 {$IFDEF MSWINDOWS}
   TIGPLinearGradientBrush = class( TIGPBrush, IGPLinearGradientBrush, IGPTransformable )
   public
-    class function Create() : IGPLinearGradientBrush; overload;
-    class function Create( const APoint1, APoint2 : TPointF; AColor1, AColor2 : TAlphaColor ) : IGPLinearGradientBrush; overload;
-    class function Create( const APoint1, APoint2 : TPoint; AColor1, AColor2 : TAlphaColor ) : IGPLinearGradientBrush; overload;
-    class function Create( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload;
-    class function Create( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload;
-    class function Create( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload;
-    class function Create( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload;
-    class function Create( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload;
-    class function Create( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload;
-    class function Create( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload;
-    class function Create( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload;
+    class function  Make() : IGPLinearGradientBrush; overload; inline;
+    class function  Make( const APoint1, APoint2 : TPointF; AColor1, AColor2 : TAlphaColor ) : IGPLinearGradientBrush; overload; inline;
+    class function  Make( const APoint1, APoint2 : TPoint; AColor1, AColor2 : TAlphaColor ) : IGPLinearGradientBrush; overload; inline;
+    class function  Make( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload; inline;
+    class function  Make( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload; inline;
+    class function  Make( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload; inline;
+    class function  Make( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload; inline;
+    class function  Make( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload; inline;
+    class function  Make( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload; inline;
+    class function  Make( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload; inline;
+    class function  Make( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload; inline;
+
+  public
+    class function  Create() : IGPLinearGradientBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const APoint1, APoint2 : TPointF; AColor1, AColor2 : TAlphaColor ) : IGPLinearGradientBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const APoint1, APoint2 : TPoint; AColor1, AColor2 : TAlphaColor ) : IGPLinearGradientBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush; overload; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject(); overload;
@@ -4527,7 +4679,8 @@ type
     function  GetTransform() : IGPMatrix;
     function  ResetTransform() : IGPLinearGradientBrush;
     function  MultiplyTransform( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush;
-    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush;
+    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush; overload;
+    function  TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush; overload;
     function  ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush; overload;
     function  ScaleTransform( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush; overload;
     function  RotateTransform( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush;
@@ -4541,6 +4694,7 @@ type
     function  ResetTransformT() : IGPTransformable;
     function  MultiplyTransformT( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  TranslateTransformT( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
+    function  TranslateTransformXYT( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  ScaleTransformT( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  ScaleTransformXYT( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  RotateTransformT( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
@@ -4549,6 +4703,7 @@ type
     function  IGPTransformable.ResetTransform = ResetTransformT;
     function  IGPTransformable.MultiplyTransform = MultiplyTransformT;
     function  IGPTransformable.TranslateTransform = TranslateTransformT;
+    function  IGPTransformable.TranslateTransformXY = TranslateTransformXYT;
     function  IGPTransformable.ScaleTransform = ScaleTransformT;
     function  IGPTransformable.ScaleTransformXY = ScaleTransformXYT;
     function  IGPTransformable.RotateTransform = RotateTransformT;
@@ -4582,10 +4737,14 @@ type
   end;
   
 {$IFDEF MSWINDOWS}
-  TIGPHatchBrush = class(TIGPBrush, IGPHatchBrush)
+  TIGPHatchBrush = class( TIGPBrush, IGPHatchBrush )
   public
-    class function Create() : IGPHatchBrush; overload;
-    class function Create( AHatchStyle : TIGPHatchStyle; AForeColor : TAlphaColor; ABackColor : TAlphaColor = aclBlack ) : IGPHatchBrush; overload;
+    class function  Make() : IGPHatchBrush; overload; inline;
+    class function  Make( AHatchStyle : TIGPHatchStyle; AForeColor : TAlphaColor; ABackColor : TAlphaColor = aclBlack ) : IGPHatchBrush; overload; inline;
+
+  public
+    class function  Create() : IGPHatchBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( AHatchStyle : TIGPHatchStyle; AForeColor : TAlphaColor; ABackColor : TAlphaColor = aclBlack ) : IGPHatchBrush; overload; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject(); overload;
@@ -4667,7 +4826,8 @@ type
     
     function  ResetTransform() : IGPPen;
     function  MultiplyTransform( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen;
-    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen;
+    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen; overload;
+    function  TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen; overload;
     function  ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen; overload;
     function  ScaleTransform( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen; overload;
     function  RotateTransform( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen;
@@ -4736,11 +4896,18 @@ type
     function  GetNativePen() : GpPen;
 
   protected
-    class function CreateGdiPlus( ANativePen : GpPen; ADummy : Boolean ) : IGPPen;
+    class function  MakeGdiPlus( ANativePen : GpPen; ADummy : Boolean ) : IGPPen; inline;
+
+  protected
+    class function  CreateGdiPlus( ANativePen : GpPen; ADummy : Boolean ) : IGPPen; inline; deprecated 'Use MakeGdiPlus instead!';
 
   public
-    class function Create( AColor : TAlphaColor; AWidth : Single = 1.0 ) : IGPPen; overload;
-    class function Create( const ABrush : IGPBrush; AWidth : Single = 1.0 ) : IGPPen; overload;
+    class function  Make( AColor : TAlphaColor; AWidth : Single = 1.0 ) : IGPPen; overload; inline;
+    class function  Make( const ABrush : IGPBrush; AWidth : Single = 1.0 ) : IGPPen; overload; inline;
+
+  public
+    class function  Create( AColor : TAlphaColor; AWidth : Single = 1.0 ) : IGPPen; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const ABrush : IGPBrush; AWidth : Single = 1.0 ) : IGPPen; overload; inline; deprecated 'Use Make instead!';
 
   protected
     constructor CreateGdiPlusObject( ANativePen : GpPen; ADummy : Boolean );
@@ -4798,7 +4965,8 @@ type
     
     function  ResetTransform() : IGPPen;
     function  MultiplyTransform( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen;
-    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen;
+    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen; overload;
+    function  TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen; overload;
     function  ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen; overload;
     function  ScaleTransform( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen; overload;
     function  RotateTransform( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen;
@@ -4836,6 +5004,7 @@ type
     function  ResetTransformT() : IGPTransformable;
     function  MultiplyTransformT( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  TranslateTransformT( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
+    function  TranslateTransformXYT( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  ScaleTransformT( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  ScaleTransformXYT( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  RotateTransformT( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
@@ -4844,6 +5013,7 @@ type
     function  IGPTransformable.ResetTransform = ResetTransformT;
     function  IGPTransformable.MultiplyTransform = MultiplyTransformT;
     function  IGPTransformable.TranslateTransform = TranslateTransformT;
+    function  IGPTransformable.TranslateTransformXY = TranslateTransformXYT;
     function  IGPTransformable.ScaleTransform = ScaleTransformT;
     function  IGPTransformable.ScaleTransformXY = ScaleTransformXYT;
     function  IGPTransformable.RotateTransform = RotateTransformT;
@@ -4919,17 +5089,24 @@ type
   protected
     FNativeFormat : GpStringFormat;
 
-    function GetNativeFormat() : GpStringFormat;
+    function  GetNativeFormat() : GpStringFormat;
      
   protected
     procedure Assign( source : TIGPStringFormat );
 
   protected
-    class function CreateGdiPlus( clonedStringFormat : GpStringFormat; ADummy : Boolean ) : IGPStringFormat;
+    class function  MakeGdiPlus( clonedStringFormat : GpStringFormat; ADummy : Boolean ) : IGPStringFormat; inline;
+
+  protected
+    class function  CreateGdiPlus( clonedStringFormat : GpStringFormat; ADummy : Boolean ) : IGPStringFormat; inline; deprecated 'Use MakeGdiPlus instead!';
 
   public
-    class function Create( const AFormatFlags : TIGPStringFormatFlags = []; ALanguage : LANGID = LANG_NEUTRAL ) : IGPStringFormat; overload;
-    class function Create( AFormat : TIGPStringFormat ) : IGPStringFormat; overload;
+    class function  Make( const AFormatFlags : TIGPStringFormatFlags = []; ALanguage : LANGID = LANG_NEUTRAL ) : IGPStringFormat; overload; inline;
+    class function  Make( AFormat : TIGPStringFormat ) : IGPStringFormat; overload; inline;
+
+  public
+    class function  Create( const AFormatFlags : TIGPStringFormatFlags = []; ALanguage : LANGID = LANG_NEUTRAL ) : IGPStringFormat; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( AFormat : TIGPStringFormat ) : IGPStringFormat; overload; inline; deprecated 'Use Make instead!';
 
   protected
     constructor CreateGdiPlusObject( clonedStringFormat : GpStringFormat; ADummy : Boolean );
@@ -4977,8 +5154,8 @@ type
     function  GetMeasurableCharacterRangeCount() : Integer;
 
   public
-    class function GenericDefault() : IGPStringFormat;
-    class function GenericTypographic() : IGPStringFormat;
+    class function  GenericDefault() : IGPStringFormat;
+    class function  GenericTypographic() : IGPStringFormat;
 
   end;
 {$ENDIF}
@@ -5138,13 +5315,22 @@ type
     procedure SetNativePath( ANativePath : GpPath );
 
   protected
-    class function CreateGdiPlus( ANativePath : GpPath; ADummy : Boolean ) : IGPGraphicsPath;
+    class function  MakeGdiPlus( ANativePath : GpPath; ADummy : Boolean ) : IGPGraphicsPath; inline;
+
+  protected
+    class function  CreateGdiPlus( ANativePath : GpPath; ADummy : Boolean ) : IGPGraphicsPath; inline; deprecated 'Use MakeGdiPlus instead!';
 
   public
-    class function Create( const APath : IGPGraphicsPath ) : IGPGraphicsPath; overload;
-    class function Create( AFillMode : TIGPFillMode = TIGPFillMode.Alternate ) : IGPGraphicsPath; overload;
-    class function Create( const APoints : array of TPointF; const ATypes : array of Byte; AFillMode : TIGPFillMode = TIGPFillMode.Alternate ) : IGPGraphicsPath; overload;
-    class function Create( const APoints : array of TPoint; const ATypes : array of Byte; AFillMode : TIGPFillMode = TIGPFillMode.Alternate ) : IGPGraphicsPath; overload;
+    class function  Make( const APath : IGPGraphicsPath ) : IGPGraphicsPath; overload; inline;
+    class function  Make( AFillMode : TIGPFillMode = TIGPFillMode.Alternate ) : IGPGraphicsPath; overload; inline;
+    class function  Make( const APoints : array of TPointF; const ATypes : array of Byte; AFillMode : TIGPFillMode = TIGPFillMode.Alternate ) : IGPGraphicsPath; overload;
+    class function  Make( const APoints : array of TPoint; const ATypes : array of Byte; AFillMode : TIGPFillMode = TIGPFillMode.Alternate ) : IGPGraphicsPath; overload;
+
+  public
+    class function  Create( const APath : IGPGraphicsPath ) : IGPGraphicsPath; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( AFillMode : TIGPFillMode = TIGPFillMode.Alternate ) : IGPGraphicsPath; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const APoints : array of TPointF; const ATypes : array of Byte; AFillMode : TIGPFillMode = TIGPFillMode.Alternate ) : IGPGraphicsPath; overload; deprecated 'Use Make instead!';
+    class function  Create( const APoints : array of TPoint; const ATypes : array of Byte; AFillMode : TIGPFillMode = TIGPFillMode.Alternate ) : IGPGraphicsPath; overload; deprecated 'Use Make instead!';
 
   protected
     constructor CreateGdiPlusObject( ANativePath : GpPath; ADummy : Boolean );
@@ -5158,6 +5344,7 @@ type
 
   public
     function  GetNativePath() : GpPath;
+
   public
     function  Clone() : IGPGraphicsPath;
     // Reset the path object to empty ( and fill mode to TIGPFillMode.Alternate )
@@ -5322,7 +5509,10 @@ type
     procedure SetNativeIterator( ANativeIterator : GpPathIterator );
     
   public
-    class function Create( const APath : IGPGraphicsPath ) : IGPGraphicsPathIterator; reintroduce;
+    class function  Make( const APath : IGPGraphicsPath ) : IGPGraphicsPathIterator; reintroduce; inline;
+
+  public
+    class function  Create( const APath : IGPGraphicsPath ) : IGPGraphicsPathIterator; reintroduce; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject( const APath : IGPGraphicsPath ); reintroduce;
@@ -5389,7 +5579,8 @@ type
     function  SetTransform( const AMatrix : IGPMatrix ) : IGPPathGradientBrush;
     function  ResetTransform() : IGPPathGradientBrush;
     function  MultiplyTransform( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush;
-    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush;
+    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush; overload;
+    function  TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush; overload;
     function  ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush; overload;
     function  ScaleTransform( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush; overload;
     function  RotateTransform( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush;
@@ -5407,14 +5598,20 @@ type
 {$IFDEF MSWINDOWS}
   TIGPPathGradientBrush = class( TIGPBrush, IGPPathGradientBrush, IGPTransformable )
   public
-    class function CreateF( const APoints : array of TPointF; AWrapMode : TIGPWrapMode = TIGPWrapMode.Clamp ) : IGPPathGradientBrush;
-    class function Create( const APoints : array of TPoint; AWrapMode : TIGPWrapMode = TIGPWrapMode.Clamp ) : IGPPathGradientBrush; overload;
-    class function Create( const APath : IGPGraphicsPath ) : IGPPathGradientBrush; overload;
+    class function  Make( const APoints : array of TPoint; AWrapMode : TIGPWrapMode = TIGPWrapMode.Clamp ) : IGPPathGradientBrush; overload; // inline;
+    class function  Make( const APath : IGPGraphicsPath ) : IGPPathGradientBrush; overload; inline;
+    class function  MakeF( const APoints : array of TPointF; AWrapMode : TIGPWrapMode = TIGPWrapMode.Clamp ) : IGPPathGradientBrush; // inline;
+
+  public
+    class function  Create( const APoints : array of TPoint; AWrapMode : TIGPWrapMode = TIGPWrapMode.Clamp ) : IGPPathGradientBrush; overload; deprecated 'Use Make instead!';
+    class function  Create( const APath : IGPGraphicsPath ) : IGPPathGradientBrush; overload; inline; deprecated 'Use Make instead!';
+    class function  CreateF( const APoints : array of TPointF; AWrapMode : TIGPWrapMode = TIGPWrapMode.Clamp ) : IGPPathGradientBrush; deprecated 'Use MakeF instead!';
     
   public
-    constructor CreateFObject( const APoints : array of TPointF; AWrapMode : TIGPWrapMode = TIGPWrapMode.Clamp );
+    constructor CreateObject(); overload;
     constructor CreateObject( const APoints : array of TPoint; AWrapMode : TIGPWrapMode = TIGPWrapMode.Clamp ); overload;
     constructor CreateObject( const APath : IGPGraphicsPath ); overload;
+    constructor CreateFObject( const APoints : array of TPointF; AWrapMode : TIGPWrapMode = TIGPWrapMode.Clamp );
 
   public
     function  GetCenterColor() : TAlphaColor;
@@ -5464,7 +5661,8 @@ type
     procedure SetTransformProp( const AMatrix : IGPMatrix );
     function  ResetTransform() : IGPPathGradientBrush;
     function  MultiplyTransform( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush;
-    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush;
+    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush; overload;
+    function  TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush; overload;
     function  ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush; overload;
     function  ScaleTransform( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush; overload;
     function  RotateTransform( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush;
@@ -5479,6 +5677,7 @@ type
     function  ResetTransformT() : IGPTransformable;
     function  MultiplyTransformT( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  TranslateTransformT( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
+    function  TranslateTransformXYT( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  ScaleTransformT( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  ScaleTransformXYT( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  RotateTransformT( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
@@ -5487,6 +5686,7 @@ type
     function  IGPTransformable.ResetTransform = ResetTransformT;
     function  IGPTransformable.MultiplyTransform = MultiplyTransformT;
     function  IGPTransformable.TranslateTransform = TranslateTransformT;
+    function  IGPTransformable.TranslateTransformXY = TranslateTransformXYT;
     function  IGPTransformable.ScaleTransform = ScaleTransformT;
     function  IGPTransformable.ScaleTransformXY = ScaleTransformXYT;
     function  IGPTransformable.RotateTransform = RotateTransformT;
@@ -5555,7 +5755,8 @@ type
     procedure SetTransformProp( const AMatrix : IGPMatrix );
     function  ResetTransform() : IGPGraphics;
     function  MultiplyTransform( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics;
-    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics;
+    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics; overload;
+    function  TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics; overload;
     function  ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics; overload;
     function  ScaleTransform( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics; overload;
     function  RotateTransform( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics;
@@ -6036,13 +6237,22 @@ type
     function  GetNativePen( APen : TIGPPen ) : GpPen;
 
   protected
-    class function CreateGdiPlus( AGraphics : GpGraphics; ADummy1 : Boolean; ADummy2 : Boolean ) : IGPGraphics;
+    class function  MakeGdiPlus( AGraphics : GpGraphics; ADummy1 : Boolean; ADummy2 : Boolean ) : IGPGraphics; inline;
+
+  protected
+    class function  CreateGdiPlus( AGraphics : GpGraphics; ADummy1 : Boolean; ADummy2 : Boolean ) : IGPGraphics; inline; deprecated 'Use MakeGdiPlus instead!';
 
   public
-    class function Create( ahdc : HDC ) : IGPGraphics; overload;
-    class function Create( ahdc : HDC; hdevice : THandle ) : IGPGraphics; overload;
-    class function Create( hwnd : HWND; icm : Boolean{ = False} ) : IGPGraphics; overload;
-    class function Create( const AImage : IGPImage ) : IGPGraphics; overload;
+    class function  Make( ahdc : HDC ) : IGPGraphics; overload; inline;
+    class function  Make( ahdc : HDC; hdevice : THandle ) : IGPGraphics; overload; inline;
+    class function  Make( hwnd : HWND; icm : Boolean{ = False} ) : IGPGraphics; overload; inline;
+    class function  Make( const AImage : IGPImage ) : IGPGraphics; overload; inline;
+
+  public
+    class function  Create( ahdc : HDC ) : IGPGraphics; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( ahdc : HDC; hdevice : THandle ) : IGPGraphics; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( hwnd : HWND; icm : Boolean{ = False} ) : IGPGraphics; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AImage : IGPImage ) : IGPGraphics; overload; inline; deprecated 'Use Make instead!';
 
   protected
     constructor CreateGdiPlusObject( AGraphics : GpGraphics; ADummy1 : Boolean; ADummy2 : Boolean );
@@ -6111,7 +6321,8 @@ type
     procedure SetTransformProp( const AMatrix : IGPMatrix );
     function  ResetTransform() : IGPGraphics;
     function  MultiplyTransform( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics;
-    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics;
+    function  TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics; overload;
+    function  TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics; overload;
     function  ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics; overload;
     function  ScaleTransform( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics; overload;
     function  RotateTransform( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics;
@@ -6565,13 +6776,14 @@ type
     // Only valid when recording metafiles.
     function  AddMetafileComment( const AData : array of Byte ) : IGPGraphics;
 
-    class function GetHalftonePalette() : HPALETTE;
+    class function  GetHalftonePalette() : HPALETTE;
                                           
   protected
     function  SetTransformT( const AMatrix : IGPMatrix ) : IGPTransformable;
     function  ResetTransformT() : IGPTransformable;
     function  MultiplyTransformT( const AMatrix : IGPMatrix; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  TranslateTransformT( dx, dy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
+    function  TranslateTransformXYT( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  ScaleTransformT( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  ScaleTransformXYT( s : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
     function  RotateTransformT( AAngle : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
@@ -6580,6 +6792,7 @@ type
     function  IGPTransformable.ResetTransform = ResetTransformT;
     function  IGPTransformable.MultiplyTransform = MultiplyTransformT;
     function  IGPTransformable.TranslateTransform = TranslateTransformT;
+    function  IGPTransformable.TranslateTransformXY = TranslateTransformXYT;
     function  IGPTransformable.ScaleTransform = ScaleTransformT;
     function  IGPTransformable.ScaleTransformXY = ScaleTransformXYT;
     function  IGPTransformable.RotateTransform = RotateTransformT;
@@ -6622,7 +6835,10 @@ type
 {$IFDEF MSWINDOWS}
   TIGPAdjustableArrowCap = class( TIGPCustomLineCap, IGPAdjustableArrowCap )
   public
-    class function Create( AHeight, AWidth : Single; AIsFilled : Boolean = True ) : IGPAdjustableArrowCap;
+    class function  Make( AHeight, AWidth : Single; AIsFilled : Boolean = True ) : IGPAdjustableArrowCap; inline;
+
+  public
+    class function  Create( AHeight, AWidth : Single; AIsFilled : Boolean = True ) : IGPAdjustableArrowCap; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject( AHeight, AWidth : Single; AIsFilled : Boolean = True );
@@ -6684,49 +6900,97 @@ type
     // Playback a metafile from a HMETAFILE
     // If deleteWmf is True, then when the metafile is deleted,
     // the hWmf will also be deleted.  Otherwise, it won't be.
-    class function Create( hWmf : HMETAFILE; var wmfPlaceableFileHeader : TIGPWmfPlaceableFileHeader; ADeleteWmf : Boolean = False ) : IGPMetafile; overload;
+    class function  Make( hWmf : HMETAFILE; var wmfPlaceableFileHeader : TIGPWmfPlaceableFileHeader; ADeleteWmf : Boolean = False ) : IGPMetafile; overload; inline;
     // Playback a metafile from a HENHMETAFILE
     // If deleteEmf is True, then when the metafile is deleted,
     // the hEmf will also be deleted.  Otherwise, it won't be.
-    class function Create( hEmf : HENHMETAFILE; ADeleteEmf : Boolean = False ) : IGPMetafile; overload;
-    class function Create( const AFileName : WideString ) : IGPMetafile; overload;
+    class function  Make( hEmf : HENHMETAFILE; ADeleteEmf : Boolean = False ) : IGPMetafile; overload; inline;
+    class function  Make( const AFileName : WideString ) : IGPMetafile; overload; inline;
     // Playback a WMF metafile from a file.
-    class function Create( const AFileName : WideString; var wmfPlaceableFileHeader : TIGPWmfPlaceableFileHeader ) : IGPMetafile; overload;
-    class function Create( const AStream : IStream ) : IGPMetafile; overload;
+    class function  Make( const AFileName : WideString; var wmfPlaceableFileHeader : TIGPWmfPlaceableFileHeader ) : IGPMetafile; overload; inline;
+    class function  Make( const AStream : IStream ) : IGPMetafile; overload; inline;
     // Record a metafile to memory.
-    class function Create( AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
+    class function  Make( AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
     // Record a metafile to memory.
-    class function Create( AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
-    class function Create( AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
+    class function  Make( AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
+    class function  Make( AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
     // Record a metafile to memory.
-    class function Create( AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
-    class function Create( AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
-    class function Create( const AFileName : WideString; AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( const AFileName : WideString; AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
-    class function Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
-    class function Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
-    class function Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
-    class function Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
-    class function Create( const AStream : IStream; AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( const AStream : IStream; AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
-    class function Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
-    class function Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
-    class function Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
-    class function Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload;
-    class function Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload;
-    class function Create() : IGPMetafile; overload;
+    class function  Make( AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
+    class function  Make( AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
+    class function  Make( const AFileName : WideString; AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( const AFileName : WideString; AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
+    class function  Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
+    class function  Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
+    class function  Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
+    class function  Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
+    class function  Make( const AStream : IStream; AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( const AStream : IStream; AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
+    class function  Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
+    class function  Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
+    class function  Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
+    class function  Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline;
+    class function  Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline;
+    class function  Make() : IGPMetafile; overload; inline;
+
+  public
+    // Playback a metafile from a HMETAFILE
+    // If deleteWmf is True, then when the metafile is deleted,
+    // the hWmf will also be deleted.  Otherwise, it won't be.
+    class function  Create( hWmf : HMETAFILE; var wmfPlaceableFileHeader : TIGPWmfPlaceableFileHeader; ADeleteWmf : Boolean = False ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    // Playback a metafile from a HENHMETAFILE
+    // If deleteEmf is True, then when the metafile is deleted,
+    // the hEmf will also be deleted.  Otherwise, it won't be.
+    class function  Create( hEmf : HENHMETAFILE; ADeleteEmf : Boolean = False ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFileName : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    // Playback a WMF metafile from a file.
+    class function  Create( const AFileName : WideString; var wmfPlaceableFileHeader : TIGPWmfPlaceableFileHeader ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AStream : IStream ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    // Record a metafile to memory.
+    class function  Create( AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    // Record a metafile to memory.
+    class function  Create( AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    // Record a metafile to memory.
+    class function  Create( AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFileName : WideString; AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFileName : WideString; AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AStream : IStream; AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AStream : IStream; AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
+    class function  Create() : IGPMetafile; overload; inline; deprecated 'Use Make instead!';
 
   public
     // Playback a metafile from a HMETAFILE
@@ -6777,10 +7041,10 @@ type
     constructor CreateObject(); overload;
 
   public
-    class function GetMetafileHeader( hWmf : HMETAFILE; var wmfPlaceableFileHeader : TIGPWmfPlaceableFileHeader ) : IGPMetafileHeader; overload;
-    class function GetMetafileHeader( hEmf : HENHMETAFILE ) : IGPMetafileHeader; overload;
-    class function GetMetafileHeader( const AFileName : WideString ) : IGPMetafileHeader; overload;
-    class function GetMetafileHeader( const AStream : IStream) : IGPMetafileHeader; overload;
+    class function  GetMetafileHeader( hWmf : HMETAFILE; var wmfPlaceableFileHeader : TIGPWmfPlaceableFileHeader ) : IGPMetafileHeader; overload;
+    class function  GetMetafileHeader( hEmf : HENHMETAFILE ) : IGPMetafileHeader; overload;
+    class function  GetMetafileHeader( const AFileName : WideString ) : IGPMetafileHeader; overload;
+    class function  GetMetafileHeader( const AStream : IStream) : IGPMetafileHeader; overload;
 
   public
     function  GetMetafileHeader() : IGPMetafileHeader; overload;
@@ -6831,7 +7095,10 @@ type
     function  GetScan0() : Pointer;
 
   protected
-    class function Create( ABitmap : TIGPBitmap ) : IGPBitmapData;
+    class function  Make( ABitmap : TIGPBitmap ) : IGPBitmapData; inline;
+
+  protected
+    class function  Create( ABitmap : TIGPBitmap ) : IGPBitmapData; inline; deprecated 'Use Make instead!';
 
   protected
     constructor CreateObject( ABitmap : TIGPBitmap );
@@ -6851,7 +7118,10 @@ type
     function  GetTypes( AIndex : Integer ) : TIGPPathPointType;
 
   public
-    class function Create() : IGPPathData;
+    class function  Make() : IGPPathData; inline;
+
+  public
+    class function  Create() : IGPPathData; inline; deprecated 'Use Make instead!';
 
   public
     constructor CreateObject();
@@ -6913,7 +7183,10 @@ type
     function  GetEmfHeader() : PENHMETAHEADER3;
 
   public
-    class function Create() : IGPMetafileHeader;
+    class function  Make() : IGPMetafileHeader; inline;
+
+  public
+    class function  Create() : IGPMetafileHeader; inline; deprecated 'Use Make instead!';
 
   end;
 
@@ -6956,6 +7229,10 @@ var
   gdiplusToken : Pointer;
   GInitialized : Boolean = False;
 
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 function SetToInt( const ASet; const ASize : Integer ) : Integer;
 begin
   Result := 0;
@@ -7166,9 +7443,19 @@ begin
   SetNativeImageAttr( AImageAttr );
 end;
 
+class function TIGPImageAttributes.MakeGdiPlus( AImageAttr : GpImageAttributes; ADummy : Boolean ) : IGPImageAttributes;
+begin
+  Result := CreateGdiPlusObject( AImageAttr, ADummy );
+end;
+
 class function TIGPImageAttributes.CreateGdiPlus( AImageAttr : GpImageAttributes; ADummy : Boolean ) : IGPImageAttributes;
 begin
   Result := CreateGdiPlusObject( AImageAttr, ADummy );
+end;
+
+class function TIGPImageAttributes.Make() : IGPImageAttributes;
+begin
+  Result := CreateObject();
 end;
 
 class function TIGPImageAttributes.Create() : IGPImageAttributes;
@@ -7419,9 +7706,19 @@ begin
   SetNativeMatrix( ANativeMatrix );
 end;
 
+class function TIGPMatrix.MakeGdiPlus( ANativeMatrix : GpMatrix; ADummy : Boolean ) : IGPMatrix;
+begin
+  Result := CreateGdiPlusObject( ANativeMatrix, ADummy );
+end;
+
 class function TIGPMatrix.CreateGdiPlus( ANativeMatrix : GpMatrix; ADummy : Boolean ) : IGPMatrix;
 begin
   Result := CreateGdiPlusObject( ANativeMatrix, ADummy );
+end;
+
+class function TIGPMatrix.Make() : IGPMatrix;
+begin
+  Result := CreateObject();
 end;
 
 class function TIGPMatrix.Create() : IGPMatrix;
@@ -7429,12 +7726,27 @@ begin
   Result := CreateObject();
 end;
 
+class function TIGPMatrix.Make( m11, m12, m21, m22, dx, dy : Single ) : IGPMatrix;
+begin
+  Result := CreateObject( m11, m12, m21, m22, dx, dy );
+end;
+
 class function TIGPMatrix.Create( m11, m12, m21, m22, dx, dy : Single ) : IGPMatrix;
 begin
   Result := CreateObject( m11, m12, m21, m22, dx, dy );
 end;
 
+class function TIGPMatrix.Make( const ARect : TIGPRectF; const ADstplg : TPointF ) : IGPMatrix;
+begin
+  Result := CreateObject( ARect, ADstplg );
+end;
+
 class function TIGPMatrix.Create( const ARect : TIGPRectF; const ADstplg : TPointF ) : IGPMatrix;
+begin
+  Result := CreateObject( ARect, ADstplg );
+end;
+
+class function TIGPMatrix.Make( const ARect : TRectF; const ADstplg : TPointF ) : IGPMatrix;
 begin
   Result := CreateObject( ARect, ADstplg );
 end;
@@ -7444,7 +7756,17 @@ begin
   Result := CreateObject( ARect, ADstplg );
 end;
 
+class function TIGPMatrix.Make( const ARect : TIGPRect; const ADstplg : TPoint ) : IGPMatrix;
+begin
+  Result := CreateObject( ARect, ADstplg );
+end;
+
 class function TIGPMatrix.Create( const ARect : TIGPRect; const ADstplg : TPoint ) : IGPMatrix;
+begin
+  Result := CreateObject( ARect, ADstplg );
+end;
+
+class function TIGPMatrix.Make( const ARect : TRect; const ADstplg : TPoint ) : IGPMatrix;
 begin
   Result := CreateObject( ARect, ADstplg );
 end;
@@ -7478,6 +7800,11 @@ destructor TIGPMatrixStore.Destroy();
 begin
   FTransformable.Transform := FMatrix;
   inherited;
+end;
+
+class function TIGPMatrixStore.Make( const ATransformable : IGPTransformable ) : IGPMatrixStore;
+begin
+  Result := CreateObject( ATransformable );
 end;
 
 class function TIGPMatrixStore.Create( const ATransformable : IGPTransformable ) : IGPMatrixStore;
@@ -7720,14 +8047,29 @@ begin
   FNativeFormat := clonedStringFormat;
 end;
 
+class function TIGPStringFormat.MakeGdiPlus( clonedStringFormat : GpStringFormat; ADummy : Boolean ) : IGPStringFormat;
+begin
+  Result := CreateGdiPlusObject( clonedStringFormat, ADummy );
+end;
+
 class function TIGPStringFormat.CreateGdiPlus( clonedStringFormat : GpStringFormat; ADummy : Boolean ) : IGPStringFormat;
 begin
   Result := CreateGdiPlusObject( clonedStringFormat, ADummy );
 end;
 
+class function TIGPStringFormat.Make( const AFormatFlags : TIGPStringFormatFlags = []; ALanguage : LANGID = LANG_NEUTRAL ) : IGPStringFormat;
+begin
+  Result := CreateObject( AFormatFlags, ALanguage );
+end;
+
 class function TIGPStringFormat.Create( const AFormatFlags : TIGPStringFormatFlags = []; ALanguage : LANGID = LANG_NEUTRAL ) : IGPStringFormat;
 begin
   Result := CreateObject( AFormatFlags, ALanguage );
+end;
+
+class function TIGPStringFormat.Make( AFormat : TIGPStringFormat ) : IGPStringFormat;
+begin
+  Result := CreateObject( AFormat );
 end;
 
 class function TIGPStringFormat.Create( AFormat : TIGPStringFormat ) : IGPStringFormat;
@@ -7749,6 +8091,11 @@ begin
   var cap : GpAdjustableArrowCap := NIL;
   ErrorCheck( GdipCreateAdjustableArrowCap( AHeight, AWidth, AIsFilled, cap ));
   SetNativeCap( cap );
+end;
+
+class function TIGPAdjustableArrowCap.Make( AHeight, AWidth : Single; AIsFilled : Boolean = True ) : IGPAdjustableArrowCap;
+begin
+  Result := CreateObject( AHeight, AWidth, AIsFilled );
 end;
 
 class function TIGPAdjustableArrowCap.Create( AHeight, AWidth : Single; AIsFilled : Boolean = True ) : IGPAdjustableArrowCap;
@@ -8150,9 +8497,19 @@ begin
   SetNativeImage(NIL );
 end;
 
+class function TIGPMetafile.Make( hWmf : HMETAFILE; var wmfPlaceableFileHeader : TIGPWmfPlaceableFileHeader; ADeleteWmf : Boolean = False ) : IGPMetafile;
+begin
+  Result := CreateObject( hWmf, wmfPlaceableFileHeader, ADeleteWmf );
+end;
+
 class function TIGPMetafile.Create( hWmf : HMETAFILE; var wmfPlaceableFileHeader : TIGPWmfPlaceableFileHeader; ADeleteWmf : Boolean = False ) : IGPMetafile;
 begin
   Result := CreateObject( hWmf, wmfPlaceableFileHeader, ADeleteWmf );
+end;
+
+class function TIGPMetafile.Make( hEmf : HENHMETAFILE; ADeleteEmf : Boolean = False ) : IGPMetafile;
+begin
+  Result := CreateObject( hEmf, ADeleteEmf );
 end;
 
 class function TIGPMetafile.Create( hEmf : HENHMETAFILE; ADeleteEmf : Boolean = False ) : IGPMetafile;
@@ -8160,9 +8517,19 @@ begin
   Result := CreateObject( hEmf, ADeleteEmf );
 end;
 
+class function TIGPMetafile.Make( const AFileName : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName );
+end;
+
 class function TIGPMetafile.Create( const AFileName : WideString ) : IGPMetafile;
 begin
   Result := CreateObject( AFileName );
+end;
+
+class function TIGPMetafile.Make( const AFileName : WideString; var wmfPlaceableFileHeader : TIGPWmfPlaceableFileHeader ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName, wmfPlaceableFileHeader );
 end;
 
 class function TIGPMetafile.Create( const AFileName : WideString; var wmfPlaceableFileHeader : TIGPWmfPlaceableFileHeader ) : IGPMetafile;
@@ -8170,9 +8537,19 @@ begin
   Result := CreateObject( AFileName, wmfPlaceableFileHeader );
 end;
 
+class function TIGPMetafile.Make( const AStream : IStream ) : IGPMetafile;
+begin
+  Result := CreateObject( AStream );
+end;
+
 class function TIGPMetafile.Create( const AStream : IStream ) : IGPMetafile;
 begin
   Result := CreateObject( AStream );
+end;
+
+class function TIGPMetafile.Make( AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AReferenceHdc, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8180,9 +8557,19 @@ begin
   Result := CreateObject( AReferenceHdc, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AReferenceHdc, AType );
+end;
+
 class function TIGPMetafile.Create( AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AReferenceHdc, AType );
+end;
+
+class function TIGPMetafile.Make( AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8190,9 +8577,19 @@ begin
   Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
 class function TIGPMetafile.Create( AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
+class function TIGPMetafile.Make( AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8200,9 +8597,19 @@ begin
   Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
 class function TIGPMetafile.Create( AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
+class function TIGPMetafile.Make( AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8210,9 +8617,19 @@ begin
   Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
 class function TIGPMetafile.Create( AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
+class function TIGPMetafile.Make( AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8220,9 +8637,19 @@ begin
   Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
 class function TIGPMetafile.Create( AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
+class function TIGPMetafile.Make( const AFileName : WideString; AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName, AReferenceHdc, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( const AFileName : WideString; AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8230,9 +8657,19 @@ begin
   Result := CreateObject( AFileName, AReferenceHdc, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( const AFileName : WideString; AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName, AReferenceHdc, AType );
+end;
+
 class function TIGPMetafile.Create( const AFileName : WideString; AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AFileName, AReferenceHdc, AType );
+end;
+
+class function TIGPMetafile.Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8240,9 +8677,19 @@ begin
   Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
 class function TIGPMetafile.Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
+class function TIGPMetafile.Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8250,9 +8697,19 @@ begin
   Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
 class function TIGPMetafile.Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
+class function TIGPMetafile.Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8260,9 +8717,19 @@ begin
   Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
 class function TIGPMetafile.Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
+class function TIGPMetafile.Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8270,9 +8737,19 @@ begin
   Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
 class function TIGPMetafile.Create( const AFileName : WideString; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AFileName, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
+class function TIGPMetafile.Make( const AStream : IStream; AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AStream, AReferenceHdc, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( const AStream : IStream; AReferenceHdc : HDC; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8280,9 +8757,19 @@ begin
   Result := CreateObject( AStream, AReferenceHdc, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( const AStream : IStream; AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AStream, AReferenceHdc, AType );
+end;
+
 class function TIGPMetafile.Create( const AStream : IStream; AReferenceHdc : HDC; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AStream, AReferenceHdc, AType );
+end;
+
+class function TIGPMetafile.Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8290,9 +8777,19 @@ begin
   Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
 class function TIGPMetafile.Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
+class function TIGPMetafile.Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8300,9 +8797,19 @@ begin
   Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
 class function TIGPMetafile.Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRectF; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
+class function TIGPMetafile.Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8310,9 +8817,19 @@ begin
   Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
 class function TIGPMetafile.Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TIGPRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
+class function TIGPMetafile.Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
+begin
+  Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
 class function TIGPMetafile.Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit; AType : TIGPEmfType; const ADescription : WideString ) : IGPMetafile;
@@ -8320,9 +8837,19 @@ begin
   Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType, PWCHAR( ADescription ) );
 end;
 
+class function TIGPMetafile.Make( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
+begin
+  Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
 class function TIGPMetafile.Create( const AStream : IStream; AReferenceHdc : HDC; const AFrameRect : TRect; AFrameUnit : TIGPMetafileFrameUnit = TIGPMetafileFrameUnit.Gdi; AType : TIGPEmfType = TIGPEmfType.PlusDual ) : IGPMetafile;
 begin
   Result := CreateObject( AStream, AReferenceHdc, AFrameRect, AFrameUnit, AType );
+end;
+
+class function TIGPMetafile.Make() : IGPMetafile;
+begin
+  Result := CreateObject();
 end;
 
 class function TIGPMetafile.Create() : IGPMetafile;
@@ -8401,6 +8928,46 @@ end;
 destructor TIGPRegion.Destroy();
 begin
   GdipDeleteRegion( FNativeRegion );
+end;
+
+class function TIGPRegion.Make() : IGPRegion;
+begin
+  Result := CreateObject();
+end;
+
+class function TIGPRegion.Make( const ARect : TIGPRectF ) : IGPRegion;
+begin
+  Result := CreateObject( ARect );
+end;
+
+class function TIGPRegion.Make( const ARect : TRectF ) : IGPRegion;
+begin
+  Result := CreateObject( ARect );
+end;
+
+class function TIGPRegion.Make( const ARect : TIGPRect ) : IGPRegion;
+begin
+  Result := CreateObject( ARect );
+end;
+
+class function TIGPRegion.Make( const ARect : TRect ) : IGPRegion;
+begin
+  Result := CreateObject( ARect );
+end;
+
+class function TIGPRegion.Make( const APath : IGPGraphicsPath ) : IGPRegion;
+begin
+  Result := CreateObject( APath );
+end;
+
+class function TIGPRegion.Make( const ARegionData : array of Byte ) : IGPRegion;
+begin
+  Result := CreateObject( ARegionData );
+end;
+
+class function TIGPRegion.Make( hRgn : HRGN ) : IGPRegion;
+begin
+  Result := CreateObject( hRgn );
 end;
 
 class function TIGPRegion.Create() : IGPRegion;
@@ -9047,6 +9614,21 @@ begin
   SetNativeCap( ANativeCap );
 end;
 
+class function TIGPCustomLineCap.MakeGdiPlus( ANativeCap : GpCustomLineCap; ADummy : Boolean ) : IGPCustomLineCap;
+begin
+  Result := CreateGdiPlusObject( ANativeCap, ADummy );
+end;
+
+class function TIGPCustomLineCap.Make() : IGPCustomLineCap;
+begin
+  Result := CreateObject();
+end;
+
+class function TIGPCustomLineCap.Make( const AFillPath : IGPGraphicsPath; const AStrokePath : IGPGraphicsPath; ABaseCap : TIGPLineCap = TIGPLineCap.Flat; ABaseInset : Single = 0 ) : IGPCustomLineCap;
+begin
+  Result := CreateObject( AFillPath, AStrokePath, ABaseCap, ABaseInset );
+end;
+
 class function TIGPCustomLineCap.CreateGdiPlus( ANativeCap : GpCustomLineCap; ADummy : Boolean ) : IGPCustomLineCap;
 begin
   Result := CreateGdiPlusObject( ANativeCap, ADummy );
@@ -9093,6 +9675,11 @@ begin
   GdipDeleteCachedBitmap( FNativeCachedBitmap );
 end;
 
+class function TIGPCachedBitmap.Make( const ABitmap : IGPBitmap; const AGraphics : IGPGraphics ) : IGPCachedBitmap;
+begin
+  Result := CreateObject( ABitmap, AGraphics );
+end;
+
 class function TIGPCachedBitmap.Create( const ABitmap : IGPBitmap; const AGraphics : IGPGraphics ) : IGPCachedBitmap;
 begin
   Result := CreateObject( ABitmap, AGraphics );
@@ -9131,6 +9718,21 @@ end;
 destructor TIGPPen.Destroy();
 begin
   GdipDeletePen( FNativePen );
+end;
+
+class function TIGPPen.MakeGdiPlus( ANativePen : GpPen; ADummy : Boolean ) : IGPPen;
+begin
+  Result := CreateGdiPlusObject( ANativePen, ADummy );
+end;
+
+class function TIGPPen.Make( AColor : TAlphaColor; AWidth : Single = 1.0 ) : IGPPen;
+begin
+  Result := CreateObject( AColor, AWidth );
+end;
+
+class function TIGPPen.Make( const ABrush : IGPBrush; AWidth : Single = 1.0 ) : IGPPen;
+begin
+  Result := CreateObject( ABrush, AWidth );
 end;
 
 class function TIGPPen.CreateGdiPlus( ANativePen : GpPen; ADummy : Boolean ) : IGPPen;
@@ -9336,7 +9938,7 @@ end;
 
 function TIGPPen.GetTransform() : IGPMatrix;
 begin
-  Result := TIGPMatrix.Create();
+  Result := TIGPMatrix.CreateObject();
   ErrorCheck( GdipGetPenTransform( FNativePen, Result.GetNativeMatrix()));
 end;
 
@@ -9356,6 +9958,12 @@ function TIGPPen.TranslateTransform( dx, dy : Single; AOrder : TIGPMatrixOrder =
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipTranslatePenTransform( FNativePen, dx, dy, AOrder ));
+end;
+
+function TIGPPen.TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipTranslatePenTransform( FNativePen, d, d, AOrder ));
 end;
 
 function TIGPPen.ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPen;
@@ -9397,6 +10005,12 @@ function TIGPPen.TranslateTransformT( dx, dy : Single; AOrder : TIGPMatrixOrder 
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipTranslatePenTransform( FNativePen, dx, dy, AOrder ));
+end;
+
+function TIGPPen.TranslateTransformXYT( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipTranslatePenTransform( FNativePen, d, d, AOrder ));
 end;
 
 function TIGPPen.ScaleTransformT( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
@@ -9639,6 +10253,16 @@ begin
   SetNativeBrush( ANativeBrush );
 end;
 
+class function TIGPBrush.Make( ANativeBrush : GpBrush ) : IGPBrush;
+begin
+  Result := CreateObject( ANativeBrush );
+end;
+
+class function TIGPBrush.Make() : IGPBrush;
+begin
+  Result := CreateObject();
+end;
+
 class function TIGPBrush.Create( ANativeBrush : GpBrush ) : IGPBrush;
 begin
   Result := CreateObject( ANativeBrush );
@@ -9673,6 +10297,16 @@ end;
 constructor TIGPSolidBrush.CreateObject();
 begin
   // hide parent function
+end;
+
+class function TIGPSolidBrush.Make( AColor : TAlphaColor ) : IGPSolidBrush;
+begin
+  Result := CreateObject( AColor );
+end;
+
+class function TIGPSolidBrush.Make() : IGPSolidBrush;
+begin
+  Result := CreateObject();
 end;
 
 class function TIGPSolidBrush.Create( AColor : TAlphaColor ) : IGPSolidBrush;
@@ -9830,7 +10464,7 @@ end;
 
 function TIGPTextureBrush.GetTransform() : IGPMatrix;
 begin
-  Result := TIGPMatrix.Create();
+  Result := TIGPMatrix.CreateObject();
   ErrorCheck( GdipGetTextureTransform( GpTexture( FNativeBrush ), Result.GetNativeMatrix()));
 end;
 
@@ -9850,6 +10484,12 @@ function TIGPTextureBrush.TranslateTransform( dx, dy : Single; AOrder : TIGPMatr
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipTranslateTextureTransform( GpTexture( FNativeBrush ), dx, dy, AOrder ));
+end;
+
+function TIGPTextureBrush.TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipTranslateTextureTransform( GpTexture( FNativeBrush ), d, d, AOrder ));
 end;
 
 function TIGPTextureBrush.ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTextureBrush;
@@ -9893,6 +10533,12 @@ begin
   ErrorCheck( GdipTranslateTextureTransform( GpTexture( FNativeBrush ), dx, dy, AOrder ));
 end;
 
+function TIGPTextureBrush.TranslateTransformXYT( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipTranslateTextureTransform( GpTexture( FNativeBrush ), d, d, AOrder ));
+end;
+
 function TIGPTextureBrush.ScaleTransformT( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
 begin
   Result := Self; // Keep alive!
@@ -9932,7 +10578,7 @@ var
 
 begin
   ErrorCheck( GdipGetTextureImage( GpTexture( FNativeBrush ), AImage ));
-  Result := TIGPImage.CreateGdiPlus( AImage, False );
+  Result := TIGPImage.CreateGdiPlusObject( AImage, False );
   if( Result = NIL ) then
     GdipDisposeImage( AImage );
 
@@ -9957,6 +10603,66 @@ end;
 constructor TIGPTextureBrush.CreateObject();
 begin
   // hide parent function
+end;
+
+class function TIGPTextureBrush.Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode = TIGPWrapMode.Tile ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, AWrapMode );
+end;
+
+class function TIGPTextureBrush.Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRectF ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, AWrapMode, ADstRect );
+end;
+
+class function TIGPTextureBrush.Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRectF ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, AWrapMode, ADstRect );
+end;
+
+class function TIGPTextureBrush.Make( const AImage : IGPImage; const ADstRect : TIGPRectF; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, ADstRect, AImageAttributes );
+end;
+
+class function TIGPTextureBrush.Make( const AImage : IGPImage; const ADstRect : TRectF; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, ADstRect, AImageAttributes );
+end;
+
+class function TIGPTextureBrush.Make( const AImage : IGPImage; const ADstRect : TIGPRect; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, ADstRect, AImageAttributes );
+end;
+
+class function TIGPTextureBrush.Make( const AImage : IGPImage; const ADstRect : TRect; const AImageAttributes : IGPImageAttributes = NIL ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, ADstRect, AImageAttributes );
+end;
+
+class function TIGPTextureBrush.Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TIGPRect ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, AWrapMode, ADstRect );
+end;
+
+class function TIGPTextureBrush.Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode; const ADstRect : TRect ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, AWrapMode, ADstRect );
+end;
+
+class function TIGPTextureBrush.Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode; ADstX, ADstY, ADstWidth, ADstHeight : Single ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, AWrapMode, ADstX, ADstY, ADstWidth, ADstHeight );
+end;
+
+class function TIGPTextureBrush.Make( const AImage : IGPImage; AWrapMode : TIGPWrapMode; ADstX, ADstY, ADstWidth, ADstHeight : Integer ) : IGPTextureBrush;
+begin
+  Result := CreateObject( AImage, AWrapMode, ADstX, ADstY, ADstWidth, ADstHeight );
+end;
+
+class function TIGPTextureBrush.Make() : IGPTextureBrush;
+begin
+  Result := CreateObject();
 end;
 
 class function TIGPTextureBrush.Create( const AImage : IGPImage; AWrapMode : TIGPWrapMode = TIGPWrapMode.Tile ) : IGPTextureBrush;
@@ -10290,7 +10996,7 @@ end;
   
 function TIGPLinearGradientBrush.GetTransform() : IGPMatrix;
 begin
-  Result := TIGPMatrix.Create();
+  Result := TIGPMatrix.CreateObject();
   ErrorCheck( GdipGetLineTransform( GpLineGradient( FNativeBrush ), Result.GetNativeMatrix()));
 end;
 
@@ -10310,6 +11016,12 @@ function TIGPLinearGradientBrush.TranslateTransform( dx, dy : Single; AOrder : T
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipTranslateLineTransform( GpLineGradient( FNativeBrush ), dx, dy, AOrder ));
+end;
+
+function TIGPLinearGradientBrush.TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipTranslateLineTransform( GpLineGradient( FNativeBrush ), d, d, AOrder ));
 end;
 
 function TIGPLinearGradientBrush.ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPLinearGradientBrush;
@@ -10353,6 +11065,12 @@ begin
   ErrorCheck( GdipTranslateLineTransform( GpLineGradient( FNativeBrush ), dx, dy, AOrder ));
 end;
 
+function TIGPLinearGradientBrush.TranslateTransformXYT( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipTranslateLineTransform( GpLineGradient( FNativeBrush ), d, d, AOrder ));
+end;
+
 function TIGPLinearGradientBrush.ScaleTransformT( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
 begin
   Result := Self; // Keep alive!
@@ -10389,6 +11107,61 @@ end;
 constructor TIGPLinearGradientBrush.CreateObject();
 begin
   // hide parent function
+end;
+
+class function TIGPLinearGradientBrush.Make() : IGPLinearGradientBrush;
+begin
+  Result := CreateObject();
+end;
+
+class function TIGPLinearGradientBrush.Make( const APoint1, APoint2 : TPointF; AColor1, AColor2 : TAlphaColor ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( APoint1, APoint2, AColor1, AColor2 );
+end;
+
+class function TIGPLinearGradientBrush.Make( const APoint1, APoint2 : TPoint; AColor1, AColor2 : TAlphaColor ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( APoint1, APoint2, AColor1, AColor2 );
+end;
+
+class function TIGPLinearGradientBrush.Make( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( ARect, AColor1, AColor2, AMode );
+end;
+
+class function TIGPLinearGradientBrush.Make( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( ARect, AColor1, AColor2, AMode );
+end;
+
+class function TIGPLinearGradientBrush.Make( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( ARect, AColor1, AColor2, AMode );
+end;
+
+class function TIGPLinearGradientBrush.Make( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AMode : TIGPLinearGradientMode ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( ARect, AColor1, AColor2, AMode );
+end;
+
+class function TIGPLinearGradientBrush.Make( const ARect : TIGPRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( ARect, AColor1, AColor2, AAngle, AIsAngleScalable );
+end;
+
+class function TIGPLinearGradientBrush.Make( const ARect : TRectF; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( ARect, AColor1, AColor2, AAngle, AIsAngleScalable );
+end;
+
+class function TIGPLinearGradientBrush.Make( const ARect : TIGPRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( ARect, AColor1, AColor2, AAngle, AIsAngleScalable );
+end;
+
+class function TIGPLinearGradientBrush.Make( const ARect : TRect; AColor1, AColor2 : TAlphaColor; AAngle : Single; AIsAngleScalable : Boolean = False ) : IGPLinearGradientBrush;
+begin
+  Result := CreateObject( ARect, AColor1, AColor2, AAngle, AIsAngleScalable );
 end;
 
 class function TIGPLinearGradientBrush.Create() : IGPLinearGradientBrush;
@@ -10462,6 +11235,16 @@ begin
   var ABrush : GpHatch := NIL;
   ErrorCheck( GdipCreateHatchBrush(Integer( AHatchStyle ), AForeColor, ABackColor, ABrush ));
   SetNativeBrush( ABrush );
+end;
+
+class function TIGPHatchBrush.Make() : IGPHatchBrush;
+begin
+  Result := CreateObject();
+end;
+
+class function TIGPHatchBrush.Make( AHatchStyle : TIGPHatchStyle; AForeColor : TAlphaColor; ABackColor : TAlphaColor = aclBlack ) : IGPHatchBrush;
+begin
+  Result := CreateObject( AHatchStyle, AForeColor, ABackColor );
 end;
 
 class function TIGPHatchBrush.Create() : IGPHatchBrush;
@@ -11121,7 +11904,7 @@ end;
 function TIGPImage.ForGraphics( const AOnGraphics : TIGPGetGraphicsProc ) : IGPImage;
 begin
   Result := Self; // Keep alive!
-  AOnGraphics( TIGPGraphics.Create( Self ));
+  AOnGraphics( TIGPGraphics.Make( Self ));
 end;
 
 function TIGPImage.GetEncoderParameterList( const AClsidEncoder : TGUID ) : TArray<TIGPEncoderParameter>;
@@ -11143,7 +11926,7 @@ end;
 
 function TIGPImage.GetGraphics() : IGPGraphics;
 begin
-  Result := TIGPGraphics.Create( Self );
+  Result := TIGPGraphics.CreateObject( Self );
 end;
 
 constructor TIGPImage.CreateGdiPlusObject( ANativeImage : GpImage; ADummy : Boolean );
@@ -11173,6 +11956,36 @@ destructor TIGPBitmapData.Destroy();
 begin
   FBitmap.UnlockBits( FData );
   inherited;
+end;
+
+class function TIGPBitmapData.Make( ABitmap : TIGPBitmap ) : IGPBitmapData;
+begin
+  Result := CreateObject( ABitmap );
+end;
+
+class function TIGPImage.MakeGdiPlus( ANativeImage : GpImage; ADummy : Boolean ) : IGPImage;
+begin
+  Result := CreateGdiPlusObject( ANativeImage, ADummy );
+end;
+
+class function TIGPImage.Make( const AFileName : WideString; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage;
+begin
+  Result := CreateObject( AFileName, AUseEmbeddedColorManagement );
+end;
+
+class function TIGPImage.Make( const AStream : IStream; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage;
+begin
+  Result := CreateObject( AStream, AUseEmbeddedColorManagement );
+end;
+
+class function TIGPImage.Make( AStream : TStream; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage;
+begin
+  Result := CreateObject( AStream, AUseEmbeddedColorManagement );
+end;
+
+class function TIGPImage.Make( const ABytes : TBytes; AUseEmbeddedColorManagement : Boolean = False ) : IGPImage;
+begin
+  Result := CreateObject( ABytes, AUseEmbeddedColorManagement );
 end;
 
 class function TIGPBitmapData.Create( ABitmap : TIGPBitmap ) : IGPBitmapData;
@@ -11488,12 +12301,12 @@ end;
 
 class function TIGPBitmap.FromFile( const AFileName : WideString; AUseEmbeddedColorManagement : Boolean = False ) : IGPBitmap;
 begin
-  Result := TIGPBitmap.Create( PWideChar( AFileName ), AUseEmbeddedColorManagement );
+  Result := TIGPBitmap.CreateObject( PWideChar( AFileName ), AUseEmbeddedColorManagement );
 end;
 
 class function TIGPBitmap.FromStream( const AStream : IStream; AUseEmbeddedColorManagement : Boolean = False ) : IGPBitmap;
 begin
-  Result := TIGPBitmap.Create( AStream, AUseEmbeddedColorManagement );
+  Result := TIGPBitmap.CreateObject( AStream, AUseEmbeddedColorManagement );
 end;
 
 constructor TIGPBitmap.CreateObject( AWidth, AHeight, AStride : Integer; AFormat : TIGPPixelFormat; AScan0 : PBYTE );
@@ -11518,6 +12331,11 @@ begin
 {$ENDIF}
 end;
 
+class function TIGPBitmap.Make( AWidth, AHeight : Integer; AFormat : TIGPPixelFormat = GPPixelFormat32bppARGB ) : IGPBitmap;
+begin
+  Result := CreateObject( AWidth, AHeight, AFormat );
+end;
+
 class function TIGPBitmap.Create( AWidth, AHeight : Integer; AFormat : TIGPPixelFormat = GPPixelFormat32bppARGB ) : IGPBitmap;
 begin
   Result := CreateObject( AWidth, AHeight, AFormat );
@@ -11529,6 +12347,51 @@ begin
   var ABitmap : GpBitmap := NIL;
   ErrorCheck( GdipCreateBitmapFromGraphics( AWidth, AHeight, ATarget.FNativeGraphics, ABitmap ));
   SetNativeImage( ABitmap );
+end;
+
+class function TIGPBitmap.MakeGdiPlus( ANativeBitmap : GpBitmap; ADummy : Boolean ) : IGPBitmap;
+begin
+  Result := CreateGdiPlusObject( ANativeBitmap, ADummy );
+end;
+
+class function TIGPBitmap.Make( const AFileName : WideString; AUseEmbeddedColorManagement : Boolean = False ) : IGPBitmap;
+begin
+  Result := CreateObject( AFileName, AUseEmbeddedColorManagement );
+end;
+
+class function TIGPBitmap.Make( const AStream : IStream; AUseEmbeddedColorManagement : Boolean = False ) : IGPBitmap;
+begin
+  Result := CreateObject( AStream, AUseEmbeddedColorManagement );
+end;
+
+class function TIGPBitmap.Make( AWidth, AHeight, AStride : Integer; AFormat : TIGPPixelFormat; AScan0 : PBYTE ) : IGPBitmap;
+begin
+  Result := CreateObject( AWidth, AHeight, AStride, AFormat, AScan0 );
+end;
+
+class function TIGPBitmap.Make( AWidth, AHeight : Integer; ATarget : TIGPGraphics ) : IGPBitmap;
+begin
+  Result := CreateObject( AWidth, AHeight, ATarget );
+end;
+
+class function TIGPBitmap.MakeData( var AGdiBitmapInfo : TBITMAPINFO; AGdiBitmapData : Pointer ) : IGPBitmap;
+begin
+  Result := CreateDataObject( AGdiBitmapInfo, AGdiBitmapData );
+end;
+
+class function TIGPBitmap.MakeHBITMAP( AHbm : HBITMAP; AHpal : HPALETTE ) : IGPBitmap;
+begin
+  Result := CreateHBITMAPObject( AHbm, AHpal );
+end;
+
+class function TIGPBitmap.MakeHICON( AHicon : HICON ) : IGPBitmap;
+begin
+  Result := CreateHICONObject( AHicon );
+end;
+
+class function TIGPBitmap.MakeRes( AHInstance : HMODULE; const ABitmapName : WideString ) : IGPBitmap;
+begin
+  Result := CreateResObject( AHInstance, ABitmapName );
 end;
 
 class function TIGPBitmap.CreateGdiPlus( ANativeBitmap : GpBitmap; ADummy : Boolean ) : IGPBitmap;
@@ -11624,10 +12487,15 @@ begin
   ErrorCheck( GdipBitmapLockBits( GpBitmap( FNativeImage ), @ARect, AFlags, AFormat, @AData ));
 end;
 
-function TIGPBitmap.UnlockBits( var lockedBitmapData : TIGPBitmapDataRecord ) : TIGPBitmap;
+procedure TIGPBitmap.UnlockBits( var lockedBitmapData : TIGPBitmapDataRecord );
+begin
+  ErrorCheck( GdipBitmapUnlockBits( GpBitmap( FNativeImage ), @lockedBitmapData ));
+end;
+
+function TIGPBitmap.ForGraphics( const AOnGraphics : TIGPGetGraphicsProc ) : IGPBitmap;
 begin
   Result := Self; // Keep alive!
-  ErrorCheck( GdipBitmapUnlockBits( GpBitmap( FNativeImage ), @lockedBitmapData ));
+  inherited ForGraphics( AOnGraphics );
 end;
 
 function TIGPBitmap.LockBits( const ARect : TIGPRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat ) : IGPBitmapData;
@@ -11655,6 +12523,24 @@ begin
 
   LockBitsInternal( TIGPRect.Create( GetWidth(), GetHeight() ), CFlags, AFormat, ABitmapData.FData );
   Result := ABitmapData;
+end;
+
+function TIGPBitmap.ForLockBits( const ARect : TIGPRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat; const AProc : TIGPConstProc<IGPBitmapData> ) : IGPBitmap;
+begin
+  Result := Self; // Keep alive!
+  AProc( LockBits( ARect, AFlags, AFormat ));
+end;
+
+function TIGPBitmap.ForLockBits( const ARect : TRect; AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat; const AProc : TIGPConstProc<IGPBitmapData> ) : IGPBitmap;
+begin
+  Result := Self; // Keep alive!
+  AProc( LockBits( ARect, AFlags, AFormat ));
+end;
+
+function TIGPBitmap.ForLockBits( AFlags : TIGPImageLockModes; AFormat : TIGPPixelFormat; const AProc : TIGPConstProc<IGPBitmapData> ) : IGPBitmap;
+begin
+  Result := Self; // Keep alive!
+  AProc( LockBits( AFlags, AFormat ));
 end;
 
 function TIGPBitmap.GetPixel( x, y : Integer ) : TAlphaColor;
@@ -11758,22 +12644,22 @@ end;
 }
 class function TIGPBitmap.FromBITMAPINFO( var AGdiBitmapInfo : TBITMAPINFO; AGdiBitmapData : Pointer ) : IGPBitmap;
 begin
-  Result := TIGPBitmap.CreateData( AGdiBitmapInfo, AGdiBitmapData );
+  Result := TIGPBitmap.CreateDataObject( AGdiBitmapInfo, AGdiBitmapData );
 end;
 
 class function TIGPBitmap.FromHBITMAP( hbm : HBITMAP; hpal : HPALETTE ) : IGPBitmap;
 begin
-  Result := TIGPBitmap.CreateHBitmap( hbm, hpal );
+  Result := TIGPBitmap.CreateHBitmapObject( hbm, hpal );
 end;
 
 class function TIGPBitmap.FromHICON( hicon : HICON ) : IGPBitmap;
 begin
-  Result := TIGPBitmap.CreateHIcon( hicon );
+  Result := TIGPBitmap.CreateHIconObject( hicon );
 end;
 
 class function TIGPBitmap.FromResource( hInstance : HMODULE; const ABitmapName : WideString ) : IGPBitmap;
 begin
-  Result := TIGPBitmap.CreateRes( hInstance, PWideChar( ABitmapName ));
+  Result := TIGPBitmap.CreateResObject( hInstance, PWideChar( ABitmapName ));
 end;
 
 function TIGPBitmap.GetHBITMAP( AColorBackground : TAlphaColor ) : HBITMAP;
@@ -11799,22 +12685,22 @@ end;
 
 class function TIGPGraphics.FromHDC( ahdc : HDC) : IGPGraphics;
 begin
-  Result := TIGPGraphics.Create( ahdc);
+  Result := TIGPGraphics.CreateObject( ahdc);
 end;
 
 class function TIGPGraphics.FromHDC( ahdc : HDC; hdevice : THandle ) : IGPGraphics;
 begin
-  Result := TIGPGraphics.Create( ahdc, hdevice );
+  Result := TIGPGraphics.CreateObject( ahdc, hdevice );
 end;
 
 class function TIGPGraphics.FromHWND( hwnd : HWND; icm : Boolean = False ) : IGPGraphics;
 begin
-  Result := TIGPGraphics.Create( hwnd, icm);
+  Result := TIGPGraphics.CreateObject( hwnd, icm);
 end;
 
 class function TIGPGraphics.FromImage( const AImage : IGPImage ) : IGPGraphics;
 begin
-  Result := TIGPGraphics.Create( AImage );
+  Result := TIGPGraphics.CreateObject( AImage );
 end;
 
 constructor TIGPGraphics.CreateObject( ahdc : HDC );
@@ -11855,6 +12741,31 @@ end;
 destructor TIGPGraphics.Destroy();
 begin
   GdipDeleteGraphics( FNativeGraphics );
+end;
+
+class function TIGPGraphics.MakeGdiPlus( AGraphics : GpGraphics; ADummy1 : Boolean; ADummy2 : Boolean ) : IGPGraphics;
+begin
+  Result := CreateGdiPlusObject( AGraphics, ADummy1, ADummy2 );
+end;
+
+class function TIGPGraphics.Make( ahdc : HDC ) : IGPGraphics;
+begin
+  Result := CreateObject( ahdc );
+end;
+
+class function TIGPGraphics.Make( ahdc : HDC; hdevice : THandle ) : IGPGraphics;
+begin
+  Result := CreateObject( ahdc, hdevice );
+end;
+
+class function TIGPGraphics.Make( hwnd : HWND; icm : Boolean{ = False} ) : IGPGraphics;
+begin
+  Result := CreateObject( hwnd, icm );
+end;
+
+class function TIGPGraphics.Make( const AImage : IGPImage ) : IGPGraphics;
+begin
+  Result := CreateObject( AImage );
 end;
 
 class function TIGPGraphics.CreateGdiPlus( AGraphics : GpGraphics; ADummy1 : Boolean; ADummy2 : Boolean ) : IGPGraphics;
@@ -12200,6 +13111,12 @@ begin
   ErrorCheck( GdipTranslateWorldTransform( FNativeGraphics, dx, dy, AOrder ));
 end;
 
+function TIGPGraphics.TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipTranslateWorldTransform( FNativeGraphics, d, d, AOrder ));
+end;
+
 function TIGPGraphics.ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
@@ -12219,7 +13136,7 @@ end;
 
 function TIGPGraphics.GetTransform() : IGPMatrix;
 begin
-  Result := TIGPMatrix.Create();
+  Result := TIGPMatrix.CreateObject();
   ErrorCheck( GdipGetWorldTransform( FNativeGraphics, Result.GetNativeMatrix()));
 end;
 
@@ -12258,6 +13175,12 @@ function TIGPGraphics.TranslateTransformT( dx, dy : Single; AOrder : TIGPMatrixO
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipTranslateWorldTransform( FNativeGraphics, dx, dy, AOrder ));
+end;
+
+function TIGPGraphics.TranslateTransformXYT( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipTranslateWorldTransform( FNativeGraphics, d, d, AOrder ));
 end;
 
 function TIGPGraphics.ScaleTransformT( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
@@ -12857,42 +13780,42 @@ end;
 
 function TIGPGraphics.DrawRoundRectangleF( const APen : IGPPen; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
 begin
-  Result := DrawPath( APen, TIGPGraphicsPath.Create().AddRoundRectangleF( ARect, ACornerSize ));
+  Result := DrawPath( APen, TIGPGraphicsPath.Make().AddRoundRectangleF( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.DrawRoundRectangleF( const APen : IGPPen; const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
 begin
-  Result := DrawPath( APen, TIGPGraphicsPath.Create().AddRoundRectangleF( ARect, ACornerSize ));
+  Result := DrawPath( APen, TIGPGraphicsPath.Make().AddRoundRectangleF( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.DrawRoundRectangle( const APen : IGPPen; const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphics;
 begin
-  Result := DrawPath( APen, TIGPGraphicsPath.Create().AddRoundRectangle( ARect, ACornerSize ));
+  Result := DrawPath( APen, TIGPGraphicsPath.Make().AddRoundRectangle( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.DrawRoundRectangle( const APen : IGPPen; const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphics;
 begin
-  Result := DrawPath( APen, TIGPGraphicsPath.Create().AddRoundRectangle( ARect, ACornerSize ));
+  Result := DrawPath( APen, TIGPGraphicsPath.Make().AddRoundRectangle( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.DrawRoundRectangleF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
 begin
-  Result := DrawPath( APen, ABrush, TIGPGraphicsPath.Create().AddRoundRectangleF( ARect, ACornerSize ));
+  Result := DrawPath( APen, ABrush, TIGPGraphicsPath.Make().AddRoundRectangleF( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.DrawRoundRectangleF( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
 begin
-  Result := DrawPath( APen, ABrush, TIGPGraphicsPath.Create().AddRoundRectangleF( ARect, ACornerSize ));
+  Result := DrawPath( APen, ABrush, TIGPGraphicsPath.Make().AddRoundRectangleF( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.DrawRoundRectangle( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphics;
 begin
-  Result := DrawPath( APen, ABrush, TIGPGraphicsPath.Create().AddRoundRectangle( ARect, ACornerSize ));
+  Result := DrawPath( APen, ABrush, TIGPGraphicsPath.Make().AddRoundRectangle( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.DrawRoundRectangle( const APen : IGPPen; const ABrush : IGPBrush; const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphics;
 begin
-  Result := DrawPath( APen, ABrush, TIGPGraphicsPath.Create().AddRoundRectangle( ARect, ACornerSize ));
+  Result := DrawPath( APen, ABrush, TIGPGraphicsPath.Make().AddRoundRectangle( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.DrawEllipseF( const APen : IGPPen; const ARect : TIGPRectF ) : IGPGraphics;
@@ -13424,25 +14347,25 @@ end;
 function TIGPGraphics.FillRoundRectangleF( const ABrush : IGPBrush; const ARect : TIGPRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
-  FillPath( ABrush, TIGPGraphicsPath.Create().AddRoundRectangleF( ARect, ACornerSize ));
+  FillPath( ABrush, TIGPGraphicsPath.Make().AddRoundRectangleF( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.FillRoundRectangleF( const ABrush : IGPBrush; const ARect : TRectF; const ACornerSize : TIGPSizeF ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
-  FillPath( ABrush, TIGPGraphicsPath.Create().AddRoundRectangleF( ARect, ACornerSize ));
+  FillPath( ABrush, TIGPGraphicsPath.Make().AddRoundRectangleF( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.FillRoundRectangle( const ABrush : IGPBrush; const ARect : TIGPRect; const ACornerSize : TIGPSize ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
-  FillPath( ABrush, TIGPGraphicsPath.Create().AddRoundRectangle( ARect, ACornerSize ));
+  FillPath( ABrush, TIGPGraphicsPath.Make().AddRoundRectangle( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.FillRoundRectangle( const ABrush : IGPBrush; const ARect : TRect; const ACornerSize : TIGPSize ) : IGPGraphics;
 begin
   Result := Self; // Keep alive!
-  FillPath( ABrush, TIGPGraphicsPath.Create().AddRoundRectangle( ARect, ACornerSize ));
+  FillPath( ABrush, TIGPGraphicsPath.Make().AddRoundRectangle( ARect, ACornerSize ));
 end;
 
 function TIGPGraphics.FillPolygonF( const ABrush : IGPBrush; const APoints : array of TPointF ) : IGPGraphics;
@@ -14392,7 +15315,7 @@ begin
 
   if( ALocalStringFormat = NIL ) then
     begin
-    ALocalStringFormat := TIGPStringFormat.Create();
+    ALocalStringFormat := TIGPStringFormat.CreateObject();
     PopulateRanges();
     end;
 
@@ -14413,7 +15336,7 @@ begin
 
     for var I : Integer := 0 to ARegionCount - 1 do
       begin
-      Result[ I ] := TIGPRegion.Create();
+      Result[ I ] := TIGPRegion.CreateObject();
       TArrayGpRegion( ANativeRegions )[ I ] := Result[ I ].GetNativeRegion();
       end;
 
@@ -14467,7 +15390,7 @@ begin
     AClonedStringFormat := AStringFormat.Clone()
 
   else
-    AClonedStringFormat := TIGPStringFormat.Create();
+    AClonedStringFormat := TIGPStringFormat.CreateObject();
 
   if( Length( ARanges ) = 0 ) then
     begin
@@ -14492,7 +15415,7 @@ begin
 
     for var I : Integer := 0 to ARegionCount - 1 do
       begin
-      Result[ I ] := TIGPRegion.Create();
+      Result[ I ] := TIGPRegion.CreateObject();
       TArrayGpRegion( ANativeRegions)[ I ] := Result[ I ].GetNativeRegion();
       end;
 
@@ -14727,7 +15650,7 @@ begin
 
   var AAlphaMatrix := StandardAlphaMatrix;
   AAlphaMatrix[ 3, 3 ] := AOpacity;
-  DrawImageF( AImage, TIGPRectF.Create( APoint.X, APoint.Y, AImage.Width, AImage.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+  DrawImageF( AImage, TIGPRectF.Create( APoint.X, APoint.Y, AImage.Width, AImage.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Make().SetColorMatrix( AAlphaMatrix ));
 end;
 
 function TIGPGraphics.DrawImageF( const AImage : IGPImage; const APoint : TPointF; const ASize : TIGPSizeF; AOpacity : Single ) : IGPGraphics;
@@ -14738,7 +15661,7 @@ begin
 
   var AAlphaMatrix := StandardAlphaMatrix;
   AAlphaMatrix[ 3, 3 ] := AOpacity;
-  DrawImageF( AImage, TIGPRectF.Create( APoint.X, APoint.Y, AImage.Width, AImage.Height ), 0, 0, ASize.Width, ASize.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+  DrawImageF( AImage, TIGPRectF.Create( APoint.X, APoint.Y, AImage.Width, AImage.Height ), 0, 0, ASize.Width, ASize.Height, TIGPUnit.Pixel, TIGPImageAttributes.Make().SetColorMatrix( AAlphaMatrix ));
 end;
 
 function TIGPGraphics.DrawImageF( const AImage : IGPImage; x, y : Single; AOpacity : Single; AUseResolution : Boolean = False ) : IGPGraphics;
@@ -14754,7 +15677,7 @@ begin
 
   var AAlphaMatrix := StandardAlphaMatrix;
   AAlphaMatrix[ 3, 3 ] := AOpacity;
-  DrawImageF( AImage, TIGPRectF.Create( x, y, AImage.Width, AImage.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+  DrawImageF( AImage, TIGPRectF.Create( x, y, AImage.Width, AImage.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Make().SetColorMatrix( AAlphaMatrix ));
 end;
 
 function TIGPGraphics.DrawImageF( const AImage : IGPImage; const ARect : TIGPRectF; AOpacity : Single ) : IGPGraphics;
@@ -14765,7 +15688,7 @@ begin
 
   var AAlphaMatrix := StandardAlphaMatrix;
   AAlphaMatrix[ 3, 3 ] := AOpacity;
-  DrawImageF( AImage, TIGPRectF.Create( ARect.X, ARect.Y, ARect.Width, ARect.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+  DrawImageF( AImage, TIGPRectF.Create( ARect.X, ARect.Y, ARect.Width, ARect.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Make().SetColorMatrix( AAlphaMatrix ));
 end;
 
 function TIGPGraphics.DrawImageF( const AImage : IGPImage; const ARect : TRectF; AOpacity : Single ) : IGPGraphics;
@@ -14776,7 +15699,7 @@ begin
 
   var AAlphaMatrix := StandardAlphaMatrix;
   AAlphaMatrix[ 3, 3 ] := AOpacity;
-  DrawImageF( AImage, TIGPRectF.Create( ARect.Left, ARect.Top, ARect.Width, ARect.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+  DrawImageF( AImage, TIGPRectF.Create( ARect.Left, ARect.Top, ARect.Width, ARect.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Make().SetColorMatrix( AAlphaMatrix ));
 end;
 
 function TIGPGraphics.DrawImageF( const AImage : IGPImage; x, y, AWidth, AHeight : Single; AOpacity : Single ) : IGPGraphics;
@@ -14787,7 +15710,7 @@ begin
 
   var AAlphaMatrix := StandardAlphaMatrix;
   AAlphaMatrix[ 3, 3 ] := AOpacity;
-  DrawImageF( AImage, TIGPRectF.Create( x, y, AWidth, AHeight ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+  DrawImageF( AImage, TIGPRectF.Create( x, y, AWidth, AHeight ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Make().SetColorMatrix( AAlphaMatrix ));
 end;
 
 function TIGPGraphics.DrawImage( const AImage : IGPImage; const APoint : TPoint; AOpacity : Single; AUseResolution : Boolean = False ) : IGPGraphics;
@@ -14803,7 +15726,7 @@ begin
 
   var AAlphaMatrix := StandardAlphaMatrix;
   AAlphaMatrix[ 3, 3 ] := AOpacity;
-  DrawImage( AImage, TIGPRect.Create( APoint.X, APoint.Y, AImage.Width, AImage.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+  DrawImage( AImage, TIGPRect.Create( APoint.X, APoint.Y, AImage.Width, AImage.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Make().SetColorMatrix( AAlphaMatrix ));
 end;
 
 function TIGPGraphics.DrawImage( const AImage : IGPImage; const APoint : TPoint; const ASize : TIGPSize; AOpacity : Single ) : IGPGraphics;
@@ -14814,7 +15737,7 @@ begin
 
   var AAlphaMatrix := StandardAlphaMatrix;
   AAlphaMatrix[ 3, 3 ] := AOpacity;
-  DrawImage( AImage, TIGPRect.Create( APoint.X, APoint.Y, AImage.Width, AImage.Height ), 0, 0, ASize.Width, ASize.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+  DrawImage( AImage, TIGPRect.Create( APoint.X, APoint.Y, AImage.Width, AImage.Height ), 0, 0, ASize.Width, ASize.Height, TIGPUnit.Pixel, TIGPImageAttributes.Make().SetColorMatrix( AAlphaMatrix ));
 end;
 
 function TIGPGraphics.DrawImage( const AImage : IGPImage; x, y : Integer; AOpacity : Single; AUseResolution : Boolean = False ) : IGPGraphics;
@@ -14830,7 +15753,7 @@ begin
 
   var AAlphaMatrix := StandardAlphaMatrix;
   AAlphaMatrix[ 3, 3 ] := AOpacity;
-  DrawImage( AImage, TIGPRect.Create( x, y, AImage.Width, AImage.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+  DrawImage( AImage, TIGPRect.Create( x, y, AImage.Width, AImage.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Make().SetColorMatrix( AAlphaMatrix ));
 end;
 
 function TIGPGraphics.DrawImage( const AImage : IGPImage; const ARect : TIGPRect; AOpacity : Single ) : IGPGraphics;
@@ -14841,7 +15764,7 @@ begin
 
   var AAlphaMatrix := StandardAlphaMatrix;
   AAlphaMatrix[ 3, 3 ] := AOpacity;
-  DrawImage( AImage, TIGPRect.Create( ARect.X, ARect.Y, ARect.Width, ARect.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+  DrawImage( AImage, TIGPRect.Create( ARect.X, ARect.Y, ARect.Width, ARect.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Make().SetColorMatrix( AAlphaMatrix ));
 end;
 
 function TIGPGraphics.DrawImage( const AImage : IGPImage; const ARect : TRect; AOpacity : Single ) : IGPGraphics;
@@ -14852,7 +15775,7 @@ begin
 
   var AAlphaMatrix := StandardAlphaMatrix;
   AAlphaMatrix[ 3, 3 ] := AOpacity;
-  DrawImage( AImage, TIGPRect.Create( ARect.Left, ARect.Top, ARect.Width, ARect.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+  DrawImage( AImage, TIGPRect.Create( ARect.Left, ARect.Top, ARect.Width, ARect.Height ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Make().SetColorMatrix( AAlphaMatrix ));
 end;
 
 function TIGPGraphics.DrawImage( const AImage : IGPImage; x, y, AWidth, AHeight : Integer; AOpacity : Single ) : IGPGraphics;
@@ -14863,7 +15786,7 @@ begin
 
   var AAlphaMatrix := StandardAlphaMatrix;
   AAlphaMatrix[ 3, 3 ] := AOpacity;
-  DrawImage( AImage, TIGPRect.Create( x, y, AWidth, AHeight ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Create().SetColorMatrix( AAlphaMatrix ));
+  DrawImage( AImage, TIGPRect.Create( x, y, AWidth, AHeight ), 0, 0, AImage.Width, AImage.Height, TIGPUnit.Pixel, TIGPImageAttributes.Make().SetColorMatrix( AAlphaMatrix ));
 end;
 
   // Affine Draw Image
@@ -15606,7 +16529,7 @@ end;
 
 function TIGPGraphics.GetClip() : IGPRegion;
 begin
-  Result := TIGPRegion.Create();
+  Result := TIGPRegion.CreateObject();
   ErrorCheck( GdipGetClip( FNativeGraphics, Result.GetNativeRegion() ));
 end;
 
@@ -15615,7 +16538,7 @@ begin
   Assert( Assigned( AProc ));
   Result := Self; // Keep alive!
 
-  var ARegion := TIGPRegion.Create();
+  var ARegion := TIGPRegion.Make();
   ErrorCheck( GdipGetClip( FNativeGraphics, ARegion.GetNativeRegion() ));
   try
     AProc( Self, ARegion );
@@ -15833,6 +16756,16 @@ begin
   GdipDeleteFontFamily ( FNativeFamily);
 end;
 
+class function TIGPFontFamily.Make() : IGPFontFamily;
+begin
+  Result := CreateObject();
+end;
+
+class function TIGPFontFamily.Make( const AName : WideString; const AFontCollection : IGPFontCollection = NIL ) : IGPFontFamily;
+begin
+  Result := CreateObject( AName, AFontCollection );
+end;
+
 class function TIGPFontFamily.Create() : IGPFontFamily;
 begin
   Result := CreateObject();
@@ -16033,7 +16966,7 @@ end;
 constructor TIGPFont.CreateObject( const AFamilyName : WideString; emSize : Single; const AStyle : TFontStyles; AUnit : TIGPUnit; AFontCollection : IGPFontCollection );
 begin
   FNativeFont := NIL;
-  var AFamily := TIGPFontFamily.Create( AFamilyName, AFontCollection );
+  var AFamily := TIGPFontFamily.Make( AFamilyName, AFontCollection );
   var ANativeFamily := AFamily.GetNativeFamily();
 
   if( GdipCreateFont( ANativeFamily, emSize, SetToInt( AStyle, SizeOf( AStyle )), Integer( AUnit ), FNativeFont ) = TIGPStatus.Ok ) then
@@ -16089,6 +17022,36 @@ end;
 destructor TIGPFont.Destroy();
 begin
   GdipDeleteFont( FNativeFont );
+end;
+
+class function TIGPFont.Make( hdc : HDC ) : IGPFont;
+begin
+  Result := CreateObject( hdc );
+end;
+
+class function TIGPFont.Make( hdc : HDC; ALogFont : PLogFontA) : IGPFont;
+begin
+  Result := CreateObject( hdc, ALogFont );
+end;
+
+class function TIGPFont.Make( hdc : HDC; ALogFont : PLogFontW) : IGPFont;
+begin
+  Result := CreateObject( hdc, ALogFont );
+end;
+
+class function TIGPFont.Make( hdc : HDC; hfont : HFONT) : IGPFont;
+begin
+  Result := CreateObject( hdc, hfont );
+end;
+
+class function TIGPFont.Make( const AFamily : IGPFontFamily; emSize : Single; const AStyle : TFontStyles = []; AUnit : TIGPUnit = TIGPUnit.Point ) : IGPFont;
+begin
+  Result := CreateObject( AFamily, emSize, AStyle, AUnit );
+end;
+
+class function TIGPFont.Make( const AFamilyName : WideString; emSize : Single; const AStyle : TFontStyles = []; AUnit : TIGPUnit = TIGPUnit.Point; const AFontCollection : IGPFontCollection = NIL ) : IGPFont;
+begin
+  Result := CreateObject( AFamilyName, emSize, AStyle, AUnit, AFontCollection );
 end;
 
 class function TIGPFont.Create( hdc : HDC ) : IGPFont;
@@ -16202,6 +17165,11 @@ begin
   inherited Destroy();
 end;
 
+class function TIGPFontCollection.Make() : IGPFontCollection;
+begin
+  Result := CreateObject();
+end;
+
 class function TIGPFontCollection.Create() : IGPFontCollection;
 begin
   Result := CreateObject();
@@ -16286,6 +17254,11 @@ begin
   ErrorCheck( GdipNewInstalledFontCollection( FNativeFontCollection ));
 end;
 
+class function TIGPInstalledFontCollection.Make() : IGPFontCollection;
+begin
+  Result := CreateObject();
+end;
+
 class function TIGPInstalledFontCollection.Create() : IGPFontCollection;
 begin
   Result := CreateObject();
@@ -16301,6 +17274,11 @@ destructor TIGPPrivateFontCollection.Destroy();
 begin
   GdipDeletePrivateFontCollection( FNativeFontCollection );
   inherited Destroy();
+end;
+
+class function TIGPPrivateFontCollection.Make() : IGPPrivateFontCollection;
+begin
+  Result := CreateObject();
 end;
 
 class function TIGPPrivateFontCollection.Create() : IGPPrivateFontCollection;
@@ -17253,6 +18231,31 @@ begin
   SetNativePath( ANativePath );
 end;
 
+class function TIGPGraphicsPath.MakeGdiPlus( ANativePath : GpPath; ADummy : Boolean ) : IGPGraphicsPath;
+begin
+  Result := CreateGdiPlusObject( ANativePath, ADummy );
+end;
+
+class function TIGPGraphicsPath.Make( const APath : IGPGraphicsPath ) : IGPGraphicsPath;
+begin
+  Result := CreateObject( APath );
+end;
+
+class function TIGPGraphicsPath.Make( AFillMode : TIGPFillMode = TIGPFillMode.Alternate ) : IGPGraphicsPath;
+begin
+  Result := CreateObject( AFillMode );
+end;
+
+class function TIGPGraphicsPath.Make( const APoints : array of TPointF; const ATypes : array of Byte; AFillMode : TIGPFillMode = TIGPFillMode.Alternate ) : IGPGraphicsPath;
+begin
+  Result := CreateObject( APoints, ATypes, AFillMode );
+end;
+
+class function TIGPGraphicsPath.Make( const APoints : array of TPoint; const ATypes : array of Byte; AFillMode : TIGPFillMode = TIGPFillMode.Alternate ) : IGPGraphicsPath;
+begin
+  Result := CreateObject( APoints, ATypes, AFillMode );
+end;
+
 class function TIGPGraphicsPath.CreateGdiPlus( ANativePath : GpPath; ADummy : Boolean ) : IGPGraphicsPath;
 begin
   Result := CreateGdiPlusObject( ANativePath, ADummy );
@@ -17306,6 +18309,11 @@ end;
 destructor TIGPGraphicsPathIterator.Destroy();
 begin
   GdipDeletePathIter( FNativeIterator );
+end;
+
+class function TIGPGraphicsPathIterator.Make( const APath : IGPGraphicsPath ) : IGPGraphicsPathIterator;
+begin
+  Result := CreateObject( APath );
 end;
 
 class function TIGPGraphicsPathIterator.Create( const APath : IGPGraphicsPath ) : IGPGraphicsPathIterator;
@@ -17416,6 +18424,11 @@ begin
   SetNativeBrush( ABrush );
 end;
 
+constructor TIGPPathGradientBrush.CreateObject();
+begin
+  CreateObject( [] );
+end;
+
 constructor TIGPPathGradientBrush.CreateObject( const APoints : array of TPoint; AWrapMode : TIGPWrapMode = TIGPWrapMode.Clamp );
 begin
   var ABrush : GpPathGradient := NIL;
@@ -17430,6 +18443,21 @@ var
 begin
   ErrorCheck( GdipCreatePathGradientFromPath( APath.GetNativePath(), ABrush ));
   SetNativeBrush( ABrush );
+end;
+
+class function TIGPPathGradientBrush.MakeF( const APoints : array of TPointF; AWrapMode : TIGPWrapMode = TIGPWrapMode.Clamp ) : IGPPathGradientBrush;
+begin
+  Result := CreateFObject( APoints, AWrapMode );
+end;
+
+class function TIGPPathGradientBrush.Make( const APoints : array of TPoint; AWrapMode : TIGPWrapMode = TIGPWrapMode.Clamp ) : IGPPathGradientBrush;
+begin
+  Result := CreateObject( APoints, AWrapMode );
+end;
+
+class function TIGPPathGradientBrush.Make( const APath : IGPGraphicsPath ) : IGPPathGradientBrush;
+begin
+  Result := CreateObject( APath );
 end;
 
 class function TIGPPathGradientBrush.CreateF( const APoints : array of TPointF; AWrapMode : TIGPWrapMode = TIGPWrapMode.Clamp ) : IGPPathGradientBrush;
@@ -17514,7 +18542,7 @@ end;
 
 function TIGPPathGradientBrush.GetGraphicsPath() : IGPGraphicsPath;
 begin
-  Result := TIGPGraphicsPath.Create();
+  Result := TIGPGraphicsPath.CreateObject();
   ErrorCheck( GdipGetPathGradientPath( GpPathGradient( GetNativeBrush()), Result.GetNativePath()));
 end;
 
@@ -17726,7 +18754,7 @@ end;
 
 function TIGPPathGradientBrush.GetTransform() : IGPMatrix;
 begin
-  Result := TIGPMatrix.Create();
+  Result := TIGPMatrix.CreateObject();
   ErrorCheck( GdipGetPathGradientTransform( GpPathGradient( GetNativeBrush()), Result.GetNativeMatrix()));
 end;
 
@@ -17757,6 +18785,12 @@ function TIGPPathGradientBrush.TranslateTransform( dx, dy : Single; AOrder : TIG
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipTranslatePathGradientTransform( GpPathGradient( GetNativeBrush()), dx, dy, AOrder ));
+end;
+
+function TIGPPathGradientBrush.TranslateTransform( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipTranslatePathGradientTransform( GpPathGradient( GetNativeBrush()), d, d, AOrder ));
 end;
 
 function TIGPPathGradientBrush.ScaleTransform( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPPathGradientBrush;
@@ -17799,6 +18833,12 @@ function TIGPPathGradientBrush.TranslateTransformT( dx, dy : Single; AOrder : TI
 begin
   Result := Self; // Keep alive!
   ErrorCheck( GdipTranslatePathGradientTransform( GpPathGradient( GetNativeBrush()), dx, dy, AOrder ));
+end;
+
+function TIGPPathGradientBrush.TranslateTransformXYT( d : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
+begin
+  Result := Self; // Keep alive!
+  ErrorCheck( GdipTranslatePathGradientTransform( GpPathGradient( GetNativeBrush()), d, d, AOrder ));
 end;
 
 function TIGPPathGradientBrush.ScaleTransformT( sx, sy : Single; AOrder : TIGPMatrixOrder = TIGPMatrixOrder.Prepend ) : IGPTransformable;
@@ -17896,6 +18936,11 @@ begin
   if( FTypes <> NIL ) then
     FreeMem( FTypes );
 
+end;
+
+class function TIGPPathData.Make() : IGPPathData;
+begin
+  Result := CreateObject();
 end;
 
 class function TIGPPathData.Create() : IGPPathData;
@@ -18011,6 +19056,11 @@ begin
     Exit( @FHeader.FEmfHeader );
 
   Result := NIL;
+end;
+
+class function TIGPMetafileHeader.Make() : IGPMetafileHeader;
+begin
+  Result := CreateObject();
 end;
 
 class function TIGPMetafileHeader.Create() : IGPMetafileHeader;
@@ -19117,4 +20167,8 @@ begin
   inherited Create();
 end;
 {$ENDIF}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 end.
