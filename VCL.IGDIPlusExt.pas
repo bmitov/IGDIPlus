@@ -35,13 +35,13 @@ unit VCL.IGDIPlusExt;
 interface
 
 uses
-  IGDIPlus, VCL.Graphics, Mitov.Containers.Common;
+  IGDIPlus, VCL.Graphics;
 
 type
   TIGPBitmapHelper = class helper for TIGPBitmap
   public
-    class function Create( ABitmap : TBitmap ) : IGPBitmap; overload; inline;
-    class function Create( AIcon : TIcon ) : IGPBitmap; overload; inline;
+    class function  Make( ABitmap : TBitmap ) : IGPBitmap; overload; inline;
+    class function  Make( AIcon : TIcon ) : IGPBitmap; overload; inline;
 
   public
     constructor CreateObject( ABitmap : TBitmap ); overload;
@@ -55,7 +55,7 @@ type
     function  GetGraphics() : IGPGraphics; inline;
 
   public
-    function  ForGraphics( const AProc : TConstProc<IGPGraphics> ) : TBitmap;
+    function  ForGraphics( const AProc : TIGPConstProc<IGPGraphics> ) : TBitmap;
 
   public
     property GPBitmap : IGPBitmap   read GetGPBitmap;
@@ -65,29 +65,58 @@ type
 //---------------------------------------------------------------------------
   TIGPGraphicsHelper = class helper for TIGPGraphics
   public
-    class function Create( canvas : TCanvas ) : IGPGraphics; overload; inline;
+    class function  Make( ACanvas : TCanvas ) : IGPGraphics; overload; inline;
 
   public
-    constructor CreateObject( canvas : TCanvas ); overload;
+    constructor CreateObject( ACanvas : TCanvas ); overload;
 
   public
-    class function FromCanvas( canvas : TCanvas ) : IGPGraphics; overload; inline;
+    class function FromCanvas( ACanvas : TCanvas ) : IGPGraphics; overload; inline;
 
   end;
 //---------------------------------------------------------------------------
   TIGPVclCanvasHelper = class helper for TCanvas
   protected
     function  GetGraphics() : IGPGraphics; inline;
+    function  GetGPFont() : IGPFont; inline;
 
   public
-    function  ForGraphics( const AProc : TConstProc<IGPGraphics> ) : TCanvas;
+    function  ForGraphics( const AProc : TIGPConstProc<IGPGraphics> ) : TCanvas;
 
   public
     property Graphics : IGPGraphics read GetGraphics;
+    property GPFont : IGPFont       read GetGPFont;
+
+  end;
+//---------------------------------------------------------------------------
+  TIGPFontHelper = class helper for TIGPFont
+  public
+    class function  Make( ACanvas : TCanvas ) : IGPFont; overload; inline;
+    class function  Make( AFont : TFont ) : IGPFont; overload; inline;
+
+  public
+    constructor CreateObject( ACanvas : TCanvas ); overload;
+    constructor CreateObject( AFont : TFont ); overload;
+
+  public
+    class function FromCanvas( ACanvas : TCanvas ) : IGPFont; overload; inline;
+    class function FromFont( AFont : TFont ) : IGPFont; overload; inline;
+
+  end;
+//---------------------------------------------------------------------------
+  TIGPVclFontHelper = class helper for TFont
+  protected
+    function  GetGPFont() : IGPFont; inline;
+
+  public
+    property GPFont : IGPFont read GetGPFont;
 
   end;
 //---------------------------------------------------------------------------
 implementation
+
+uses
+  System.UITypes;
 //---------------------------------------------------------------------------
 constructor TIGPBitmapHelper.CreateObject( ABitmap : TBitmap );
 begin
@@ -99,12 +128,12 @@ begin
   CreateHICONObject( AIcon.Handle );
 end;
 //---------------------------------------------------------------------------
-class function TIGPBitmapHelper.Create( ABitmap : TBitmap ) : IGPBitmap;
+class function TIGPBitmapHelper.Make( ABitmap : TBitmap ) : IGPBitmap;
 begin
   Result := CreateObject( ABitmap );
 end;
 //---------------------------------------------------------------------------
-class function TIGPBitmapHelper.Create( AIcon : TIcon ) : IGPBitmap;
+class function TIGPBitmapHelper.Make( AIcon : TIcon ) : IGPBitmap;
 begin
   Result := CreateObject( AIcon );
 end;
@@ -122,7 +151,7 @@ begin
   Result := TIGPGraphics.CreateObject( Canvas );
 end;
 //---------------------------------------------------------------------------
-function TIGPVclBitmapHelper.ForGraphics( const AProc : TConstProc<IGPGraphics> ) : TBitmap;
+function TIGPVclBitmapHelper.ForGraphics( const AProc : TIGPConstProc<IGPGraphics> ) : TBitmap;
 begin
   Assert( Assigned( AProc ));
   AProc( TIGPGraphics.CreateObject( Canvas ) );
@@ -132,19 +161,19 @@ end;
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-class function TIGPGraphicsHelper.FromCanvas( canvas : TCanvas ) : IGPGraphics;
+class function TIGPGraphicsHelper.FromCanvas( ACanvas : TCanvas ) : IGPGraphics;
 begin
-  Result := TIGPGraphics.Create(canvas);
+  Result := TIGPGraphics.CreateObject( ACanvas );
 end;
 //---------------------------------------------------------------------------
-constructor TIGPGraphicsHelper.CreateObject( canvas : TCanvas );
+constructor TIGPGraphicsHelper.CreateObject( ACanvas : TCanvas );
 begin
-  CreateObject( canvas.Handle );
+  CreateObject( ACanvas.Handle );
 end;
 //---------------------------------------------------------------------------
-class function TIGPGraphicsHelper.Create( canvas : TCanvas ) : IGPGraphics;
+class function TIGPGraphicsHelper.Make( ACanvas : TCanvas ) : IGPGraphics;
 begin
-  Result := CreateObject( canvas );
+  Result := CreateObject( ACanvas );
 end;
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -155,11 +184,57 @@ begin
   Result := TIGPGraphics.CreateObject( Self );
 end;
 //---------------------------------------------------------------------------
-function TIGPVclCanvasHelper.ForGraphics( const AProc : TConstProc<IGPGraphics> ) : TCanvas;
+function TIGPVclCanvasHelper.GetGPFont() : IGPFont;
+begin
+  Result := TIGPFont.CreateObject( Handle );
+end;
+//---------------------------------------------------------------------------
+function TIGPVclCanvasHelper.ForGraphics( const AProc : TIGPConstProc<IGPGraphics> ) : TCanvas;
 begin
   Assert( Assigned( AProc ));
   AProc( TIGPGraphics.CreateObject( Self ) );
   Result := Self;
+end;
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+constructor TIGPFontHelper.CreateObject( ACanvas : TCanvas );
+begin
+  CreateObject( ACanvas.Handle );
+end;
+//---------------------------------------------------------------------------
+constructor TIGPFontHelper.CreateObject( AFont : TFont );
+begin
+  CreateObject( AFont.Name, AFont.Size, AFont.Style );
+end;
+//---------------------------------------------------------------------------
+class function TIGPFontHelper.Make( ACanvas : TCanvas ) : IGPFont;
+begin
+  Result := CreateObject( ACanvas );
+end;
+//---------------------------------------------------------------------------
+class function TIGPFontHelper.Make( AFont : TFont ) : IGPFont;
+begin
+  Result := CreateObject( AFont );
+end;
+//---------------------------------------------------------------------------
+class function TIGPFontHelper.FromCanvas( ACanvas : TCanvas ) : IGPFont;
+begin
+  Result := CreateObject( ACanvas );
+end;
+//---------------------------------------------------------------------------
+class function TIGPFontHelper.FromFont( AFont : TFont ) : IGPFont;
+begin
+  Result := CreateObject( AFont );
+end;
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+function TIGPVclFontHelper.GetGPFont() : IGPFont;
+begin
+  Result := TIGPFont.CreateObject( Self );
 end;
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
