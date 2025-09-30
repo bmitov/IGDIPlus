@@ -45,14 +45,14 @@ unit FMX.IGDIPlusExt;
 interface
 
 uses
-  FMX.Graphics, System.Classes, System.SysUtils, IGDIPlus, Mitov.Containers.Common;
+  FMX.Graphics, System.Classes, System.SysUtils, IGDIPlus;
 
 // VCL.IGDIPlusExt needs to be in implementation to allow C++ Builder linking!
 
 type
   TIGPFMXBitmap = class( TIGPBitmap )
   public
-    class function Create( ABitmap : TBitmap ) : IGPBitmap; inline;
+    class function  Make( ABitmap : TBitmap ) : IGPBitmap; inline;
 
   public
     constructor CreateObject( ABitmap : TBitmap );
@@ -65,7 +65,7 @@ type
     function  GetGraphics() : IGPGraphics; inline;
 
   public
-    function  ForGraphics( const AProc : TConstProc<IGPGraphics> ) : TBitmap;
+    function  ForGraphics( const AProc : TIGPConstProc<IGPGraphics> ) : TBitmap;
 
   public
     property GPBitmap : IGPBitmap   read GetGPBitmap;
@@ -79,7 +79,7 @@ type
     FCanvas : TCanvas;
 
   public
-    class function Create( ACanvas : TCanvas ) : IGPGraphics; inline;
+    class function  Make( ACanvas : TCanvas ) : IGPGraphics; inline;
 
   public
     constructor CreateObject( ACanvas : TCanvas );
@@ -90,6 +90,9 @@ type
   TIGPFMXCanvasHelper = class helper for TCanvas
   protected
     function  GetGraphics() : IGPGraphics; inline;
+
+  public
+    function  ForGraphics( const AProc : TIGPConstProc<IGPGraphics> ) : TCanvas;
 
   public
     property Graphics : IGPGraphics read GetGraphics;
@@ -128,25 +131,25 @@ end;
 //---------------------------------------------------------------------------
 constructor TIGPFMXBitmap.CreateObject( ABitmap : TFMXBitmap );
 begin
-{$IFDEF MSWINDOWS}
   var ASize := TSize.Create( ABitmap.Width, ABitmap.Height );
   inherited CreateObject( ASize.cx, ASize.cy );
-  var AInstanceHolder : IGPBitmap := Self;
+{$IFDEF MSWINDOWS}
+  var AInstanceHolder := ForLockBits( TIGPRect.Create( ASize ), [ TIGPImageLockMode.Read ], GPPixelFormat32bppARGB,
+      procedure( const AGPBitmapData : IGPBitmapData )
+      begin
+        var ABitmapData : TBitmapData;
 
-  var AGPBitmapData := LockBits( TIGPRect.Create( ASize ), [ TIGPImageLockMode.Read ], GPPixelFormat32bppARGB );
-  var ABitmapData : TBitmapData;
+        ABitmap.Map( TMapAccess.Read, ABitmapData );
 
-  ABitmap.Map( TMapAccess.Read, ABitmapData );
+        CopyC4R( PByte( ABitmapData.Data ), ABitmapData.Pitch, AGPBitmapData.Scan0, AGPBitmapData.Stride, ASize );
+        ABitmap.Unmap( ABitmapData );
+      end
+    );
 
-  CopyC4R( PByte( ABitmapData.Data ), ABitmapData.Pitch, AGPBitmapData.Scan0, AGPBitmapData.Stride, ASize );
-  ABitmap.Unmap( ABitmapData );
-  AGPBitmapData := NIL;
-{$ELSE}
-  inherited Create();
 {$ENDIF}
 end;
 //---------------------------------------------------------------------------
-class function TIGPFMXBitmap.Create( ABitmap : TFMXBitmap ) : IGPBitmap;
+class function TIGPFMXBitmap.Make( ABitmap : TFMXBitmap ) : IGPBitmap;
 begin
   Result := CreateObject( ABitmap );
 end;
@@ -164,7 +167,7 @@ begin
   Result := TIGPFMXGraphics.CreateObject( Canvas );
 end;
 //---------------------------------------------------------------------------
-function TIGPFMXBitmapHelper.ForGraphics( const AProc : TConstProc<IGPGraphics> ) : FMX.Graphics.TBitmap;
+function TIGPFMXBitmapHelper.ForGraphics( const AProc : TIGPConstProc<IGPGraphics> ) : FMX.Graphics.TBitmap;
 begin
   Assert( Assigned( AProc ));
   AProc( TIGPFMXGraphics.CreateObject( Canvas ) );
@@ -177,7 +180,11 @@ end;
 constructor TIGPFMXGraphics.CreateObject( ACanvas : TCanvas );
 begin
 {$IFDEF MSWINDOWS}
-  FBitmap := TIGPBitmap.Create( ACanvas.Width, ACanvas.Height );
+{$IF CompilerVersion >= 37} // Delphi RX 13.0
+  FBitmap := TIGPBitmap.CreateObject( Round( ACanvas.Width ), Round( ACanvas.Height ));
+{$ELSE}
+  FBitmap := TIGPBitmap.CreateObject( ACanvas.Width, ACanvas.Height );
+{$ENDIF}
   inherited CreateObject( FBitmap );
 {$ELSE}
   inherited CreateObject();
@@ -188,30 +195,47 @@ end;
 destructor TIGPFMXGraphics.Destroy();
 begin
 {$IFDEF MSWINDOWS}
+{$IF CompilerVersion >= 37} // Delphi RX 13.0
+  var ASize := TSize.Create( Round( FCanvas.Width ), Round( FCanvas.Height ));
+{$ELSE}
   var ASize := TSize.Create( FCanvas.Width, FCanvas.Height );
-  var ABitmap := TSmartPointer.Create( TFMXBitmap.Create( ASize.cx, ASize.cy ));
-  var ABitmapData := FBitmap.LockBits( TIGPRect.Create( ASize ), [ TIGPImageLockMode.Read ], GPPixelFormat32bppARGB );
-
-  var AFMXBitmapData : TBitmapData;
-  ABitmap.Map( TMapAccess.Write, AFMXBitmapData );
-
-  CopyC4R( ABitmapData.Scan0, ABitmapData.Stride, PByte( AFMXBitmapData.Data ), AFMXBitmapData.Pitch, ASize );
-  ABitmap.Unmap( AFMXBitmapData );
-
-  ABitmapData := NIL;
-  FCanvas.BeginScene();
+{$ENDIF}
+  var ABitmap := TFMXBitmap.Create( ASize.cx, ASize.cy ); // Do not use Smart Pointer to remove IGDI+ Mitov.Runtime dependencies!
   try
-    FCanvas.DrawBitmap( ABitmap(), TRectF.Create( 0, 0, ASize.cx, ASize.cy ), TRectF.Create( 0, 0, ASize.cx, ASize.cy ), 1 );
+    FBitmap.ForLockBits( TIGPRect.Create( ASize ), [ TIGPImageLockMode.Read ], GPPixelFormat32bppARGB,
+        procedure( const ABitmapData : IGPBitmapData )
+        begin
+          var AFMXBitmapData : TBitmapData;
+          ABitmap.Map( TMapAccess.Write, AFMXBitmapData );
+          try
+            CopyC4R( ABitmapData.Scan0, ABitmapData.Stride, PByte( AFMXBitmapData.Data ), AFMXBitmapData.Pitch, ASize );
+          finally
+            ABitmap.Unmap( AFMXBitmapData );
+            end;
+
+        end
+      );
+
+    FCanvas.BeginScene();
+    try
+      FCanvas.DrawBitmap( ABitmap, TRectF.Create( 0, 0, ASize.cx, ASize.cy ), TRectF.Create( 0, 0, ASize.cx, ASize.cy ), 1 );
+    finally
+      FCanvas.EndScene();
+      end;
+
   finally
-    FCanvas.EndScene();
+{$IF CompilerVersion >= 36} // Delphi RX 12.0
+      ABitmap.Free();
+{$ELSE}
+      ABitmap.DisposeOf();
+{$ENDIF}
     end;
 
-  ABitmap := NIL;
 {$ENDIF}
   inherited;
 end;
 //---------------------------------------------------------------------------
-class function TIGPFMXGraphics.Create( ACanvas : TCanvas ) : IGPGraphics;
+class function TIGPFMXGraphics.Make( ACanvas : TCanvas ) : IGPGraphics;
 begin
   Result := CreateObject( ACanvas );
 end;
@@ -222,6 +246,13 @@ end;
 function TIGPFMXCanvasHelper.GetGraphics() : IGPGraphics;
 begin
   Result := TIGPFMXGraphics.CreateObject( Self );
+end;
+//---------------------------------------------------------------------------
+function TIGPFMXCanvasHelper.ForGraphics( const AProc : TIGPConstProc<IGPGraphics> ) : TCanvas;
+begin
+  Assert( Assigned( AProc ));
+  AProc( TIGPFMXGraphics.CreateObject( Self ) );
+  Result := Self;
 end;
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
